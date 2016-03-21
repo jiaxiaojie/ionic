@@ -1,0 +1,37 @@
+<!--
+      The nav bar that will be updated as we navigate between views.
+    -->
+<ion-nav-bar class="bar-royal">
+  <ion-nav-back-button>
+  </ion-nav-back-button>
+</ion-nav-bar>
+
+<!--
+Create tabs with an icon and label, using the tabs-positive style.
+Each tab's child <ion-nav-view> directive will have its own
+navigation history that also transitions its views in and out.
+-->
+<ion-tabs class="tabs-icon-top tabs-color-active-royal">
+
+  <!-- Home Tab -->
+  <ion-tab title="Home" icon-off="ion-ios-home-outline" icon-on="ion-home" ui-sref="tab.home">
+    <ion-nav-view name="tab-home"></ion-nav-view>
+  </ion-tab>
+
+  <!-- Css3 Tab -->
+  <ion-tab title="Css3" icon-off="ion-social-css3-outline" icon-on="ion-social-css3" ui-sref="tab.css3">
+    <ion-nav-view name="tab-css3"></ion-nav-view>
+  </ion-tab>
+
+  <!-- Html5 Tab -->
+  <ion-tab title="Html5" icon-off="ion-social-html5-outline" icon-on="ion-social-html5" ui-sref="tab.html5">
+    <ion-nav-view name="tab-html5"></ion-nav-view>
+  </ion-tab>
+
+  <!-- Javascript Tab -->
+  <ion-tab title="Javascript" icon-off="ion-social-javascript-outline" icon-on="ion-social-javascript" ui-sref="tab.javascript">
+    <ion-nav-view animation="slide-left-right">333</ion-nav-view>
+  </ion-tab>
+
+
+</ion-tabs>
