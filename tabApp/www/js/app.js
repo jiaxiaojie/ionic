@@ -5,9 +5,9 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('qianduan', ['ionic', 'qianduan.controllers', 'qianduan.services','qianduan.directives','qianduan.routes'])
+var qd = angular.module('qianduan', ['ionic', 'qianduan.controllers', 'qianduan.services','qianduan.directives','qianduan.routes']);
 
-.run(function($ionicPlatform) {
+qd.run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -21,6 +21,10 @@ angular.module('qianduan', ['ionic', 'qianduan.controllers', 'qianduan.services'
       StatusBar.styleDefault();
     }
   });
-})
+});
+
+
+
+
 
 

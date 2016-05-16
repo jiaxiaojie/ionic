@@ -3,6 +3,7 @@ angular.module('qianduan.controllers', [])
 .controller('HomeCtrl', function($scope) {})
 
 // ListCtrl
+
 .controller('ListCtrl', ['$scope','$http','$state',function($scope,$http,$state) {
 
   $scope.list = [];
@@ -11,52 +12,7 @@ angular.module('qianduan.controllers', [])
       $scope.list = res.data;
   });
 
-  $scope.listDetails = function(list) {
-      $state.go("listDetail", {
-          "listId": list
-      });
-  };
-
-}])
-
-.controller('ListDetailCtrl', function($scope, $stateParams,$http,$sce) {
-
-  $http.get("templates/css3/detail.json").then(function(res){
-      $scope.entity = res.data[$stateParams.css3Id];
-      $http.get($scope.entity.url).success(function(res){
-         $scope.html = $sce.trustAsHtml(res.replace(/</g,'&lt;').replace(/>/g,'&gt;'));
-      });
-  });
-
-})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Css3Ctrl
-.controller('Css3Ctrl', ['$scope','$http','$state',function($scope,$http,$state) {
-
-  $scope.list = [];
-
-  $http.get("templates/css3/detail.json").then(function(res){
-      $scope.list = res.data;
-  });
-
-  $scope.css3Details = function(css3) {
+  $scope.listDetails = function(css3) {
       $state.go("css3Detail", {
           "css3Id": css3
       });
@@ -64,7 +20,7 @@ angular.module('qianduan.controllers', [])
 
 }])
 
-.controller('Css3DetailCtrl', function($scope, $stateParams,$http,$sce) {
+.controller('ListDetailCtrl', function($scope, $stateParams,$http,$sce) {
 
   $http.get("templates/css3/detail.json").then(function(res){
       $scope.entity = res.data[$stateParams.css3Id];

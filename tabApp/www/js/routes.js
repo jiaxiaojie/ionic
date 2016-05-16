@@ -22,29 +22,24 @@ angular.module('qianduan.routes', [])
     views: {
       'tab-home': {
         templateUrl: 'templates/tab-home.html',
-        controller: 'ListCtrl'
+        controller: 'HomeCtrl'
       }
     }
-  })
-  .state('homeDetail', {
-      url: '/homeDetail/:homeId',
-      templateUrl: 'templates/list-detail.html',
-      controller: 'ListDetailCtrl'
   })
 
   .state('tab.css3', {
     url: '/css3',
     views: {
       'tab-css3': {
-        templateUrl: 'templates/tab-css3.html',
-        controller: 'Css3Ctrl'
+        templateUrl: 'templates/tab-list.html',
+        controller: 'ListCtrl'
       }
     }
   })
   .state('css3Detail', {
       url: '/css3Detail/:css3Id',
-      templateUrl: 'templates/css3-detail.html',
-      controller: 'Css3DetailCtrl'
+      templateUrl: 'templates/list-detail.html',
+      controller: 'ListDetailCtrl'
   })
 
   .state('tab.html5', {
@@ -74,5 +69,5 @@ angular.module('qianduan.routes', [])
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/css3');
+  $urlRouterProvider.otherwise('/tab/home');
 });
