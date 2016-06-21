@@ -1,0 +1,8 @@
+
+.coupons_list { margin-top:20px; background-color:#fff !important;}
+#content_center{overflow:hidden;width:769px;padding:10px 10px 10px 10px;}
+#content_center .line_01{overflow:hidden;line-height:20px;margin:20px 20px 20px 20px;}
+#content_center hr{border-top:1px solid #f2f2f2;margin-left:150px;}
+#content_center .hr_dashed{border-top:1px dashed #c7c7c7;margin:5px 30px 5px 10px;}
+#content_center .bottom{margin-left:auto;margin-right:auto;margin-top:30px;width:789px;height:44px;background:url('../../images/wdzh/right_bg_bottom.png') no-repeat center;}
+.item.item124 { padding: 30px 60px 30px 60px; margin: 0 2px 2px 0; float: left; width: 252px; height: 124px; position: relative; background-color: #f4f4f4;}

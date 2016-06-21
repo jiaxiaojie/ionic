@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerIntegralSnapshotDao">
+    
+	<sql id="customerIntegralSnapshotColumns">
+		a.account_id AS "accountId",
+		a.integral_balance AS "integralBalance",
+		a.outtime_val AS "outtimeVal",
+		a.consecutive_days AS "consecutiveDays",
+		a.first_get_dt AS "firstGetDt",
+		a.last_change_dt AS "lastChangeDt"
+	</sql>
+	
+	<sql id="customerIntegralSnapshotJoins">
+		RIGHT JOIN customer_account b ON b.account_id = a.account_id
+	</sql>
+    
+	<select id="get" resultType="CustomerIntegralSnapshot">
+		SELECT 
+			<include refid="customerIntegralSnapshotColumns"/>
+		FROM customer_integral_snapshot a
+		<include refid="customerIntegralSnapshotJoins"/>
+		WHERE a.account_id = #{accountId}
+	</select>
+	
+	<select id="getByAccountId" resultType="CustomerIntegralSnapshot">
+		SELECT 
+			<include refid="customerIntegralSnapshotColumns"/>
+		FROM customer_integral_snapshot a
+		<include refid="customerIntegralSnapshotJoins"/>
+		WHERE b.account_id = #{accountId}
+	</select>
+	
+	<select id="findList" resultType="CustomerIntegralSnapshot">
+		SELECT 
+			<include refid="customerIntegralSnapshotColumns"/>
+		FROM customer_integral_snapshot a
+		<include refid="customerIntegralSnapshotJoins"/>
+		<where>
+			
+			<if test="beginIntegralBalance != null  and beginIntegralBalance != ''">
+				AND a.integral_balance >= #{beginIntegralBalance}
+			</if>
+			<if test="endIntegralBalance != null and endIntegralBalance != ''">
+				AND #{endIntegralBalance} >= a.integral_balance
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerIntegralSnapshot">
+		SELECT 
+			<include refid="customerIntegralSnapshotColumns"/>
+		FROM customer_integral_snapshot a
+		<include refid="customerIntegralSnapshotJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_integral_snapshot(
+			account_id,
+			integral_balance,
+			outtime_val,
+			consecutive_days,
+			first_get_dt,
+			last_change_dt
+		) VALUES (
+			#{accountId},
+			#{integralBalance},
+			#{outtimeVal},
+			#{consecutiveDays},
+			#{firstGetDt},
+			#{lastChangeDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_integral_snapshot SET 	
+			integral_balance = #{integralBalance},
+			outtime_val = #{outtimeVal},
+			consecutive_days = #{consecutiveDays},
+			first_get_dt = #{firstGetDt},
+			last_change_dt = #{lastChangeDt}
+		WHERE account_id = #{accountId}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_integral_snapshot
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateIntegralValue">
+		update customer_integral_snapshot
+			set first_get_dt = (case when first_get_dt is null then now() else first_get_dt end),
+			last_change_dt = now(),
+			integral_balance = integral_balance + #{integral}
+			where account_id = #{accountId}
+	</update>
+
+	<update id="updateConsecutiveDays">
+		update customer_integral_snapshot
+		set consecutive_days = #{consecutiveDays}
+		where account_id = #{accountId}
+	</update>
+</mapper>

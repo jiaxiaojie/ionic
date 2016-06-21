@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.sys.dao.CreditLevelInfoDao">
+    
+	<sql id="creditLevelInfoColumns">
+		a.id AS "id",
+		a.min_score AS "minScore",
+		a.max_score AS "maxScore",
+		a.credit_level AS "creditLevel",
+		a.credit_limit AS "creditLimit"
+	</sql>
+	
+	<sql id="creditLevelInfoJoins">
+	</sql>
+    
+	<select id="get" resultType="CreditLevelInfo">
+		SELECT 
+			<include refid="creditLevelInfoColumns"/>
+		FROM credit_level_info a
+		<include refid="creditLevelInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CreditLevelInfo">
+		SELECT 
+			<include refid="creditLevelInfoColumns"/>
+		FROM credit_level_info a
+		<include refid="creditLevelInfoJoins"/>
+		<where>
+			
+			<if test="creditLevel != null and creditLevel != ''">
+				AND a.credit_level LIKE 
+					<if test="dbName == 'oracle'">'%'||#{creditLevel}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{creditLevel}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{creditLevel},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CreditLevelInfo">
+		SELECT 
+			<include refid="creditLevelInfoColumns"/>
+		FROM credit_level_info a
+		<include refid="creditLevelInfoJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO credit_level_info(
+			id,
+			min_score,
+			max_score,
+			credit_level,
+			credit_limit
+		) VALUES (
+			#{id},
+			#{minScore},
+			#{maxScore},
+			#{creditLevel},
+			#{creditLimit}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE credit_level_info SET 	
+			min_score = #{minScore},
+			max_score = #{maxScore},
+			credit_level = #{creditLevel},
+			credit_limit = #{creditLimit}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM credit_level_info
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getByScore" resultType="CreditLevelInfo">
+		select * from credit_level_info where #{score} between min_score and max_score
+	</select>
+</mapper>

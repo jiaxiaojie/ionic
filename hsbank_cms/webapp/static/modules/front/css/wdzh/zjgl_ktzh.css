@@ -1,0 +1,77 @@
+/*全局样式*/
+body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, form, img, dl, dt, dd, table, th, td, blockquote, fieldset, div, strong, label, em {margin: 0;padding: 0;border: 0;font-family: Arial, 'Microsoft Yahei', STHeiti, sans-serif;}
+ul, ol, li {list-style: none;}
+input, button, textarea, select {margin: 0;padding: 0px;font-size: 14px;vertical-align: middle;font-family: Arial, 'Microsoft Yahei', STHeiti, sans-serif;outline: none;box-sizing: inherit;}
+table {border-collapse: collapse;border-spacing: 0;}
+.clearfix {zoom: 1;}
+.clearfix:after {clear: both;content: " ";display: block;font-size: 0;height: 0;visibility: hidden;}
+a{ text-decoration:none; display:inline-block; cursor:pointer; color:#333; outline:none;}
+a:hover {color: #ef8122}
+img {border: none;margin: 0px;}
+.red-text{ color:#d70000 !important;}
+.blue-text{ color:#2ea7e0 !important;}
+.orange-text{ color:#f58708 !important;}
+.f20{ font-size:20px;}
+.hide{ display:none}
+.show{ display:block}
+.btn_text{ text-align:center;}
+.btn_text a{ color:#bf4c00; text-decoration:underline;}
+.btn_text a:hover{ color:#f16000;}
+.blue_check{ width:32px; height:32px; margin:5px 5px 0 0; position:relative; top:8px; right:10px; display:inline-block; background:url(../../images/util/icon_check_blue.png) no-repeat;}
+.red_check{ width:32px; height:32px; margin:5px 5px 0 0; position:relative; top:8px; right:10px; display:inline-block; background:url(../../images/util/icon_check_red.png) no-repeat;}
+.brown_dividing_line{ margin:40px auto; width:740px; height:1px; background-color:#ad8a67;}
+.btn_brown_158x38{ text-align:center}
+.btn_brown_158x38 a{ width:158px; height:31px; line-height:31px; display:inline-block; padding:0; text-align:center; color:#fff; font-size:14px; background: url(../../images/util/button/bt_brown_158x31.png) no-repeat; border:none; cursor:pointer;}
+.btn_orange_134x31{ width:134px; height:31px; line-height:31px; display:inline-block; padding:0; text-align:center; color:#fff; font-size:14px; background: url(../../images/util/button/bt_orange_134x31.png) no-repeat; border:none; cursor:pointer;}
+.btn_orange_134x31:hover{ color:#fff;}
+/*开通易宝支付资金托管账号*/
+.wdzh-main { width:747px; margin:0 auto; padding: 30px 20px 30px 20px; border:1px solid #bb9a75; border-top:none; border-bottom:none; background-color:#fff;}
+.wdzh-main .wdzh-title{	padding-bottom:10px; color:#555; font-size:20px; line-height:40px; border-bottom:1px solid #b38e64;}
+.wdzh-main .wdzh-content{}
+.wdzh-main .wdzh-content .wdzh-ktzh{ padding:80px 0;}
+.wdzh-main .wdzh-content .wdzh-ktzh.zjgl_cz{ padding:20px 0;}
+.wdzh-ktzh .formList{ display:block; margin-bottom:10px; line-height:40px;}
+.wdzh-ktzh .formList dt{ float:left; min-width:110px; font-size:14px; color:#555; text-align:right; padding-right:5px;line-height: 40px;font-weight: normal;}
+.wdzh-ktzh .formList dd{ float:left;line-height: 40px;}
+.wdzh-ktzh .formList dd.center{ font-size: 14px;}
+.wdzh-ktzh .formList dd.center input{padding: 0 3px; width:200px !important; height:38px !important; line-height:38px !important;margin-bottom: 0px;    border-radius: 4px; -o-border-radius: 4px; -ms-border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px;}
+.wdzh-ktzh .formList dd.tips{ padding-left:10px; color:#bf4c00;}
+.wdzh-ktzh .bottom-text{ margin-top:60px; text-align:center; color:#bf4c00; text-align:center;}
+.wdzh-ktzh .bottom-btn{ margin:0 auto; margin-top:40px; text-align:center;}
+.wdzh-ktzh .bottom-btn input{ width:158px; height:31px; line-height:31px; display:inline-block; padding:0; text-align:center; color:#fff; font-size:14px; background:url(../../images/util/button/bt_brown_158x31.png) no-repeat; border:none; cursor:pointer;}
+.bottom-grain{ margin:30px auto 0; width:740px; height:44px; background: url('../../images/wdzh/right_bg_bottom.png') no-repeat center;}
+.red_star{ position:relative; top:3px; right:5px; font-size:14px; font-family:Verdana, Geneva, sans-serif;}
+/*开通易宝支付资金托管账号 信息确认*/
+.content980{ margin:0 auto; width:980px; min-height:500px; border:1px solid #bc9c78; background-color:#fff;}
+.content980 .zjgl_xxqr{}
+.content980 .zjgl_xxqr .xxqr_title{ margin:0 auto; width:736px; height:100px; line-height:100px; font-size:24px; color:#333; text-align:center; border-bottom:1px solid #b38e64;}
+/*未开通第三方托管帐号*/
+.no_open{ width:747px; margin:0 auto; padding:30px 20px 30px 20px; border:1px solid #bb9a75; background-color:#fff;}
+/*您已开通易宝支付资金托管账号，无需再次开通*/
+.zhgl_wxkt{ padding:40px 40px 10px; text-align:center;}
+/*你还未在易宝支付绑定银行卡*/
+.icon_card_area{ margin:20px auto; text-align:center;}
+.icon_card_area .icon_card{ width:64px; height:42px; display:inline-block; background:url(../../images/util/icon_card.png) no-repeat;}
+.btn_red_a{ color:#bf4c00;}
+.btn_red_a:hover{ color:#f16000; text-decoration:underline;}
+.bdyhk_tips{ height:120px; line-height:100px; font-size:24px; text-align:center;}
+.bank_logo{ margin:50px auto; padding:20px; background-color:#f4f4f4;}
+.bank_logo .bank_title{ margin-bottom:20px; font-size:16px; color:#333; text-align:left;}
+.bank_logo ul{ margin-right:-20px;}
+.bank_logo ul li{ float:left; margin:0 22px 10px 0; border:1px solid #ddd;}
+/*您已在易宝支付绑定银行卡*/
+.xxqr_info.ybdyhk_info{ padding:0px 0px 30px;}
+.xxqr_info.ybdyhk_info .formList dt{ float:left; min-width:360px; font-size:14px; color:#555; text-align:right; padding-right:5px;}
+/*充值*/
+.wdzh-ktzh.zjgl_cz .center{ margin-left:20px;}
+.cz-btn{ padding-left:136px; margin-top:20px;}
+.wdzh-ktzh.zjgl_cz .input_box{ width:206px; height:38px; line-height:36px;border-radius: 4px;-o-border-radius: 4px;-ms-border-radius: 4px;-moz-border-radius: 4px;-webkit-border-radius: 4px; position:relative; border:1px solid #ddd; background:#fff;}
+.wdzh-ktzh.zjgl_cz .input_box input{ width:100% !important; height:29px !important; line-height:29px !important; border: none;}
+.wdzh-ktzh.zjgl_cz .input_box .yuan{ position:absolute; top:0px; right:5px;}
+.impor_tips{background-color: #FCF6DF;border: 1px solid #BD9E7A;padding: 20px;margin: 0px 0px 40px;}
+
+.wdzh-main.extract .wdzh-title em{ color:#999; font-style:normal;}
+.extract_title_right{ font-size:12px;}
+
+
+

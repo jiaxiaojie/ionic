@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.marketing.dao.MarketingBehaviorTypeDao">
+    
+	<sql id="marketingBehaviorTypeColumns">
+		a.id AS "id",
+		a.behavior_code AS "behaviorCode",
+		a.behavior_name AS "behaviorName"
+	</sql>
+	
+	<sql id="marketingBehaviorTypeJoins">
+	</sql>
+    
+	<select id="get" resultType="MarketingBehaviorType">
+		SELECT 
+			<include refid="marketingBehaviorTypeColumns"/>
+		FROM marketing_behavior_type a
+		<include refid="marketingBehaviorTypeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MarketingBehaviorType">
+		SELECT 
+			<include refid="marketingBehaviorTypeColumns"/>
+		FROM marketing_behavior_type a
+		<include refid="marketingBehaviorTypeJoins"/>
+		<where>
+			
+			<if test="behaviorCode != null and behaviorCode != ''">
+				AND a.behavior_code = #{behaviorCode}
+			</if>
+			<if test="behaviorName != null and behaviorName != ''">
+				AND a.behavior_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{behaviorName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{behaviorName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{behaviorName},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MarketingBehaviorType">
+		SELECT 
+			<include refid="marketingBehaviorTypeColumns"/>
+		FROM marketing_behavior_type a
+		<include refid="marketingBehaviorTypeJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO marketing_behavior_type(
+			behavior_code,
+			behavior_name
+		) VALUES (
+			#{behaviorCode},
+			#{behaviorName}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE marketing_behavior_type SET 	
+			behavior_code = #{behaviorCode},
+			behavior_name = #{behaviorName}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM marketing_behavior_type
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.sys.dao.ThirdPartySmsParaDao">
+    
+	<sql id="thirdPartySmsParaColumns">
+		a.id AS "id",
+		a.sms_api_url AS "smsApiUrl",
+		a.sms_api_key AS "smsApiKey",
+		a.sms_secret_key AS "smsSecretKey"
+	</sql>
+	
+	<sql id="thirdPartySmsParaJoins">
+	</sql>
+    
+	<select id="get" resultType="ThirdPartySmsPara">
+		SELECT 
+			<include refid="thirdPartySmsParaColumns"/>
+		FROM third_party_sms_para a
+		<include refid="thirdPartySmsParaJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ThirdPartySmsPara">
+		SELECT 
+			<include refid="thirdPartySmsParaColumns"/>
+		FROM third_party_sms_para a
+		<include refid="thirdPartySmsParaJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ThirdPartySmsPara">
+		SELECT 
+			<include refid="thirdPartySmsParaColumns"/>
+		FROM third_party_sms_para a
+		<include refid="thirdPartySmsParaJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO third_party_sms_para(
+			sms_api_url,
+			sms_api_key,
+			sms_secret_key
+		) VALUES (
+			#{smsApiUrl},
+			#{smsApiKey},
+			#{smsSecretKey}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE third_party_sms_para SET 	
+			sms_api_url = #{smsApiUrl},
+			sms_api_key = #{smsApiKey},
+			sms_secret_key = #{smsSecretKey}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM third_party_sms_para
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

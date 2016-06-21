@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerWithdrawDeposiHisDao">
+    
+	<sql id="customerWithdrawDeposiHisColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.change_val AS "changeVal",
+		a.change_reason AS "changeReason",
+		a.rel_activity AS "relActivity",
+		a.third_party_order AS "thirdPartyOrder",
+		a.op_dt AS "opDt",
+		a.op_term_type AS "opTermType"
+	</sql>
+	
+	<sql id="customerWithdrawDeposiHisJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomerWithdrawDeposiHis">
+		SELECT 
+			<include refid="customerWithdrawDeposiHisColumns"/>
+		FROM customer_withdraw_deposi_his a
+		<include refid="customerWithdrawDeposiHisJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerWithdrawDeposiHis">
+		SELECT 
+			<include refid="customerWithdrawDeposiHisColumns"/>
+		FROM customer_withdraw_deposi_his a
+		<include refid="customerWithdrawDeposiHisJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="beginOpDt != null  and beginOpDt != ''">				AND a.op_dt >= #{beginOpDt}			</if>			<if test="endOpDt != null and endOpDt != ''">				AND #{endOpDt} >= a.op_dt			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findListDuringDate" resultType="CustomerWithdrawDeposiHis">
+		SELECT 
+			<include refid="customerWithdrawDeposiHisColumns"/>
+		FROM customer_withdraw_deposi_his a
+		<include refid="customerWithdrawDeposiHisJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="startDate != null and endDate != null">
+				AND a.op_dt BETWEEN #{startDate} AND #{endDate}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerWithdrawDeposiHis">
+		SELECT 
+			<include refid="customerWithdrawDeposiHisColumns"/>
+		FROM customer_withdraw_deposi_his a
+		<include refid="customerWithdrawDeposiHisJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_withdraw_deposi_his(
+			account_id,
+			change_val,
+			change_reason,
+			rel_activity,
+			third_party_order,
+			op_dt,
+			op_term_type
+		) VALUES (
+			#{accountId},
+			#{changeVal},
+			#{changeReason},
+			#{relActivity},
+			#{thirdPartyOrder},
+			#{opDt},
+			#{opTermType}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_withdraw_deposi_his SET 	
+			account_id = #{accountId},
+			change_val = #{changeVal},
+			change_reason = #{changeReason},
+			rel_activity = #{relActivity},
+			third_party_order = #{thirdPartyOrder},
+			op_dt = #{opDt},
+			op_term_type = #{opTermType}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_withdraw_deposi_his
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.integral.dao.IntegralMallProductHotDao">
+    
+	<sql id="integralMallProductHotColumns">
+		a.id AS "id",
+		a.product_id AS "productId",
+		a.hot_type AS "hotType",
+		a.hot_value AS "hotValue"
+	</sql>
+	
+	<sql id="integralMallProductHotJoins">
+	</sql>
+    
+	<select id="get" resultType="IntegralMallProductHot">
+		SELECT 
+			<include refid="integralMallProductHotColumns"/>
+		FROM integral_mall_product_hot a
+		<include refid="integralMallProductHotJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="IntegralMallProductHot">
+		SELECT 
+			<include refid="integralMallProductHotColumns"/>
+		FROM integral_mall_product_hot a
+		<include refid="integralMallProductHotJoins"/>
+		<where>
+			<if test="productId != null and productId != ''">
+				AND a.product_id = #{productId}
+			</if>
+			<if test="hotType != null and hotType != ''">
+				AND a.hot_type = #{hotType}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="IntegralMallProductHot">
+		SELECT 
+			<include refid="integralMallProductHotColumns"/>
+		FROM integral_mall_product_hot a
+		<include refid="integralMallProductHotJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO integral_mall_product_hot(
+			product_id,
+			hot_type,
+			hot_value
+		) VALUES (
+			#{productId},
+			#{hotType},
+			#{hotValue}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE integral_mall_product_hot SET 	
+			product_id = #{productId},
+			hot_type = #{hotType},
+			hot_value = #{hotValue}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM integral_mall_product_hot
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

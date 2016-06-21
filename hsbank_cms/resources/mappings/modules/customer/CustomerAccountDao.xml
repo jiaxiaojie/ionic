@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerAccountDao">
+    
+	<sql id="customerAccountColumns">
+		a.account_id AS "accountId",
+		a.account_name AS "accountName",
+		a.recommend_account_id AS "recommendAccountId",
+		a.account_type AS "accountType",
+		a.nickname AS "nickname",
+		a.avatar_image AS "avatarImage",
+		a.account_pwd AS "accountPwd",
+		a.register_channel AS "registerChannel",
+		a.invite_code AS "inviteCode",
+		a.status_code AS "statusCode",
+		a.register_dt AS "registerDt",
+		a.register_ip AS "registerIp",
+		a.last_login_dt AS "lastLoginDt",
+		a.last_login_term_code AS "lastLoginTermCode",
+		a.last_login_ip AS "lastLoginIp",
+		a.reset_pwd_type AS "resetPwdType",
+		a.platform_user_no AS "platformUserNo",
+		a.err_count AS "errCount",
+		a.err_ip AS "errIp",
+		a.err_term_code AS "errTermCode",
+		a.err_dt AS "errDt",
+		a.has_open_third_account AS "hasOpenThirdAccount",
+		a.request_no AS "requestNo",
+		a.outer_id AS "outerId",
+		a.register_source AS "registerSource",
+		b.customer_id AS "customerBase.customerId",
+		b.customer_name AS "customerBase.customerName",
+		b.mobile AS "customerBase.mobile",
+		b.email AS "customerBase.email",
+		b.address AS "customerBase.address",
+		b.cert_num AS "customerBase.certNum",
+		b.email_auth_code as "customerBase.emailAuthCode",
+		ba.gold_balance AS "customerBalance.goldBalance",
+		a.recommender_mobile AS "recommenderMobile",
+		a.recommender_type AS "recommenderType"
+		<!-- a.user_tatus AS "userStatus" -->
+	</sql>
+	
+	<sql id="customerAccountJoins">
+		LEFT JOIN customer_base b ON b.account_id = a.account_id
+		LEFT JOIN customer_balance ba ON ba.account_id = a.account_id
+		LEFT JOIN customer_bank_card cd ON cd.account_id = a.account_id
+	</sql>
+    
+	<select id="get" resultType="CustomerAccount">
+		SELECT 
+			<include refid="customerAccountColumns"/>
+		FROM customer_account a
+		<include refid="customerAccountJoins"/>
+		WHERE a.account_id = #{id}
+	</select>
+	<select id="findCustomerInfo" resultType="CustomerAccount">
+		SELECT 
+			<include refid="customerAccountColumns"/>
+		FROM customer_account a
+		<include refid="customerAccountJoins"/>
+		WHERE a.account_id = #{accountId}
+	</select>
+	
+	<!-- 根据用户名查询易宝平台标示 -->
+	<select id="selectPlatformUserNoByAccountName" resultType="String">
+	select  platform_user_no from customer_account  where account_name=#{accountName}
+	</select>
+	
+    <!--根据用户编号查询用户在易宝的平台编号 -->
+	<select id="selectPlatformUserNoByBorrowerAccountId" resultType="String">
+	select  a.platform_user_no from customer_account a where a.account_id=#{borrowerAccountId}
+	</select>
+	<!-- 根据账户类型查询用户 -->
+	<select id="selectListByaccountType" resultType="String">
+	select account_name  from customer_account where  account_type='1'
+	</select>
+	
+	<!-- 根据用户平台编号查询用户的名称 -->
+	<select id="selectCustomerNameByPlatformUserNo" resultType="String">
+	SELECT b.customer_name FROM customer_account a,customer_base b where a.account_id=b.account_id and  a.platform_user_no=#{platformUserNo}
+	</select>
+	<select id="getByExtendNo" resultType="CustomerAccount">
+		SELECT 
+			<include refid="customerAccountColumns"/>
+		FROM customer_account a
+		<include refid="customerAccountJoins"/>
+		WHERE a.outer_id = #{extendNo}
+	</select>
+	
+	<select id="findList" resultType="CustomerAccount">
+		SELECT 
+			<include refid="customerAccountColumns"/>
+		FROM customer_account a
+		<include refid="customerAccountJoins"/>
+		<where>
+			<if test="accountId != null">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="accountName != null and accountName != ''">
+				AND a.account_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{accountName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{accountName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{accountName},'%')</if>
+			</if>
+			
+			<if test="customerBase != null and customerBase.customerName != null and customerBase.customerName != ''">
+				AND b.customer_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{customerBase.customerName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{customerBase.customerName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{customerBase.customerName},'%')</if>
+			</if>
+			
+			<if test="recommendAccountId != null and recommendAccountId != ''">
+				AND a.recommend_account_id = #{recommendAccountId}
+			</if>
+			<if test="accountType != null and accountType != ''">
+				AND a.account_type = #{accountType}
+			</if>
+			<if test="statusCode != null and statusCode != ''">
+				AND a.status_code = #{statusCode}
+			</if>
+			<if test="beginRegisterDt != null  and beginRegisterDt != ''">
+				AND a.register_dt >= #{beginRegisterDt}
+			</if>
+			<if test="endRegisterDt != null and endRegisterDt != ''">
+				AND #{endRegisterDt} >= a.register_dt
+			</if>
+			
+			<if test="customerBase != null and customerBase.mobile != null and customerBase.mobile != ''">
+				AND b.mobile = #{customerBase.mobile}
+			</if>
+			<if test="customerBase != null and customerBase.certNum != null and customerBase.certNum != ''">
+				AND b.cert_num like concat('%',#{customerBase.certNum},'%')
+			</if>
+			<if test="customerBankCard != null and customerBankCard.cardNo != null and customerBankCard.cardNo != ''">
+				AND        cd.card_no   like concat('%',#{customerBankCard.cardNo},'%')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="querySimpleList" resultType="CustomerAccount">
+		SELECT  a.account_id AS "accountId",
+				a.account_name AS "accountName",
+				b.customer_name AS "customerBase.customer_name"
+		FROM customer_account a
+		<include refid="customerAccountJoins"/>
+		<where>
+			<if test="queryParas != null and queryParas != ''">
+				AND (a.account_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{queryParas}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{queryParas}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{queryParas},'%')</if>
+		
+				OR b.customer_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{queryParas}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{queryParas}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{queryParas},'%')</if>
+					)
+			</if>
+			<if test="queryParas == ''">
+				AND 1!=1
+			</if>
+		</where>
+	</select>
+	
+	<select id="findAlignmentList" resultType="CustomerAccount">
+		SELECT
+			a.account_id AS "accountId",
+			a.platform_user_no AS "platformUserNo",
+			b.customer_id AS "customerBase.customerId",
+			b.customer_name AS "customerBase.customerName",
+			ba.gold_balance AS "customerBalance.goldBalance"
+			FROM customer_account a
+			LEFT JOIN customer_base b ON b.account_id = a.account_id
+			LEFT JOIN customer_balance ba ON ba.account_id = a.account_id
+			LEFT JOIN (select investment_user_id from project_investment_record where status in ('0','3') and amount > 0 group by investment_user_id) re ON re.investment_user_id = a.account_id
+		<where>
+				AND re.investment_user_id is not null
+				AND a.platform_user_no is not null 
+			<if test="statusCode != null and statusCode != ''">
+				AND a.status_code = #{statusCode}
+			</if>
+			<if test="hasOpenThirdAccount != null and hasOpenThirdAccount != ''">
+				AND a.has_open_third_account = #{hasOpenThirdAccount}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerAccount">
+		SELECT 
+			<include refid="customerAccountColumns"/>
+		FROM customer_account a
+		<include refid="customerAccountJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="accountId">
+		INSERT INTO customer_account(
+			account_name,
+			recommend_account_id,
+			account_type,
+			nickname,
+			avatar_image,
+			account_pwd,
+			register_channel,
+			platform_user_no,
+			invite_code,
+			status_code,
+			register_dt,
+			register_ip,
+			last_login_dt,
+			last_login_term_code,
+			last_login_ip,
+			reset_pwd_type,
+			err_count,
+			err_ip,
+			err_term_code,
+			err_dt,
+			has_open_third_account,
+			request_no,
+			recommender_mobile,
+			recommender_type,
+			ad_channel_id,
+			outer_id,
+			register_source
+		<!-- 	user_status -->
+		) VALUES (
+			#{accountName},
+			#{recommendAccountId},
+			#{accountType},
+			#{nickname},
+			#{avatarImage},
+			#{accountPwd},
+			#{registerChannel},
+			#{platformUserNo},
+			#{inviteCode},
+			#{statusCode},
+			#{registerDt},
+			#{registerIp},
+			#{lastLoginDt},
+			#{lastLoginTermCode},
+			#{lastLoginIp},
+			#{resetPwdType},
+			#{errCount},
+			#{errIp},
+			#{errTermCode},
+			#{errDt},
+			#{hasOpenThirdAccount},
+			#{requestNo},
+			#{recommenderMobile},
+			#{recommenderType},
+			#{channelId},
+			#{outerId},
+			#{registerSource}
+			<!-- #{userStatus} -->
+		)
+	</insert>
+	<update id="update">
+		UPDATE customer_account SET 	
+			account_name = #{accountName},
+			recommend_account_id = #{recommendAccountId},
+			account_type = #{accountType},
+			nickname = #{nickname},
+			avatar_image = #{avatarImage},
+			account_pwd = #{accountPwd},
+			invite_code = #{inviteCode},
+			status_code = #{statusCode},
+			reset_pwd_type = #{resetPwdType},
+			has_open_third_account = #{hasOpenThirdAccount},
+			request_no = #{requestNo},
+			recommender_mobile = #{recommenderMobile},
+			recommender_type = #{recommenderType},
+			last_login_dt = #{lastLoginDt}
+			<!-- user_status = #{userStatus} -->
+		WHERE account_id = #{id}
+	</update>
+	
+	
+	<update id="delete">
+		DELETE FROM customer_account
+		WHERE account_id = #{id}
+	</update>
+	
+	<select id="getByAccountName" resultType="CustomerAccount">
+		SELECT 
+			<include refid="customerAccountColumns"/>
+		FROM customer_account a
+		<include refid="customerAccountJoins"/>
+		WHERE a.account_name = #{accountName}
+	</select>
+	
+	<select id="getByLoginName" resultType="CustomerAccount">
+		SELECT 
+			<include refid="customerAccountColumns"/>
+		FROM customer_account a,customer_base b,customer_balance ba 
+		WHERE a.account_id=b.account_id and a.account_id=ba.account_id and (a.account_name = #{loginName} OR b.mobile = #{loginName} OR b.email = #{loginName}) and a.status_code = '0' limit 1
+	</select>
+	
+	<update id="updateSuccessLoginInfo">
+		UPDATE customer_account SET 	
+			last_login_dt = #{lastLoginDt},
+			last_login_term_code = #{lastLoginTermCode},
+			last_login_ip = #{lastLoginIp},
+			err_count = #{errCount}
+		WHERE account_id = #{accountId}
+	</update>
+	
+	<update id="updateFailureLoginInfo">
+		UPDATE customer_account SET 	
+			err_count = #{errCount},
+			err_ip = #{errIp},
+			err_term_code = #{errTermCode},
+			err_dt = #{errDt}
+		WHERE account_name = #{accountName}
+	</update>
+	
+	<update id="updateRequestNo">
+		UPDATE customer_account SET
+			request_no = #{requestNo}
+		WHERE account_id = #{accountId}
+	</update>
+	
+	<update id="updateAvatar">
+		UPDATE customer_account SET
+			avatar_image = #{avatarImage}
+		WHERE account_id = #{accountId}
+	</update>
+	
+	<update id="updateHasOpenThirdAccount">
+		UPDATE customer_account SET
+			has_open_third_account = #{hasOpenThirdAccount}
+		WHERE account_id = #{accountId}
+	</update>
+	
+	<select id="getAccountIdByPlatformUserNo" resultType="java.lang.Long">
+		select account_id from customer_account where platform_user_no=#{platformUserNo}
+	</select>
+	
+	<select id="getByPlatformUserNo" resultType="CustomerAccount">
+		select * from customer_account where platform_user_no=#{platformUserNo}
+	</select>
+	
+	<select id="getByRequestNo" resultType="CustomerAccount">
+		select * from customer_account where request_no=#{requestNo}
+	</select>
+	
+	<update id="resetPassword">
+		update customer_account set account_pwd = #{accountPwd}, reset_pwd_type = #{resetPwdType} where account_id = #{accountId}
+	</update>
+	
+	<select id="getByMobile" resultType="CustomerAccount">
+		select a.* from customer_account a left join customer_base b on b.account_id = a.account_id where b.mobile = #{mobile} and a.status_code='0' limit 1
+	</select>
+	<select id="getByMobile1" resultType="CustomerAccount">
+		select a.* from customer_account a left join customer_base b on b.account_id = a.account_id where b.mobile = #{mobile} limit 1
+	</select>
+	
+	<select id="getByNicknameCount" resultType="java.lang.Integer">
+		select count(*) from customer_account where nickname = #{nickname}
+	</select>
+	
+	<update id="updateByAccountIdSelective" parameterType="com.thinkgem.jeesite.modules.entity.CustomerAccount">
+		UPDATE customer_account 
+		<set>
+		  <if test="nickname != null">
+                nickname = #{nickname},
+          </if>
+          <if test="accountPwd != null">
+                account_pwd = #{accountPwd}
+          </if>
+		</set>
+		<where>
+		  account_id = #{accountId}
+		</where>
+	</update>
+	
+	<update id="updateStatusToLockedByMobile">
+		update customer_account set status_code = '1' where account_id in (select account_id from customer_base where mobile = #{mobile})
+	</update>
+	
+	<update id="setPlatformUserNo">
+		update customer_account set platform_user_no = #{platformUserNo} where account_id = #{accountId}
+	</update>
+	
+	<select id="getByRecommendorAccountId" resultType="CustomerAccount">
+		select * from customer_account where recommend_account_id = #{accountId}
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				order by account_id desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getListByRecommendorAccountId" resultType="CustomerAccount">
+		select * from customer_account where recommend_account_id = #{accountId}
+			order by account_id desc
+			<if test="startNumber != null and endNumber != null">
+				limit #{startNumber},#{endNumber}
+			</if>
+			
+	</select>
+	
+	<select id="getHasAuthedIdCardNoHasAccountNumber" resultType="java.lang.Integer">
+		select count(*) from customer_base where cert_num = #{idCardNo} and name_auth_code = '1'
+	</select>
+	
+	<select id="getRecommenderAccountIdByAccountId" resultType="java.lang.Long">
+		select c.account_id from customer_account a, customer_base b, customer_account c
+		where a.account_id = #{accountId} and a.recommender_type = '2' and a.recommender_mobile = b.mobile and b.account_id = c.account_id and c.status_code='0'
+		order by c.account_id limit 1
+	</select>
+
+	<select id="countRecommendorByAccountId" resultType="java.lang.Long">
+		select count(a.account_id) from customer_account a where a.recommend_account_id = #{accountId}
+	</select>
+	<!-- 优化登陆sql -->
+	<select id="findLoginName" resultType="CustomerAccount">
+		  select 
+		       a.account_id as accountId,
+		       a.account_name as accountName,
+		       a.account_pwd as accountPwd
+		  from 
+			customer_account a
+			inner join 
+			customer_base b
+			on a.account_id=b.account_id
+			where a.status_code='0' and 
+			(a.account_name= #{loginName} or b.mobile=#{loginName} or b.email=#{loginName} ) limit 1
+	</select>
+	<update id="updateLogin">
+	  UPDATE customer_account
+	  <set >
+	      <if test="lastLoginDt != null" >
+	      last_login_dt = #{lastLoginDt},
+	      </if>
+	      <if test="lastLoginIp != null" >
+	      last_login_ip = #{lastLoginIp},
+	      </if>
+	      <if test="lastLoginTermCode != null" >
+	     last_login_term_code= #{lastLoginTermCode}
+	      </if>
+      </set>
+		WHERE account_id = #{accountId}
+	</update>
+	<!-- 优化登陆sql -->
+	<select id="loginByMobile" resultType="CustomerAccount">
+		  select 
+		       a.account_id as accountId,
+		       a.account_name as accountName,
+		       a.account_pwd as accountPwd
+		  from 
+			customer_account a
+			inner join 
+			customer_base b 
+			on a.account_id=b.account_id
+			where a.status_code='0' and  b.mobile=#{loginName}  limit 1
+	</select>
+	<!-- 优化登陆sql -->
+	<select id="loginByEmail" resultType="CustomerAccount">
+		  select 
+		       a.account_id as accountId,
+		       a.account_name as accountName,
+		       a.account_pwd as accountPwd
+		  from 
+			customer_account a
+			inner join 
+			customer_base b 
+			on a.account_id=b.account_id
+			where a.status_code='0' and b.email=#{loginName} limit 1
+	</select>
+	<select id="loginByAccountName" resultType="CustomerAccount">
+		  select 
+		       a.account_id as accountId,
+		       a.account_name as accountName,
+		       a.account_pwd as accountPwd
+		  from 
+			customer_account a
+			inner join 
+			customer_base b
+			on a.account_id=b.account_id
+			where a.status_code='0' and a.account_name= #{loginName}  limit 1
+	</select>
+</mapper>

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.project.dao.ProjectWillLoanDao">
+    
+	<sql id="projectWillLoanColumns">
+		a.id AS "id",
+		a.title AS "title",
+		a.duration AS "duration",
+		a.annualized_rate AS "annualizedRate",
+		a.loan_money AS "loanMoney",
+		a.service_charge AS "serviceCharge",
+		a.use_type AS "useType",
+		a.contract_money AS "contractMoney",
+		a.month_rate AS "monthRate",
+		a.sum_repay_money AS "sumRepayMoney",
+		a.month_repay_money AS "monthRepayMoney",
+		a.area_id AS "area.id",
+		a.remark AS "remark",
+		a.create_dt AS "createDt",
+		a.create_user_id AS "createUserId",
+		a.create_ip AS "createIp",
+		a.confirm_user_id AS "confirmUserId",
+		a.status AS "status",
+		a.confirm_remark AS "confirmRemark",
+		a.project_code AS "projectCode",
+		a5.name AS "area.name",
+		cfu.name AS "confirmUser.name",
+		cb.customer_name AS "contactName",
+		cb.mobile AS "mobile",
+		a.has_create_project AS "hasCreateProject"
+	</sql>
+	
+	<sql id="projectWillLoanJoins">
+		LEFT JOIN sys_area a5 ON a5.id = a.area_id
+		LEFT JOIN sys_user cfu ON cfu.id = a.confirm_user_id
+		LEFT JOIN customer_account ca ON a.create_user_id=ca.account_id
+		LEFT JOIN customer_base cb ON cb.account_id=ca.account_id
+	</sql>
+    
+	<select id="get" resultType="ProjectWillLoan">
+		SELECT 
+			<include refid="projectWillLoanColumns"/>
+		FROM project_will_loan a
+		<include refid="projectWillLoanJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ProjectWillLoan">
+		SELECT 
+			<include refid="projectWillLoanColumns"/>
+		FROM project_will_loan a
+		<include refid="projectWillLoanJoins"/>
+		<where>
+			
+			<if test="contactName != null and contactName != ''">
+				AND cb.customer_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{contactName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{contactName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{contactName},'%')</if>
+			</if>
+			<if test="mobile != null and mobile != ''">
+				AND cb.mobile = #{mobile}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="beginMoney != null  and beginMoney != ''">				AND a.loan_money >= #{beginMoney}			</if>			<if test="endMoney != null and endMoney != ''">				AND #{endMoney} >= a.loan_money			</if>
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+			<if test="beginCreateDt != null  and beginCreateDt != ''">				AND a.create_dt >= #{beginCreateDt}			</if>			<if test="endCreateDt != null and endCreateDt != ''">				AND #{endCreateDt} >= a.create_dt			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ProjectWillLoan">
+		SELECT 
+			<include refid="projectWillLoanColumns"/>
+		FROM project_will_loan a
+		<include refid="projectWillLoanJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findListByAccountIdAndStatus" resultType="ProjectWillLoan">
+		SELECT 
+			<include refid="projectWillLoanColumns"/>
+		FROM project_will_loan a
+		<include refid="projectWillLoanJoins"/>
+		<where>
+			a.create_user_id=#{createUserId}
+			<if test="startDate != null  and startDate != ''">				AND a.create_dt >= #{startDate}			</if>			<if test="endDate != null and endDate != ''">				AND #{endDate} >= a.create_dt			</if>
+			<choose>
+				<when test="status == '-1'.toString()">
+					AND (a.status='0' or a.status='1' or a.status='2' or a.status='3' or a.status='4') 
+				</when>
+				<when test="status == '1'.toString()">
+					AND (a.status='1' or a.status='3' or a.status='4') 
+				</when>
+				<otherwise>
+					AND a.status =#{status}
+				</otherwise>
+			</choose>
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				order by a.create_dt desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO project_will_loan(
+			title,
+			duration,
+			annualized_rate,
+			loan_money,
+			service_charge,
+			use_type,
+			contract_money,
+			month_rate,
+			sum_repay_money,
+			month_repay_money,
+			area_id,
+			remark,
+			create_dt,
+			create_user_id,
+			create_ip,
+			confirm_user_id,
+			status,
+			confirm_remark,
+			project_code,
+			has_create_project
+		) VALUES (
+			#{title},
+			#{duration},
+			#{annualizedRate},
+			#{loanMoney},
+			#{serviceCharge},
+			#{useType},
+			#{contractMoney},
+			#{monthRate},
+			#{sumRepayMoney},
+			#{monthRepayMoney},
+			#{area.id},
+			#{remark},
+			#{createDt},
+			#{createUserId},
+			#{createIp},
+			#{confirmUserId},
+			#{status},
+			#{confirmRemark},
+			#{projectCode},
+			#{hasCreateProject}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE project_will_loan SET 	
+			title= #{title},
+			duration= #{duration},
+			annualized_rate= #{annualizedRate},
+			loan_money = #{loanMoney},
+			service_charge= #{serviceCharge},
+			use_type= #{useType},
+			contract_money= #{contractMoney},
+			month_rate= #{monthRate},
+			sum_repay_money= #{sumRepayMoney},
+			month_repay_money=#{monthRepayMoney},
+			area_id = #{area.id},
+			remark = #{remark},
+			status = #{status},
+			confirm_remark = #{confirmRemark},
+			confirm_user_id=#{confirmUserId},
+			project_code = #{projectCode},
+			has_create_project=#{hasCreateProject}
+		WHERE id = #{id}
+	</update>
+	<update id="changeRelProjectId">
+		update project_will_loan set project_code=#{projectCode} where id=#{id}
+	</update>
+	
+	<update id="updateCreateRelProjectFlag">
+		update project_will_loan set has_create_project='1' where id=#{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM project_will_loan
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findNotEndApplyMoneyOfCustomer" resultType="java.lang.Double">
+		select case when  ISNULL(sum(loan_money)) then 0 else sum(loan_money) end  from project_will_loan where create_user_id= #{accountId} and status='0'
+	</select>
+	
+	<update id="cancelLoan">
+		update project_will_loan set status = '-1' where id = #{id} and status = '0'
+	</update>
+</mapper>

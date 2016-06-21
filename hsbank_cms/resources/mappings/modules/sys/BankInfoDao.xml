@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.sys.dao.BankInfoDao">
+    
+	<sql id="bankInfoColumns">
+		a.id AS "id",
+		a.bank_code AS "bankCode",
+		a.bank_name AS "bankName",
+		a.shortcut_individual AS "shortcutIndividual",
+		a.shortcut_single_day AS "shortcutSingleDay",
+		a.shortcut_single_month AS "shortcutSingleMonth",
+		a.logo AS "logo",
+		a.status AS "status"
+	</sql>
+	
+	<sql id="bankInfoJoins">
+	</sql>
+    
+	<select id="get" resultType="BankInfo">
+		SELECT 
+			<include refid="bankInfoColumns"/>
+		FROM bank_info a
+		<include refid="bankInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getBankInfoByBankCode" resultType="BankInfo">
+		SELECT 
+			<include refid="bankInfoColumns"/>
+		FROM bank_info a
+		<include refid="bankInfoJoins"/>
+		WHERE a.bank_code = #{bankCode} limit 1
+	</select>
+	
+	<select id="findList" resultType="BankInfo">
+		SELECT 
+			<include refid="bankInfoColumns"/>
+		FROM bank_info a
+		<include refid="bankInfoJoins"/>
+		<where>
+			
+			<if test="bankCode != null and bankCode != ''">
+				AND a.bank_code LIKE 
+					<if test="dbName == 'oracle'">'%'||#{bankCode}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{bankCode}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{bankCode},'%')</if>
+			</if>
+			<if test="bankName != null and bankName != ''">
+				AND a.bank_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{bankName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{bankName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{bankName},'%')</if>
+			</if>
+			<if test="beginShortcutIndividual != null  and beginShortcutIndividual != ''">				AND a.shortcut_individual >= #{beginShortcutIndividual}			</if>			<if test="endShortcutIndividual != null and endShortcutIndividual != ''">				AND #{endShortcutIndividual} >= a.shortcut_individual			</if>
+			<if test="beginShortcutSingleDay != null  and beginShortcutSingleDay != ''">				AND a.shortcut_single_day >= #{beginShortcutSingleDay}			</if>			<if test="endShortcutSingleDay != null and endShortcutSingleDay != ''">				AND #{endShortcutSingleDay} >= a.shortcut_single_day			</if>
+			<if test="beginShortcutSingleMonth != null  and beginShortcutSingleMonth != ''">				AND a.shortcut_single_month >= #{beginShortcutSingleMonth}			</if>			<if test="endShortcutSingleMonth != null and endShortcutSingleMonth != ''">				AND #{endShortcutSingleMonth} >= a.shortcut_single_month			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BankInfo">
+		SELECT 
+			<include refid="bankInfoColumns"/>
+		FROM bank_info a
+		<include refid="bankInfoJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bank_info(
+			id,
+			bank_code,
+			bank_name,
+			shortcut_individual,
+			shortcut_single_day,
+			shortcut_single_month,
+			logo,
+			status,
+		) VALUES (
+			#{id},
+			#{bankCode},
+			#{bankName},
+			#{shortcutIndividual},
+			#{shortcutSingleDay},
+			#{shortcutSingleMonth},
+			#{logo},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bank_info SET 	
+			bank_code = #{bankCode},
+			bank_name = #{bankName},
+			shortcut_individual = #{shortcutIndividual},
+			shortcut_single_day = #{shortcutSingleDay},
+			shortcut_single_month = #{shortcutSingleMonth},
+			logo = #{logo},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM bank_info
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

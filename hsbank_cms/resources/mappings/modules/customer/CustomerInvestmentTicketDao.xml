@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerInvestmentTicketDao">
+    
+	<sql id="customerInvestmentTicketColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.ticket_type_id AS "ticketTypeId",
+		a.get_dt AS "getDt",
+		a.get_remark AS "getRemark",
+		a.use_dt AS "useDt",
+		a.invalid_dt AS "invalidDt",
+		a.use_remark AS "useRemark",
+		a.status AS "status",
+		b.id AS "investmentTicketType.id",
+		b.ticket_type_name AS "investmentTicketType.ticketTypeName",
+		b.use_info AS "investmentTicketType.useInfo",
+		b.use_limit AS "investmentTicketType.useLimit",
+		b.term_of_validity AS "investmentTicketType.termOfValidity",
+		b.status AS "investmentTicketType.status",
+		b.denomination AS "investmentTicketType.denomination"
+	</sql>
+	
+	<sql id="customerInvestmentTicketJoins">
+		LEFT JOIN investment_ticket_type b ON b.id = a.ticket_type_id
+	</sql>
+    
+	<select id="get" resultType="CustomerInvestmentTicket">
+		SELECT 
+			<include refid="customerInvestmentTicketColumns"/>
+		FROM customer_investment_ticket a
+		<include refid="customerInvestmentTicketJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getTicketStatistics" resultType="map">
+		select count(*) as count,ifnull(sum(b.denomination), 0) as sumDenomination
+
+		,ifnull((select sum(b2.denomination) from customer_investment_ticket a2 LEFT JOIN investment_ticket_type b2 ON b2.id = a2.ticket_type_id where a2.account_id=#{accountId} and a2.get_remark!='现金券合并' and date_format(a2.get_dt,'%Y-%m') = date_format(#{currentDate},'%Y-%m')),0) as currentMonthSum
+		,ifnull((select sum(b3.denomination) from customer_investment_ticket a3 LEFT JOIN investment_ticket_type b3 ON b3.id = a3.ticket_type_id where a3.account_id=#{accountId} and a3.get_remark!='现金券合并' ),0) as totalSum
+
+		,ifnull((select count(b2.denomination) from customer_investment_ticket a2 LEFT JOIN investment_ticket_type b2 ON b2.id = a2.ticket_type_id where a2.account_id=#{accountId} and a2.get_remark!='现金券合并' and date_format(a2.get_dt,'%Y-%m') = date_format(#{currentDate},'%Y-%m')),0) as currentMonthCount
+		,ifnull((select count(b3.denomination) from customer_investment_ticket a3 LEFT JOIN investment_ticket_type b3 ON b3.id = a3.ticket_type_id where a3.account_id=#{accountId} and a3.get_remark!='现金券合并' ),0) as totalCount
+
+		from customer_investment_ticket a
+		<include refid="customerInvestmentTicketJoins"/>
+		  where a.account_id=#{accountId} and a.status=#{ticketDictNormal}
+	</select>
+	
+	
+	<select id="findList" resultType="CustomerInvestmentTicket">
+		SELECT 
+			<include refid="customerInvestmentTicketColumns"/>
+		FROM customer_investment_ticket a
+		<include refid="customerInvestmentTicketJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="beginGetDt != null  and beginGetDt != ''">
+				AND a.get_dt >= #{beginGetDt}
+			</if>
+			<if test="endGetDt != null and endGetDt != ''">
+				AND #{endGetDt} >= a.get_dt
+			</if>
+			<if test="beginUseDt != null  and beginUseDt != ''">
+				AND a.use_dt >= #{beginUseDt}
+			</if>
+			<if test="endUseDt != null and endUseDt != ''">
+				AND #{endUseDt} >= a.use_dt
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			    ORDER BY field(a.status, '0') desc,
+			    b.denomination asc,
+			   /* a.invalid_dt desc,*/
+				a.get_dt desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findCanUsePageByAccountId" resultType="CustomerInvestmentTicket">
+		SELECT 
+			<include refid="customerInvestmentTicketColumns"/>
+		FROM customer_investment_ticket a
+		<include refid="customerInvestmentTicketJoins"/>
+		<where>
+			AND a.account_id = #{accountId} AND a.status = '0' AND date(a.invalid_dt) &gt;= date(NOW())
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY b.denomination,a.get_dt desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<select id="findNeedClearSumByAccountId" resultType="java.lang.Integer">
+		SELECT 
+			SUM(b.denomination)
+		FROM customer_investment_ticket a 
+
+LEFT JOIN investment_ticket_type b ON b.id = a.ticket_type_id
+
+where a.account_id = #{accountId} AND a.status = '0' and 100>b.denomination
+	</select>
+	
+	
+	<select id="findCanUseListByAccountId" resultType="CustomerInvestmentTicket">
+		SELECT 
+			<include refid="customerInvestmentTicketColumns"/>
+		FROM customer_investment_ticket a
+		<include refid="customerInvestmentTicketJoins"/>
+		<where>
+			AND a.account_id = #{accountId} AND a.status = '0' AND date(a.invalid_dt) &gt;= date(NOW())
+		</where>
+		ORDER BY b.denomination,a.get_dt desc
+	</select>
+	
+	<select id="findCanChooseListByAccountId" resultType="CustomerInvestmentTicket">
+		SELECT 
+			<include refid="customerInvestmentTicketColumns"/>
+		FROM customer_investment_ticket a
+		<include refid="customerInvestmentTicketJoins"/>
+		<where>
+			AND a.account_id = #{accountId} 
+			AND a.status = '0' 
+			AND date(a.invalid_dt) &gt;= date(NOW())
+			AND b.denomination &lt;= #{amount}
+		</where>
+		ORDER BY a.invalid_dt,b.denomination desc,a.id
+	</select>
+
+	<select id="getCountByAccountId" resultType="java.lang.Integer">
+		SELECT count(*) FROM customer_investment_ticket a WHERE a.account_id = #{accountId} AND a.status = #{status} AND date(a.invalid_dt) &gt;= date(NOW())
+	</select>
+	
+	<select id="findUsedListByAccountId" resultType="CustomerInvestmentTicket">
+		SELECT 
+			<include refid="customerInvestmentTicketColumns"/>
+		FROM customer_investment_ticket a
+		<include refid="customerInvestmentTicketJoins"/>
+		<where>
+			AND a.account_id = #{accountId} AND a.status = '1'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY b.denomination,a.use_dt desc
+			</otherwise>
+	   </choose>
+	</select>
+	
+	<select id="findExpiredListByAccountId" resultType="CustomerInvestmentTicket">
+		SELECT 
+			<include refid="customerInvestmentTicketColumns"/>
+		FROM customer_investment_ticket a
+		<include refid="customerInvestmentTicketJoins"/>
+		<where>
+			
+			AND a.account_id = #{accountId} AND a.status = '2'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY b.denomination,a.get_dt desc
+			</otherwise>
+	   </choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerInvestmentTicket">
+		SELECT 
+			<include refid="customerInvestmentTicketColumns"/>
+		FROM customer_investment_ticket a
+		<include refid="customerInvestmentTicketJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_investment_ticket(
+			account_id,
+			ticket_type_id,
+			get_dt,
+			get_remark,
+			use_dt,
+			invalid_dt,
+			use_remark,
+			status
+		) VALUES (
+			#{accountId},
+			#{ticketTypeId},
+			#{getDt},
+			#{getRemark},
+			#{useDt},
+			#{invalidDt},
+			#{useRemark},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_investment_ticket SET 	
+			account_id = #{accountId},
+			ticket_type_id = #{ticketTypeId},
+			get_dt = #{getDt},
+			get_remark = #{getRemark},
+			use_dt = #{useDt},
+			invalid_dt=#{invalidDt},
+			use_remark = #{useRemark},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<update id="setNeedClearInvalidByAccountId">
+UPDATE  customer_investment_ticket t1,investment_ticket_type t2
+ SET 	
+			t1.invalid_dt=NOW(),
+			t1.status = 2
+		WHERE t2.id = t1.ticket_type_id and t1.account_id = #{accountId} AND t1.status = '0' and 100>t2.denomination
+
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_investment_ticket
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateStatus">
+		UPDATE customer_investment_ticket SET
+			status = #{status},
+			use_dt = #{useDt}
+		WHERE id = #{ticketId}
+	</update>
+	
+	<update id="batchUpdateStatus">
+        UPDATE customer_investment_ticket
+        <set>
+            <if test="status != null and  status != ''">
+                status = #{status}
+            </if>
+        </set>
+        <where>
+            id in (${ticketIds})
+        </where>
+    </update>
+    	
+	<update id="autoChangeStatusToExpired">
+		update customer_investment_ticket set status="2" where date(invalid_dt) &lt; date(now()) and status = '0'
+	</update>
+	
+	<select id="getTicketCountByAccountIdAndGetRemark" resultType="java.lang.Long">
+		select count(*) from customer_investment_ticket a where a.account_id = #{accountId} and a.get_remark = #{getRemark}
+	</select>
+	
+	<select id="getCustomerCanUseTicketTotalDenomination" resultType="java.lang.Double">
+		select sum(b.denomination) from customer_investment_ticket a, investment_ticket_type b where a.account_id = #{accountId} and a.ticket_type_id = b.id and a.`status` = '0';
+	</select>
+</mapper>

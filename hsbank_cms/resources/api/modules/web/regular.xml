@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apis basePath = "${frontPath}/api/regular"
+	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	  xsi:noNamespaceSchemaLocation="../../config/api.xsd">
+    <api path="aboutFiles">
+        <data>
+            <foramt>
+             {  
+				code:{
+				   description:"状态代码（0表示成功，1表示token无效，其它值表示失败）",
+				   type:"int",
+				   optional:"FALSE"   },
+				text:{
+				   description:"状态描述",
+				   type:"String",
+				   optional:"FALSE"   },
+				data:[
+					{
+					fileType:{
+					description:"文件类型(1:营业执照,2:贸易合同,3:借款合同,4:央行登记信息,5:实地考察照片,6:发票,7:物流签收单据,8:其他资料)",
+					type:"int",
+					optional:"FALSE"       },
+					fileTypeName:{
+					description:"文件类型名称",
+					type:"String",
+					optional:"FALSE"       },
+					resultList:[
+					{
+					description:"文件图片url(绝对路径)",
+					type:"String",
+					optional:"FALSE"         }
+					]
+					}
+					]
+			}
+            </foramt>
+        </data>
+    </api>
+
+    <api path="projectPaymentPlan">
+        <data>
+            <foramt>
+			{
+				code:{
+				   description:"状态代码（0表示成功，1表示token无效，其它值表示失败）",
+				   type:"int",
+				   optional:"FALSE"   },
+				text:{
+				   description:"状态描述",
+				   type:"String",
+				   optional:"FALSE"   },
+				data:{
+				  count:{
+					 description:"记录总数",
+					 type:"int",
+					 optional:"FALSE"     },
+				  resultList:[
+					{
+					  planDate:{
+						 description:"还款日期",
+						 type:"string",
+						 optional:"FALSE"         },
+					  planMoney:{
+						 description:"还款金额",
+						 type:"number",
+						 optional:"FALSE"         },
+					  principal:{
+						 description:"应还本金",
+						 type:"number",
+						 optional:"FALSE"         },
+					  interest:{
+						 description:"应还利息",
+						 type:"number",
+						 optional:"FALSE"         },
+					  remainingPrincipal:{
+						 description:"剩余应还本金",
+						 type:"number",
+						 optional:"FALSE"         },
+					  status:{
+						 description:"状态",
+						 type:"string",
+						 optional:"FALSE"         },
+					  statusName:{
+						 description:"状态名称",
+						 type:"String",
+						 optional:"FALSE"         },
+					  residualInterest:{
+						 description:"剩余本息",
+						 type:"number",
+						 optional:"FALSE",
+				         dataColumn:"remainingPrincipalInterest"
+                        }
+					}
+				  ]
+				}
+			}
+            </foramt>
+        </data>
+    </api>
+
+	<api path="investRepaymentPlan">
+		<data>
+			<foramt>
+			{
+				code:{
+				   description:"状态代码（0表示成功，1表示token无效，其它值表示失败）",
+				   type:"int",
+				   optional:"FALSE"   },
+				text:{
+				   description:"状态描述",
+				   type:"String",
+				   optional:"FALSE"   },
+				data:{
+				  interestDate:{
+					 description:"计息时间(目前按当天算)",
+					 type:"string",
+					 optional:"FALSE"     },
+				  repaymentBeginDate:{
+					 description:"还款起始日期",
+					 type:"string",
+					 optional:"FALSE"     },
+				  repaymentMode:{
+					 description:"还款方式",
+					 type:"int",
+					 optional:"FALSE"     },
+				  repaymentModeName:{
+					 description:"还款方式名称",
+					 type:"String",
+					 optional:"FALSE"     },
+				  totalInterest:{
+					 description:"总利息",
+					 type:"number",
+					 optional:"FALSE"     },
+				  count:{
+					 description:"记录总数",
+					 type:"int",
+					 optional:"FALSE"     },
+				  resultList:[
+					{
+					  planDate:{
+						 description:"还款日期",
+						 type:"string",
+						 optional:"FALSE",
+						 dataColumn:"endDate"         },
+					  planMoney:{
+						 description:"还款金额",
+						 type:"number",
+						 optional:"FALSE",
+						 dataColumn:"principalAndInterest"         },
+					  principal:{
+						 description:"应还本金",
+						 type:"number",
+						 optional:"FALSE"         },
+					  interest:{
+						 description:"应还利息",
+						 type:"number",
+						 optional:"FALSE"         }
+					}
+				  ]
+				}
+			}
+			</foramt>
+
+		</data>
+
+	</api>
+	<api path="investmentRecords">
+		<data>
+			<foramt>
+			{
+				code:{
+				   description:"状态代码（0表示成功，1表示token无效，其它值表示失败）",
+				   type:"int",
+				   optional:"FALSE"   },
+				text:{
+				   description:"状态描述",
+				   type:"String",
+				   optional:"FALSE"   },
+				data:{
+				  count:{
+					 description:"记录总数",
+					 type:"int",
+					 optional:"FALSE"     },
+				  resultList:[
+					{
+					  investmentUser:{
+						 description:"投资人",
+						 type:"string",
+						 optional:"FALSE",
+				         value:"vagueAccountName(ca.accountName)"},
+					  opTerm:{
+						 description:"操作终端",
+						 type:"string",
+						 optional:"FALSE"         },
+					  opDt:{
+						 description:"操作日期",
+						 type:"string",
+						 optional:"FALSE"         },
+					  amount:{
+						 description:"投资金额",
+						 type:"number",
+						 optional:"FALSE"         }
+					}
+				  ]
+				}
+			}
+			</foramt>
+		</data>
+	</api>
+	
+	<api path="getInvestCount">
+		<data>
+			<foramt>
+			    {
+				code:{
+				   description:"状态代码（0表示成功，其它值表示失败）",
+				   type:"int",
+				   optional:"FALSE"   },
+				text:{
+				   description:"状态描述",
+				   type:"String",
+				   optional:"FALSE"   },
+				data:{
+				  regularCount:{
+					 description:"定期的可投总数量",
+					 type:"int",
+					 optional:"FALSE"     },
+				  assignCount:{
+					 description:"债权转让的可投总数量",
+					 type:"int",
+					 optional:"FALSE"     },
+				  privateCount:{
+					 description:"私人订制的可投总数量",
+					 type:"int",
+					 optional:"FALSE"     },
+				  resultList:[
+					{
+					  projectName:{
+						 description:"项目名称",
+						 type:"string",
+						 optional:"FALSE"         },
+					  projectCount:{
+						 description:"可投资数量",
+						 type:"int",
+						 optional:"FALSE"         },
+					  projectDesc:{
+						 description:"项目描述",
+						 type:"string",
+						 optional:"FALSE"         },
+				      search:{
+						projectDuration:{
+						   description:"项目期限",
+						   type:"int",
+						   optional:"FALSE"           },
+						durationUnit:{
+						   description:"项目期限单位(1:按天，2:按月)",
+						   type:"int",
+						   optional:"FALSE"           },
+						isNewUser:{
+						   description:"是否新手项目（0是，其它不是）",
+						   type:"String",
+						   optional:"FALSE"           }
+					  }
+					}
+				  ]
+				}
+				}
+
+
+			</foramt>
+		</data>
+	</api>
+
+
+</apis>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.project.dao.ProjectInvestmentRankCalendarDao">
+    
+	<sql id="projectInvestmentRankCalendarColumns">
+		a.id AS "id",
+		a.year AS "year",
+		a.week AS "week",
+		a.begin_dt AS "beginDt",
+		a.end_dt AS "endDt",
+		a.status AS "status"
+	</sql>
+	
+	<sql id="projectInvestmentRankCalendarJoins">
+	</sql>
+    
+	<select id="get" resultType="ProjectInvestmentRankCalendar">
+		SELECT 
+			<include refid="projectInvestmentRankCalendarColumns"/>
+		FROM project_investment_rank_calendar a
+		<include refid="projectInvestmentRankCalendarJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getInvestmentRankCalendar" resultType="ProjectInvestmentRankCalendar">
+		SELECT 
+			<include refid="projectInvestmentRankCalendarColumns"/>
+		FROM project_investment_rank_calendar a
+		<include refid="projectInvestmentRankCalendarJoins"/>
+		WHERE a.year = #{year}  and a.week = #{week}
+		and a.status = '0'
+	</select>
+	
+	
+	<select id="findListWithYear" resultType="ProjectInvestmentRankCalendar">
+		SELECT 
+			<include refid="projectInvestmentRankCalendarColumns"/>
+		FROM project_investment_rank_calendar a
+		<include refid="projectInvestmentRankCalendarJoins"/>
+		<where>
+			a.year = #{year} and a.status = '0'
+		</where>
+		    ORDER BY a.week
+	</select>
+	
+	<select id="findList" resultType="ProjectInvestmentRankCalendar">
+		SELECT 
+			<include refid="projectInvestmentRankCalendarColumns"/>
+		FROM project_investment_rank_calendar a
+		<include refid="projectInvestmentRankCalendarJoins"/>
+		<where>
+			
+			<if test="year != null and year != ''">
+				AND a.year = #{year}
+			</if>
+			<if test="week != null and week != ''">
+				AND a.week = #{week}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ProjectInvestmentRankCalendar">
+		SELECT 
+			<include refid="projectInvestmentRankCalendarColumns"/>
+		FROM project_investment_rank_calendar a
+		<include refid="projectInvestmentRankCalendarJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO project_investment_rank_calendar(
+			year,
+			week,
+			begin_dt,
+			end_dt,
+			status
+		) VALUES (
+			#{year},
+			#{week},
+			#{beginDt},
+			#{endDt},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE project_investment_rank_calendar SET 	
+			year = #{year},
+			week = #{week},
+			begin_dt = #{beginDt},
+			end_dt = #{endDt},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM project_investment_rank_calendar
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

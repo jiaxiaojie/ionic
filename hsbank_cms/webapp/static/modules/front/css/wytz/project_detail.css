@@ -1,0 +1,148 @@
+#top_area{overflow:hidden;width:930px;height:574px;margin:5px auto 5px auto;padding:30px 20px 30px 30px;background:url('../../images/wytz/project_detail/bg_top_area.png') no-repeat center 0;}
+#top_area .title{ position:relative;height:50px;line-height:47px;font-size:18px;}
+#top_area .title .logo{ width:32px; height:32px; margin-right:10px;}
+#top_area .title span{margin-left:10px;}
+#top_area hr{border-top:1px solid #d1b181;border-bottom:0 none white;margin:5px auto 5px 0;width:920px;}
+#top_area .content{display:block;overflow:auto;}
+#top_area .content .left{float:left;width:600px;}
+#top_area .content .left .div_line_1{height:40px;line-height:40px;font-size:13px;}
+#top_area .content .left .div_line_1 .span_text_1{width:200px; color:#999;}
+#top_area .content .left .div_line_1 .span_text_2{width:150px; color:#999;}
+#top_area .content .left .div_line_1 .span_text_3{width:100px; color:#999;}
+#top_area .content .left .div_line_2{height:60px;line-height:50px;font-size:24px;}
+#top_area .content .left .div_line_2 .span_text_1{width:200px;color:#1c5b8c;}
+#top_area .content .left .div_line_2 .span_text_2{width:150px;color:#dc525f;}
+#top_area .content .left .div_line_2 .span_text_2_1{margin-left:0;}
+#top_area .content .left .div_line_2 .span_text_2_2{margin-left:0;font-size:13px;}
+#top_area .content .left .div_line_2 .span_text_3{width:100px;color:#c57500;}
+#top_area .content .left .div_line_3{height:30px;line-height:30px;font-size:13px;}
+#top_area .content .left .div_line_3 .span_text_1{width:60px; color:#999;}
+#top_area .content .left .div_line_3 .span_text_2{width:140px; margin-left:10px;}
+#top_area .content .left .div_line_3 .span_text_2 .span_text_2_1{float:left;margin-left:0;}
+#top_area .content .left .div_line_3 .span_text_3{width:100px; color:#999;}
+#top_area .content .left .div_line_3 .span_text_4{width:100px; margin-left:10px;}
+#top_area .content .left .div_line_3 .span_text_4 .span_text_4_1{margin-left:0;}
+#top_area .content .left .div_line_3 .span_text_4 .span_text_4_2{margin-left:0;font-size:9px;}
+#top_area .content .left .div_line_4{height:30px;line-height:30px;font-size:13px;}
+#top_area .content .left .div_line_4 .span_text_1{width:60px; color:#999;}
+#top_area .content .left .div_line_4 .span_text_2{width:140px; margin-left:10px;}
+#top_area .content .left .div_line_4 .span_text_2 .span_text_2_1{float:left;margin-left:0;}
+#top_area .content .left .div_line_4 .span_text_3{width:100px; color:#999;}
+#top_area .content .left .div_line_4 .span_text_4{width:140px; margin-left:10px;}
+#top_area .content .left .div_line_5{height:40px;line-height:40px;font-size:13px;}
+#top_area .content .left .div_line_5 .span_text_1{float:left;width:70px; color:#999;}
+#top_area .content .left .div_line_5 .div_progress_1{float:left;width:178px;}
+#top_area .content .left .div_line_5 .progress_1{width:176px;}
+#top_area .content .left .div_line_5 .span_text_2{float:left;width:160px;}
+#top_area .content .left .div_line_5 .span_text_2 .number{font-size:16px;margin-left:0px;}
+#top_area .content .right{float:left;width:310px;height:327px;background:url('../../images/wytz/project_detail/touzi-uphuang.png') no-repeat 0 0;}
+#top_area .content .right .div_line_1{height:40px;line-height:40px;}
+#top_area .content .right .div_line_1 .span_text_1{font-size:13px;}
+#top_area .content .right .div_line_2{height:50px;line-height:50px;}
+#top_area .content .right .div_line_2 .span_text_1{font-size:30px;}
+#top_area .content .right .div_line_2 .span_text_2{font-size:13px;}
+#top_area .content .right .div_line_3{height:40px;line-height:40px;}
+#top_area .content .right .div_line_3 .span_text_1{font-size:13px;}
+#top_area .content .right .div_line_3 .span_text_2{float:right;margin-right:23px;font-size:13px;margin-left:1px;}
+#top_area .content .right .div_line_4{height:40px;line-height:40px;}
+#top_area .content .right .div_line_4 .text_input{font-size:13px;width:252px;margin-left:20px;}
+#top_area .content .right .div_line_5{cursor:pointer;margin-top:10px;height:43px;line-height:43px;width:261px;text-align:center;margin-left:auto;margin-right:auto;font-size:14px;color:white;background:url('../../images/util/button/bt_brown_210x43.png') no-repeat center 0}
+#top_area .content .right .div_line_5 a{color:white;display:block;}
+#top_area .info{margin: 10px auto 1px 0;line-height:30px;width: 920px; table-layout:fixed; word-break: break-all; overflow:hidden;}
+/*项目信息*/
+#project_info{overflow:hidden;}
+#project_info .line_1{float:left;margin-left:60px;height:40px;line-height:40px;font-size:13px;}
+#project_info .line_1 .span_text_1{font-size:13px;}
+#project_info .line_1 .span_text_2{font-size:13px;}
+#project_info .line_2{float:left;margin-left:20px;height:40px;line-height:40px;font-size:13px;}
+#project_info .line_2 .span_text_1{width:100px;font-size:12px;}
+#project_info .line_2 .span_text_2{width:100px;font-size:12px;}
+#project_info .line_2 .span_text_3{width:140px;font-size:12px;}
+#project_info .line_2 .span_text_4{width:150px;font-size:12px;}
+#project_info .line_2 .span_text_5{width:100px;font-size:12px;}
+#project_info .line_2 .span_text_6{width:150px;font-size:12px;}
+#project_info .line_3{float:left;margin-left:20px;height:40px;line-height:40px;font-size:12px;}
+#project_info .line_3 .span_text_1{width:100px;font-size:12px;}
+#project_info .line_3 .span_text_2{width:100px;font-size:12px;}
+#project_info .line_3 .span_text_3{width:140px;font-size:12px;}
+#project_info .line_3 .span_text_4{width:150px;font-size:12px;}
+#project_info .line_3 .span_text_5{width:100px;font-size:12px;}
+#project_info .line_3 .span_text_6{width:150px;font-size:12px;}
+#project_info .line_3 .span_text_6 .div_checkbox{float:left;padding-top:25px;}
+#project_info .line_3 .span_text_6 span{float:left;}
+#project_info .line_dotted {float:left;height:50px;width:935px;margin-left:30px;margin-right:30px;background:url('../../images/util/tab_bar/line_gray.png') repeat-x center;} 
+#project_info .line_4{float:left;margin-left:20px;height:40px;line-height:40px;font-size:12px;}
+#project_info .line_4 .span_text_1{width:100px;font-size:12px;}
+#project_info .line_4 .span_text_2{width:300px;font-size:12px;}
+#project_info .project_info_bottom{float:left;margin-left:100px;margin-top:30px;width:788px;height:44px;background:url('../../images/wytz/project_detail/touzi-hw.png') no-repeat 0 0;}
+/*风控信息*/
+#risk_control_info{overflow:hidden;padding:20px 20px 20px 20px;}
+/*相关文件*/
+#file_info{overflow:hidden;padding:20px 20px 20px 20px;}
+#file_info img{ margin-left:20px; margin-bottom:20px;}
+/*还款计划*/
+#repayment_plan{overflow:hidden;padding:20px 20px 20px 20px;}
+/*项目历程*/
+.project_process{overflow:hidden;height:500px;padding:20px 20px 20px 20px;}
+.project_process .item{ position:relative; padding:40px 0 40px 240px; height:35px; line-height:35px; margin-bottom:10px;}
+.project_process .item:before{ position: absolute; left: 256px; top:65px; width: 3px; height: 100%;  content:'';background: #E0E0E0;}
+.project_process .last:before{ position: absolute; left: 256px; top:65px; width:0px; height: 0;  content:'';background: #fff;}
+.project_process .item i{ position:relative; float:left; width:35px; height:35px; display:block; z-index:9; background:url(../../images/util/icon_progress.png) no-repeat;}
+.project_process .row_01 .gray{ background-position:0px 0px;}
+.project_process .row_01 .blue{ background-position:0px -45px;}
+.project_process .row_02 .gray{ background-position:0px -90px;}
+.project_process .row_02 .blue{ background-position:0px -135px;}
+.project_process .row_03 .gray{ background-position:0px -180px;}
+.project_process .row_03 .blue{ background-position:0px -225px;}
+.project_process .row_04 .gray{ background-position:0px -270px;}
+.project_process .row_04 .blue{ background-position:0px -315px;}
+.project_process .span_01{font-size:14px; width:100px;}
+.project_process .span_02{font-size:12px;}
+/*投资列表*/
+#investment_list{overflow:hidden;padding:20px 20px 20px 20px;}
+#investment_transfer_list{overflow:hidden;padding:20px 20px 20px 20px;}
+/*项目结束样式*/
+.yhk, .syqx, .hkr{ font-size:13px; }
+.yhk{ position: relative; top: -30px; margin: 0 20px; padding-bottom: 20px; border-bottom: 1px solid #ddd;}
+.syqx{ position: relative; top: -30px; margin: 20px; padding-bottom: 20px; border-bottom: 1px solid #ddd;}
+.hkr{ position: relative; top: -30px; margin: 20px;}
+.yhk span, .syqx span, .hkr span{ float:right;}
+/*活期理财*/
+#top_area.current_finance_top{overflow:hidden;width:930px;height:398px;margin:5px auto 5px auto;padding:30px 20px 30px 30px;background:url('../../images/wytz/project_detail/bg_top_area2.png') no-repeat center 0;}
+.current_finance_top{}
+.current_finance_top .current_title span em{ padding-left:20px; font-style:normal; font-size:12px; color:#999;}
+.current_finance_top .current_title span b{ font-weight:normal;}
+.current_finance_top .current_title .tag_current{ border-color:#f1a91f; color:#f1a91f;}
+.cf_content .div_line_1 .span_text_1{ width:160px !important;}
+.cf_content .div_line_1 .span_text_2{ width:160px !important;}
+.cf_content .div_line_1 .span_text_3{ width:160px !important;}
+.cf_content .div_line_2 .span_text_1{ width:160px !important; color:#dc525f !important;}
+.cf_content .div_line_2 .span_text_1 b{ font-weight:normal; font-size:12px;}
+.cf_content .div_line_2 .span_text_2{ width:160px !important; color:#1c5b8c !important;}
+.cf_content .div_line_2 .span_text_3{ width:180px !important; font-size:14px; color:#666 !important;}
+.cf_content .div_line_3 .span_text_2{ margin-left:10px;}
+.cf_content .div_line_3 .span_text_3{ padding-left:128px; width:60px !important;}
+.earnings_tip{ padding:0px 10px 8px 20px;}
+.earnings_tip span{ color:#dc525f;}
+.cf_info{}
+.cf_info .cf_info_list{ width:auto;}
+.cf_info .cf_info_list .line_2, .line_3, .line_4{ float:none !important;}
+.cf_info .cf_info_list .line_2 .span_text_2{ margin:8px 0 4px 10px; width:830px !important; line-height:22px;}
+.cf_info .cf_info_list .line_2{ margin-left:30px !important; height:auto !important;}
+.cf_info .cf_info_list .line_2 .span_text_1{ margin-left:0; width:90px !important;}
+.cf_info .cf_info_qa{ width:280px; min-height:300px; padding:12px; margin-right:42px; background:#f4f4f4; border-radius:4px; -o-border-radius:4px; -moz-border-radius:4px; -webkit-border-radius:4px;}
+.cf_info_qa .qa_title{ padding-bottom:7px; margin-bottom:10px; font-size:14px; color:#333; border-bottom:1px solid #ddd;}
+.cf_info_qa .qa_list{ padding:0 10px;}
+.cf_info_qa .qa_list p{ margin: 8px 0;}
+.cf_info_qa .qa_list ul li{ margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid #eaeaea;}
+.cf_info_qa .qa_list ul li:last-child{ border-bottom:none; margin-bottom:0; padding-bottom:0;}
+.current_detail_item{ margin:20px; padding-bottom:10px; height:80px; border-bottom:1px solid #f4f4f4;}
+.current_detail_item p{ float:left;}
+.current_detail_item p em{ margin-bottom:20px; font-style:normal; color:#999; display:block; font-size:13px;}
+.current_detail_item p span{ font-size:30px; color:#dc525f;}
+.current_detail_item p span i{ font-style:normal; font-size:13px;}
+.current_detail_item p.one{ width:260px;}
+.current_detail_item p.two{}
+.current_detail_item p.three{ width:260px;}
+.item-progress{ height:20px; line-height:20px; display:block; color:#666 !important;}
+.item-progress progress{ margin:4px 10px 0 0; width:176px; height:13px;}

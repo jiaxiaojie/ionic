@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerGoldCoinHisDao">
+    
+	<sql id="customerGoldCoinHisColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.change_val AS "changeVal",
+		a.change_reason AS "changeReason",
+		a.rel_activity AS "relActivity",
+		a.exchange_goods AS "exchangeGoods",
+		a.op_dt AS "opDt",
+		a.op_term_type AS "opTermType"
+	</sql>
+	
+	<sql id="customerGoldCoinHisJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomerGoldCoinHis">
+		SELECT 
+			<include refid="customerGoldCoinHisColumns"/>
+		FROM customer_gold_coin_his a
+		<include refid="customerGoldCoinHisJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerGoldCoinHis">
+		SELECT 
+			<include refid="customerGoldCoinHisColumns"/>
+		FROM customer_gold_coin_his a
+		<include refid="customerGoldCoinHisJoins"/>
+		<where>
+			
+			<if test="beginChangeVal != null  and beginChangeVal != ''">				AND a.change_val >= #{beginChangeVal}			</if>			<if test="endChangeVal != null and endChangeVal != ''">				AND #{endChangeVal} >= a.change_val			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerGoldCoinHis">
+		SELECT 
+			<include refid="customerGoldCoinHisColumns"/>
+		FROM customer_gold_coin_his a
+		<include refid="customerGoldCoinHisJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_gold_coin_his(
+			account_id,
+			change_val,
+			change_reason,
+			rel_activity,
+			exchange_goods,
+			op_dt,
+			op_term_type
+		) VALUES (
+			#{accountId},
+			#{changeVal},
+			#{changeReason},
+			#{relActivity},
+			#{exchangeGoods},
+			#{opDt},
+			#{opTermType}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_gold_coin_his SET 	
+			change_val = #{changeVal},
+			change_reason = #{changeReason},
+			rel_activity = #{relActivity},
+			exchange_goods = #{exchangeGoods},
+			op_dt = #{opDt},
+			op_term_type = #{opTermType}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_gold_coin_his
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

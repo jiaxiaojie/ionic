@@ -1,0 +1,18 @@
+#content_center{overflow:hidden;width:789px;}
+#content_center .top_area{width:100%;height:212px;margin:10px 20px 20px 20px;}
+#content_center .top_area .div_left{float:left;width:310px;height:212px;background:url('../../images/wdzh/wdjf/top_bg.png') no-repeat center;}
+#content_center .top_area .div_left .line_01{margin:60px auto 20px auto;width:100%;text-align:center;font-size:18px;}
+#content_center .top_area .div_left hr{margin:0;border-top:1px solid #b38e64;margin-left:50px;margin-right:50px;}
+#content_center .top_area .div_left .line_02{margin:10px auto 10px auto;width:100%;text-align:center;font-size:18px;}
+#content_center .top_area .div_right{float:left;width:410px;height:152px;border-top:1px dashed #c7c7c7;border-right:1px dashed #c7c7c7;border-bottom:1px dashed #c7c7c7;margin:30px 0;}
+#content_center .top_area .div_right .line_01{float:left;font-size:12px;margin:60px auto auto 60px;}
+#content_center .top_area .div_right .line_01 .span_text_1{float:left;font-size:12px;}
+#content_center .list_area{width:100%;overflow:hidden;}
+#content_center .list_area .line_01{width:100%;overflow:hidden;height:40px;line-height:40px;}
+#content_center .list_area .line_01 .span_text_1{float:left;font-size:14px;}
+#content_center .list_area .line_01 .span_text_2{float:right;margin-right:20px;}
+#content_center .list_area .line_02{height:30px;line-height:30px;font-size:12px;margin-left:10px;margin-right:20px;}
+#content_center .list_area .line_02 .span_text{width:160px;font-size:12px;margin-left:10px;}
+#content_center hr{margin:0 20px;border-top:1px solid #b38e64;border-bottom:0 none white;}
+#content_center .hr_dashed{margin:0 20px;border-top:1px dashed #c7c7c7;border-bottom:0 none white;}
+#content_center .bottom{margin-left:auto;margin-right:auto;margin-top:30px;width:789px;height:44px;background:url('../../images/wdzh/right_bg_bottom.png') no-repeat center;}

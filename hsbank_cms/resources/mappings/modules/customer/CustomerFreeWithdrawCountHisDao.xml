@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerFreeWithdrawCountHisDao">
+    
+	<sql id="customerFreeWithdrawCountHisColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.change_val AS "changeVal",
+		a.change_type_code AS "changeTypeCode",
+		a.get_dt AS "getDt",
+		a.request_no AS "requestNo",
+		a.use_dt AS "useDt"
+	</sql>
+	
+	<sql id="customerFreeWithdrawCountHisJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomerFreeWithdrawCountHis">
+		SELECT 
+			<include refid="customerFreeWithdrawCountHisColumns"/>
+		FROM customer_free_withdraw_count_his a
+		<include refid="customerFreeWithdrawCountHisJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="statistics" resultType="map">
+	select
+		(SELECT
+			ifnull(sum(ifnull(a.change_val,0)*-1),0)
+		FROM customer_free_withdraw_count_his a WHERE a.account_id = #{accountId} and 0 > a.change_val) as useCount
+	</select>
+
+	
+	<select id="findList" resultType="CustomerFreeWithdrawCountHis">
+		SELECT 
+			<include refid="customerFreeWithdrawCountHisColumns"/>
+		FROM customer_free_withdraw_count_his a
+		<include refid="customerFreeWithdrawCountHisJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="changeTypeCode != null and changeTypeCode != ''">
+				AND a.change_type_code = #{changeTypeCode}
+			</if>
+			<if test="beginGetDt != null  and beginGetDt != ''">
+				AND a.get_dt >= #{beginGetDt}
+			</if>
+			<if test="endGetDt != null and endGetDt != ''">
+				AND #{endGetDt} >= a.get_dt
+			</if>
+			<if test="beginUseDt != null  and beginUseDt != ''">
+				AND a.use_dt >= #{beginUseDt}
+			</if>
+			<if test="endUseDt != null and endUseDt != ''">
+				AND #{endUseDt} >= a.use_dt
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerFreeWithdrawCountHis">
+		SELECT 
+			<include refid="customerFreeWithdrawCountHisColumns"/>
+		FROM customer_free_withdraw_count_his a
+		<include refid="customerFreeWithdrawCountHisJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_free_withdraw_count_his(
+			account_id,
+			change_val,
+			change_type_code,
+			get_dt,
+			request_no,
+			use_dt
+		) VALUES (
+			#{accountId},
+			#{changeVal},
+			#{changeTypeCode},
+			#{getDt},
+			#{requestNo},
+			#{useDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_free_withdraw_count_his SET 	
+			account_id = #{accountId},
+			change_val = #{changeVal},
+			change_type_code = #{changeTypeCode},
+			get_dt = #{getDt},
+			request_no = #{requestNo},
+			use_dt = #{useDt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_free_withdraw_count_his
+		WHERE id = #{id}
+	</update>
+	
+	<select id="searchList" resultType="CustomerFreeWithdrawCountHis">
+		select account_id as "accountId",change_val as "changeVal", change_type_code as "changeTypeCode", case when change_val &gt;= 0 then get_dt else use_dt end as "changeDt"
+			 from customer_free_withdraw_count_his
+			 <where>
+			 	and account_id = #{accountId}
+			 	and ((get_dt between #{startDate} and #{endDate}) or (use_dt between #{startDate} and #{endDate}))
+			 </where>
+			<choose>
+				<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+					ORDER BY ${page.orderBy}
+				</when>
+				<otherwise>
+					order by changeDt DESC
+				</otherwise>
+			</choose>
+	</select>
+</mapper>

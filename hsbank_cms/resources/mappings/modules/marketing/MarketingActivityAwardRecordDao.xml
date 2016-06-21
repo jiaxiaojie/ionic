@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.marketing.dao.MarketingActivityAwardRecordDao">
+    
+	<sql id="marketingActivityAwardRecordColumns">
+		a.id AS "id",
+		a.activity_id AS "activityId",
+		a.behavior_code AS "behaviorCode",
+		a.channel_id AS "channelId",
+		a.account_id AS "accountId",
+		a.award_type AS "awardType",
+		a.award_dt AS "awardDt",
+		a.award_value AS "awardValue",
+		a.award_reason AS "awardReason",
+		a.cause_type AS "causeType",
+		a.cause_id AS "causeId",
+		a.user_id AS "user.id",
+		b.customer_name AS "customerName",
+		b.mobile AS "customerMobile"
+	</sql>
+	
+	<sql id="marketingActivityAwardRecordJoins">
+		LEFT JOIN customer_base b on a.account_id = b.account_id
+	</sql>
+    
+	<select id="get" resultType="MarketingActivityAwardRecord">
+		SELECT 
+			<include refid="marketingActivityAwardRecordColumns"/>
+		FROM marketing_activity_award_record a
+		<include refid="marketingActivityAwardRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MarketingActivityAwardRecord">
+		SELECT 
+			<include refid="marketingActivityAwardRecordColumns"/>
+		FROM marketing_activity_award_record a
+		<include refid="marketingActivityAwardRecordJoins"/>
+		<where>
+			
+			<if test="activityId != null and activityId != ''">
+				AND a.activity_id = #{activityId}
+			</if>
+			<if test="behaviorCode != null and behaviorCode != ''">
+				AND a.behavior_code = #{behaviorCode}
+			</if>
+			<if test="channelId != null and channelId != ''">
+				AND a.channel_id = #{channelId}
+			</if>
+			<if test="customerName != null and customerName != ''">
+				AND b.customer_name = #{customerName}
+			</if>
+			<if test="customerMobile != null and customerMobile != ''">
+				AND b.mobile = #{customerMobile}
+			</if>
+			<if test="awardType != null and awardType != ''">
+				AND a.award_type = #{awardType}
+			</if>
+			<if test="beginAwardDt != null  and beginAwardDt != ''">				AND a.award_dt >= #{beginAwardDt}			</if>			<if test="endAwardDt != null and endAwardDt != ''">				AND #{endAwardDt} >= a.award_dt			</if>
+			<if test="awardValue != null and awardValue != ''">
+				AND a.award_value = #{awardValue}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findListByFriendSelected" resultType="MarketingActivityAwardRecord">
+		SELECT 
+			<include refid="marketingActivityAwardRecordColumns"/>
+		FROM marketing_activity_award_record a
+		<include refid="marketingActivityAwardRecordJoins"/>
+		<where>
+		    <if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="awardType != null and awardType != ''">
+				AND a.award_type = #{awardType}
+			</if>
+			<if test="causeType != null and causeType != ''">
+				AND a.cause_type IN (${causeType})
+			</if>
+		</where>
+		    ORDER BY award_dt DESC
+	</select>
+	
+	<select id="findAllList" resultType="MarketingActivityAwardRecord">
+		SELECT 
+			<include refid="marketingActivityAwardRecordColumns"/>
+		FROM marketing_activity_award_record a
+		<include refid="marketingActivityAwardRecordJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO marketing_activity_award_record(
+			activity_id,
+			behavior_code,
+			channel_id,
+			account_id,
+			award_type,
+			award_dt,
+			award_value,
+			award_reason,
+			cause_type,
+			cause_id,
+			user_id
+		) VALUES (
+			#{activityId},
+			#{behaviorCode},
+			#{channelId},
+			#{accountId},
+			#{awardType},
+			#{awardDt},
+			#{awardValue},
+			#{awardReason},
+			#{causeType},
+			#{causeId},
+			#{user.id}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE marketing_activity_award_record SET 	
+			award_reason = #{awardReason}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM marketing_activity_award_record
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findCustomerEarningCauseByFriendPage" resultType="MarketingActivityAwardRecord">
+		(
+		select b.customer_name as "customerName",a.award_dt as "awardDt",a.award_value as "awardValue",a.award_reason as "awardReason"
+		from marketing_activity_award_record a, customer_base b
+		where a.account_id = #{accountId} and a.award_type = '2' and a.cause_type = '2'
+			and a.award_dt &gt;= #{startDateTime} and a.award_dt &lt;= #{endDateTime}
+			and a.cause_id = b.account_id
+		)
+		union all
+		(
+		select b.customer_name as "customerName",a.award_dt as "awardDt",a.award_value as "awardValue",a.award_reason as "awardReason"
+		from marketing_activity_award_record a, customer_base b, project_investment_record c
+		where a.account_id = #{accountId} and a.award_type = '2' and a.cause_type = '1'
+			and a.award_dt &gt;= #{startDateTime} and a.award_dt &lt;= #{endDateTime}
+			and a.cause_id = c.id and c.investment_user_id = b.account_id 
+		)
+		order by awardDt desc
+	</select>
+	
+	<select id="getCountByAccountIdAndActivityId" resultType="java.lang.Integer">
+		select count(*) from marketing_activity_award_record where account_id = #{accountId} and activity_id = #{activityId}
+		<if test="awardValue != null and awardValue != ''">
+				AND award_value = #{awardValue}
+		</if>
+		<if test="awardType != null and awardType != ''">
+				AND award_type = #{awardType}
+		</if>
+	</select>
+	
+	<select id="findListByAccountIdAndActivityId" resultType="MarketingActivityAwardRecord">
+		select * from marketing_activity_award_record where account_id = #{accountId} and activity_id = #{activityId}
+	</select>
+	
+	<select id="getCountByActivityIdAndFriendId" resultType="java.lang.Integer">
+		select count(1) from marketing_activity_award_record a, project_investment_record b
+		where a.account_id = #{accountId} and a.activity_id = #{activityId} and a.cause_id = b.id
+			and b.investment_user_id = #{friendId}
+	</select>
+	
+	<select id="getFriendsTotalAwardValue" resultType="java.lang.Double">
+	    SELECT SUM(award_value) AS totalAwardValue,account_id FROM `marketing_activity_award_record`  
+			where cause_type in ('1','2')
+			and account_id=#{accountId} 
+			and award_type = #{awardType}
+			and award_dt between  #{startDateTime} and #{endDateTime}
+			<if test="activityId != null and activityId != ''">
+				AND activity_id = #{activityId}
+			</if>
+	</select>
+	
+	<select id="getSumAwardValueByAccountId" resultType="java.lang.Double">
+	    SELECT SUM(award_value) AS totalAwardValue FROM `marketing_activity_award_record`  
+			where account_id=#{accountId} 
+			and award_type = #{awardType}
+	</select>
+	
+</mapper>

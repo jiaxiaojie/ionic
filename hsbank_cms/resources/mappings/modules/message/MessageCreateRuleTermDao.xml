@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.message.dao.MessageCreateRuleTermDao">
+    
+	<sql id="messageCreateRuleTermColumns">
+		a.id AS "id",
+		a.rule_id AS "ruleId",
+		a.op_term AS "opTerm"
+	</sql>
+	
+	<sql id="messageCreateRuleTermJoins">
+	</sql>
+    
+	<select id="get" resultType="MessageCreateRuleTerm">
+		SELECT 
+			<include refid="messageCreateRuleTermColumns"/>
+		FROM message_create_rule_term a
+		<include refid="messageCreateRuleTermJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MessageCreateRuleTerm">
+		SELECT 
+			<include refid="messageCreateRuleTermColumns"/>
+		FROM message_create_rule_term a
+		<include refid="messageCreateRuleTermJoins"/>
+		<where>
+			
+			<if test="ruleId != null and ruleId != ''">
+				AND a.rule_id = #{ruleId}
+			</if>
+			<if test="opTerm != null and opTerm != ''">
+				AND a.op_term = #{opTerm}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MessageCreateRuleTerm">
+		SELECT 
+			<include refid="messageCreateRuleTermColumns"/>
+		FROM message_create_rule_term a
+		<include refid="messageCreateRuleTermJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO message_create_rule_term(
+			rule_id,
+			op_term
+		) VALUES (
+			#{ruleId},
+			#{opTerm}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE message_create_rule_term SET 	
+			rule_id = #{ruleId},
+			op_term = #{opTerm}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM message_create_rule_term
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findTermListByRuleId" resultType="java.lang.String">
+		select op_term from message_create_rule_term where rule_id = #{ruleId}
+	</select>
+	
+	<delete id="deleteByRuleId">
+		delete from message_create_rule_term where rule_id = #{ruleId}
+	</delete>
+</mapper>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.message.dao.MessageAlertSettingDao">
+    
+	<sql id="messageAlertSettingColumns">
+		a.id AS "id",
+		a.type AS "type",
+		a.title AS "title",
+		a.content AS "content",
+		a.mobile AS "mobile",
+		a.create_dt AS "createDt"
+	</sql>
+	
+	<sql id="messageAlertSettingJoins">
+	</sql>
+    
+	<select id="get" resultType="MessageAlertSetting">
+		SELECT 
+			<include refid="messageAlertSettingColumns"/>
+		FROM message_alert_setting a
+		<include refid="messageAlertSettingJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+
+ <!--   查询满标和项目结束消息  -->
+	<select id="findAlertSmsFromMessageAlertSetting" resultType="MessageAlertSetting">
+		SELECT
+		*
+		FROM message_alert_setting a
+		WHERE a.type='2'
+	</select>
+	
+	<select id="findList" resultType="MessageAlertSetting">
+		SELECT 
+			<include refid="messageAlertSettingColumns"/>
+		FROM message_alert_setting a
+		<include refid="messageAlertSettingJoins"/>
+		<where>
+			
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+			<if test="content != null and content != ''">
+				AND a.content LIKE 
+					<if test="dbName == 'oracle'">'%'||#{content}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{content}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{content},'%')</if>
+			</if>
+			<if test="mobile != null and mobile != ''">
+				AND a.mobile LIKE 
+					<if test="dbName == 'oracle'">'%'||#{mobile}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{mobile}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{mobile},'%')</if>
+			</if>
+			<if test="createDt != null and createDt != ''">
+				AND date(a.create_dt) =  date(#{createDt})
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MessageAlertSetting">
+		SELECT 
+			<include refid="messageAlertSettingColumns"/>
+		FROM message_alert_setting a
+		<include refid="messageAlertSettingJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO message_alert_setting(
+			type,
+			title,
+			content,
+			mobile,
+			create_dt
+		) VALUES (
+			#{type},
+			#{title},
+			#{content},
+			#{mobile},
+			#{createDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE message_alert_setting SET 	
+			type = #{type},
+			title = #{title},
+			content = #{content},
+			mobile = #{mobile},
+			create_dt = #{createDt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM message_alert_setting
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

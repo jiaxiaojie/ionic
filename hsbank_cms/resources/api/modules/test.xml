@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apis basePath = "${frontPath}/api/address"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="../config/api.xsd">
+    <api path="/test">
+        <data>
+            <foramt>
+				{
+                    code:{
+                       description:"状态代码（0表示成功，1表示token无效，其它值表示失败）",
+                       type:"int",
+                       optional:"FALSE"   },
+                    text:{
+                       description:"状态描述",
+                       type:"String",
+                       optional:"FALSE"   },
+                    data:[
+                        {
+                          investmentUser:{
+                             description:"投资人",
+                             type:"string",
+                             optional:"FALSE"         },
+                          opTerm:{
+                             description:"操作终端",
+                             type:"string",
+                             optional:"FALSE",
+                             value:"investmentUser"             },
+                          opDt:{
+                             description:"操作日期",
+                             type:"string",
+                             optional:"FALSE",
+                             value:"formatDateByPattern(opDt,'yyyy-MM-dd')"         },
+                          amount:{
+                             description:"投资金额",
+                             type:"number",
+                             optional:"FALSE",
+                             value:"testObj.amount"          }
+                        }
+                      ]
+                }
+			</foramt>
+        </data>
+    </api>
+
+
+</apis>

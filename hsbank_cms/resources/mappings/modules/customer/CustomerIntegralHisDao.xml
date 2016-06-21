@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerIntegralHisDao">
+    
+	<sql id="customerIntegralHisColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.change_val AS "changeVal",
+		a.change_type AS "changeType",
+		a.change_reason AS "changeReason",
+		a.rel_activity AS "relActivity",
+		a.exchange_goods AS "exchangeGoods",
+		a.op_dt AS "opDt",
+		a.op_term_type AS "opTermType"
+	</sql>
+	
+	<sql id="customerIntegralHisJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomerIntegralHis">
+		SELECT 
+			<include refid="customerIntegralHisColumns"/>
+		FROM customer_integral_his a
+		<include refid="customerIntegralHisJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getTotalIntegral" resultType="java.lang.Integer">
+		select sum(change_val) from customer_integral_his where change_val>0 and account_id=#{accountId}
+	</select>
+	
+	<select id="getIntegralDuringTime" resultType="java.lang.Integer">
+		select sum(change_val) from customer_integral_his where change_val>0 and account_id=#{accountId} and op_dt between #{startTime} and #{endTime}
+	</select>
+	
+	<select id="findList" resultType="CustomerIntegralHis">
+		SELECT 
+			<include refid="customerIntegralHisColumns"/>
+		FROM customer_integral_his a
+		<include refid="customerIntegralHisJoins"/>
+		<where>
+			
+			<if test="beginChangeVal != null  and beginChangeVal != ''">
+				AND a.change_val >= #{beginChangeVal}
+			</if>
+			<if test="endChangeVal != null and endChangeVal != ''">
+				AND #{endChangeVal} >= a.change_val
+			</if>
+			AND a.account_id=#{accountId}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				order by a.op_dt desc
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="getCount" resultType="java.lang.Integer">
+			select count(*) FROM customer_integral_his a
+			<where>
+				a.account_id=#{customerId}
+				<if test="type == '0'.toString()">
+					AND a.change_type  in (0,1,2,3 )
+				</if>
+				<if test="type == '1'.toString()">
+					AND a.change_type  in (0,2,3 )
+				</if>
+				<if test="type == '2'.toString()">
+					AND a.change_type=1
+				</if>
+			</where>
+
+	</select>
+
+	<select id="findPageList" resultType="CustomerIntegralHis">
+		SELECT 
+			<include refid="customerIntegralHisColumns"/>
+		FROM customer_integral_his a
+		<include refid="customerIntegralHisJoins"/>
+		<where>
+			a.account_id=#{accountId}
+			<if test="type == '0'.toString()">
+				AND a.change_type  in (0,1,2,3 )
+			</if>
+			<if test="type == '1'.toString()">
+				AND a.change_type  in (0,2,3 )
+			</if>
+			<if test="type == '2'.toString()">
+				AND a.change_type=1
+			</if>
+			order by a.op_dt desc 
+			limit #{startNumber},#{endNumber}
+		</where>
+
+	</select>
+
+
+
+
+	
+	<select id="findListWithQuery" resultType="CustomerIntegralHis">
+		SELECT 
+			<include refid="customerIntegralHisColumns"/>
+		FROM customer_integral_his a
+		<include refid="customerIntegralHisJoins"/>
+		<where>
+			
+			<if test="startDateTime != null">
+				AND a.op_dt >= #{startDateTime}
+			</if>
+			<if test="endDateTime != null">
+				AND #{endDateTime} >= a.op_dt
+			</if>
+
+			<if test="changeType != null and changeType != ''">
+				AND a.change_type=#{changeType}
+			</if>
+
+
+
+			<choose>
+				<when test="changeTypeCode != null and changeTypeCode == '1'.toString()">
+					AND a.change_val &gt;= 0
+				</when>
+				<when test="changeTypeCode != null and changeTypeCode == '2'.toString()">
+					AND a.change_val &lt; 0
+				</when>
+			</choose>
+			AND a.account_id=#{accountId}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				order by a.op_dt desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerIntegralHis">
+		SELECT 
+			<include refid="customerIntegralHisColumns"/>
+		FROM customer_integral_his a
+		<include refid="customerIntegralHisJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_integral_his(
+			account_id,
+			change_val,
+			change_type,
+			change_reason,
+			rel_activity,
+			exchange_goods,
+			op_dt,
+			op_term_type
+		) VALUES (
+			#{accountId},
+			#{changeVal},
+			#{changeType},
+			#{changeReason},
+			#{relActivity},
+			#{exchangeGoods},
+			#{opDt},
+			#{opTermType}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_integral_his SET 	
+			change_val = #{changeVal},
+			change_type = #{changeType},
+			change_reason = #{changeReason},
+			rel_activity = #{relActivity},
+			exchange_goods = #{exchangeGoods},
+			op_dt = #{opDt},
+			op_term_type = #{opTermType}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_integral_his
+		WHERE id = #{id}
+	</update>
+	
+	<select id="hasSigned" resultType="boolean">
+		select case when count(1) &gt; 0 then 1 else 0 end from customer_integral_his
+			where account_id = #{accountId} and change_type = '0' and (op_dt between #{startDate} and #{endDate})
+	</select>
+	
+	<!-- 查询用户当日是否已领取1000花生豆 -->
+	<select id="canGiveIntegralNumber" resultType="boolean">
+		select case when count(1) &gt; 0 then 1 else 0 end from customer_integral_his
+			where account_id = #{accountId} and change_type = '1' and (op_dt between #{startDate} and #{endDate})
+	</select>
+	
+	
+	<select id="getLastSignData" resultType="CustomerIntegralHis">
+		select * from customer_integral_his where account_id = #{accountId} and change_type = '0' order by op_dt desc limit 1
+	</select>
+</mapper>

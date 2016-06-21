@@ -1,0 +1,4 @@
+#content_center{overflow:hidden;width:789px;padding:10px 10px 10px 10px;}
+#content_center hr{border-top:1px solid #c7c7c7;border-bottom:0 none white;margin-left:20px;}
+#content_center .hr_dashed{border-top:1px dashed #c7c7c7;border-bottom:0 none white;margin-left:10px;margin-right:10px;}
+#content_center .bottom{margin-left:auto;margin-right:auto;margin-top:30px;width:789px;height:44px;background:url('../../images/wdzh/right_bg_bottom.png') no-repeat center;}

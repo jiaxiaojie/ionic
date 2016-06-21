@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:element name="class" type="xs:string" />
+ <xs:element name="method" type="xs:string"/>
+ <xs:element name="type" type="xs:string"/>
+ <xs:element name="return" type="xs:string"/>
+
+<xs:element name="params">
+ <xs:complexType>
+  <xs:sequence>
+   <xs:element ref="type"/>
+  </xs:sequence>
+ </xs:complexType>
+</xs:element>
+
+<!-- 复合元素的定义 -->
+<xs:element name="function">
+ <xs:complexType>
+  <xs:sequence  minOccurs="1">
+   <xs:element ref="class"  minOccurs="1" maxOccurs="1"/>
+   <xs:element ref="method" minOccurs="1" maxOccurs="1"/>
+   <xs:element ref="params" minOccurs="1" maxOccurs="1"/>
+   <xs:element ref="return" minOccurs="1" maxOccurs="1"/>
+  </xs:sequence>
+ </xs:complexType>
+</xs:element>
+
+
+<xs:element name="functions">
+ <xs:complexType>
+  <xs:sequence minOccurs="0" maxOccurs="unbounded">
+   <xs:element ref="function"/>
+  </xs:sequence>
+ </xs:complexType>
+</xs:element>
+
+
+</xs:schema>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mobile_config>
+    <pattern_cmcc_mobile>13[4-9][0-9]{8}|14[07][0-9]{8}|15[0124789][0-9]{8}|165[0-9]{8}|170[356][0-9]{7}|178[0-9]{8}|18[23478][0-9]{8}</pattern_cmcc_mobile>
+    <pattern_cutc_mobile>13[012][0-9]{8}|14[135][0-9]{8}|15[56][0-9]{8}|170[789][0-9]{7}|17[56][0-9]{8}|18[56][0-9]{8}</pattern_cutc_mobile>
+    <pattern_ctcc_mobile>133[0-9]{8}|14[24689][0-9]{8}|153[0-9]{8}|170[012][0-9]{7}|17[037][0-9]{8}|18[019][0-9]{8}</pattern_ctcc_mobile>
+    <suffix_mail_cmcc>@139.com</suffix_mail_cmcc>
+    <suffix_mail_cutc>@156.cn</suffix_mail_cutc>
+    <suffix_mail_cmcc>@189.cn</suffix_mail_cmcc>
+</mobile_config>

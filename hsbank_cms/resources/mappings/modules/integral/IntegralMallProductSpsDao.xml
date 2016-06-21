@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.integral.dao.IntegralMallProductSpsDao">
+    
+	<sql id="integralMallProductSpsColumns">
+		a.para_id AS "paraId",
+		a.product_id AS "productId",
+		a.para_name AS "paraName",
+		a.para_val AS "paraVal",
+		a.para_seq AS "paraSeq",
+		a.status AS "status"
+	</sql>
+	
+	<sql id="integralMallProductSpsJoins">
+	</sql>
+    
+	<select id="get" resultType="IntegralMallProductSps">
+		SELECT 
+			<include refid="integralMallProductSpsColumns"/>
+		FROM integral_mall_product_sps a
+		<include refid="integralMallProductSpsJoins"/>
+		WHERE a.para_id = #{id}
+	</select>
+	
+	<select id="findList" resultType="IntegralMallProductSps">
+		SELECT 
+			<include refid="integralMallProductSpsColumns"/>
+		FROM integral_mall_product_sps a
+		<include refid="integralMallProductSpsJoins"/>
+		<where>
+			<if test="productId != null and productId != ''">
+				AND a.product_id = #{productId}
+			</if>
+			<if test="paraName != null and paraName != ''">
+				AND a.para_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{paraName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{paraName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{paraName},'%')</if>
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="IntegralMallProductSps">
+		SELECT 
+			<include refid="integralMallProductSpsColumns"/>
+		FROM integral_mall_product_sps a
+		<include refid="integralMallProductSpsJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO integral_mall_product_sps(
+			product_id,
+			para_name,
+			para_val,
+			para_seq,
+			status
+		) VALUES (
+			#{productId},
+			#{paraName},
+			#{paraVal},
+			#{paraSeq},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE integral_mall_product_sps SET 	
+			product_id = #{productId},
+			para_name = #{paraName},
+			para_val = #{paraVal},
+			para_seq = #{paraSeq},
+			status = #{status}
+		WHERE para_id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM integral_mall_product_sps
+		WHERE para_id = #{id}
+	</update>
+	
+	<select id="getLastOneByProductId" resultType="IntegralMallProductSps">
+		SELECT 
+			<include refid="integralMallProductSpsColumns"/>
+		FROM integral_mall_product_sps a
+		<include refid="integralMallProductSpsJoins"/>
+		WHERE a.product_id = #{productId} AND a.status = '1'
+		order by para_id limit 1
+	</select>
+	
+	<select id="findListByProductId" resultType="IntegralMallProductSps">
+		select * from integral_mall_product_sps where product_id = #{productId} and status = '1' order by para_seq
+	</select>
+</mapper>

@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.operation.dao.OperationDataDao">
+    
+	<sql id="operationDataColumns">
+		a.id AS "id",
+		a.date AS "date",
+		a.register_count AS "registerCount",
+		a.open_third_account_count AS "openThirdAccountCount",
+		a.bind_bank_card_count AS "bindBankCardCount",
+		a.recharge_amount AS "rechargeAmount",
+		a.withdraw_amount AS "withdrawAmount",
+		a.investment_times AS "investmentTimes",
+		a.investment_amount AS "investmentAmount",
+		a.investment_fist_number AS "investmentFistNumber",
+		a.investment_fist_total_amount AS "investmentFistTotalAmount",
+		a.repeated_investment_number AS "repeatedInvestmentNumber",
+		a.repeated_investment_total_amount AS "repeatedInvestmentTotalAmount"
+	</sql>
+	
+	<sql id="operationDataJoins">
+	</sql>
+    
+	<select id="get" resultType="OperationData">
+		SELECT 
+			<include refid="operationDataColumns"/>
+		FROM operation_data a
+		<include refid="operationDataJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="OperationData">
+		SELECT 
+			<include refid="operationDataColumns"/>
+		FROM operation_data a
+		<include refid="operationDataJoins"/>
+		<where>
+			<if test="beginDt != null  and beginDt != ''">
+				AND a.date >= #{beginDt}
+			</if>
+			<if test="endDt != null and endDt != ''">
+				AND  #{endDt}>= a.date
+			</if>
+		<!-- 	order by date DESC; -->
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			order by a.date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="OperationData">
+		SELECT 
+			<include refid="operationDataColumns"/>
+		FROM operation_data a
+		<include refid="operationDataJoins"/>
+		<where>
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<insert id="insert">
+		INSERT INTO operation_data(
+			id,
+			date,
+			register_count,
+			open_third_account_count,
+			bind_bank_card_count,
+			recharge_amount,
+			withdraw_amount,
+			investment_times,
+			investment_amount,
+			investment_fist_number,
+			investment_fist_total_amount,
+			repeated_investment_number,
+			repeated_investment_total_amount
+			
+		) VALUES (
+			#{id},
+			#{date},
+			#{registerCount},
+			#{openThirdAccountCount},
+			#{bindBankCardCount},
+			#{rechargeAmount},
+			#{withdrawAmount},
+			#{investmentTimes},
+			#{investmentAmount},
+			#{investmentFistNumber},
+			#{investmentFistTotalAmount},
+			#{repeatedInvestmentNumber},
+			#{repeatedInvestmentTotalAmount}
+		)
+	</insert>
+	<update id="update">
+		UPDATE operation_data SET 	
+			date = #{date},
+			register_count = #{registerCount},
+			open_third_account_count = #{openThirdAccountCount},
+			bind_bank_card_count = #{bindBankCardCount},
+			recharge_amount = #{rechargeAmount},
+			withdraw_amount = #{withdrawAmount},
+			investment_times = #{investmentTimes},
+			investment_amount = #{investmentAmount}
+			investment_fist_number=#{investmentFistNumber},
+			investment_fist_total_amount=#{investmentFistTotalAmount},
+			repeated_investment_number=	#{repeatedInvestmentNumber},
+			repeated_investment_total_amount=#{repeatedInvestmentTotalAmount}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM operation_data
+		WHERE id = #{id}
+	</update>
+
+	<!--
+          查询到待插入的日期
+             依据日期将注册人数、开通第三方账号人数、绑卡用户数、 首次投资人数 、  首次投资额度  、复投次数、复投额度、充值额度、提现额度、投资次数、投资额度进行左联结
+             -->
+	<select id="findOperationInfoList"  resultType="java.util.Map">
+		select a.date as 'date',
+		case when b.register_count is null then 0 else b.register_count end as 'register_count',
+		case when c.open_third_account_count is null then 0 else c.open_third_account_count end as 'open_third_account_count',
+		case when d.bind_bank_card_count is null then 0 else d.bind_bank_card_count end as 'bind_bank_card_count',
+		case when e.recharge_amount is null then 0 else e.recharge_amount end as 'recharge_amount',
+		case when f.withdraw_amount is null then 0 else f.withdraw_amount end as 'withdraw_amount',
+		case when g.investment_times is null then 0 else g.investment_times end as 'investment_times',
+		case when h.investment_amount is null then 0 else h.investment_amount end as 'investment_amount',
+		case when i.investment_fist_number is null then 0 else i.investment_fist_number end as 'investment_fist_number',
+		case when j.investment_fist_total_amount is null then 0 else j.investment_fist_total_amount end as 'investment_fist_total_amount',
+		case when k.repeated_investment_number is null then 0 else k.repeated_investment_number end as 'repeated_investment_number',
+		case when m.repeated_investment_total_amount is null then 0 else m.repeated_investment_total_amount end as 'repeated_investment_total_amount'
+
+		from
+		<!-- 查询待插入日期 开始 -->
+		(select date from (
+		select date(a.register_dt) date from customer_account a
+		where a.status_code = '0' and date(a.register_dt) &lt; date(now())
+		union
+		select date(b.req_dt) date from customer_account a, log_third_party b
+		where a.request_no = b.request_no and a.has_open_third_account = '1' and date(b.req_dt) &lt; date(now())
+		union
+		select date(a.op_dt) date from customer_bank_card a
+		where a.card_status_code = 'VERIFIED' and date(a.op_dt) &lt; date(now())
+		union
+		select date(a.op_dt) date from customer_balance_his a
+		where a.change_type in ('NET_B2B','NET_B2C','A_PAY','WH_NO_CARD','SWIFT') and date(a.op_dt) &lt; date(now())
+		union
+		select date(a.op_dt) date from customer_balance_his a
+		where a.change_type in ('NORMAL','URGENT') and date(a.op_dt) &lt; date(now())
+		union
+		select date(a.op_dt) date from project_investment_record a
+		where (a.status = '0' or a.status = '3') and date(a.op_dt) &lt; date(now())
+		union
+		select date(a.op_dt) date from project_investment_record a
+		where (a.status= '0' or a.status = '3') and date(a.op_dt) &lt; date(now())
+		union
+		select date(a.op_dt) date from project_investment_record a
+		where (a.status= '0' or a.status = '3') and date(a.op_dt) &lt; date(now())
+		union
+		select date(a.op_dt) date from project_investment_record a
+		where (a.status= '0' or a.status = '3') and date(a.op_dt) &lt; date(now())
+		) a
+		where date not in (select date from operation_data)
+		group by a.date) a
+		<!-- 查询待插入日期 结束 -->
+		left join
+		(select date(a.register_dt) date, count(1) register_count from customer_account a
+		where
+		a.status_code = '0' and date(a.register_dt) &lt; date(now()) group by date(a.register_dt)) b on a.date = b.date
+		left join
+		(select date(b.req_dt) date, count(1) open_third_account_count from customer_account a, log_third_party b
+		where
+		a.request_no = b.request_no and a.has_open_third_account = '1' and date(b.req_dt) &lt; date(now()) and b.service='2001001' group by date(b.req_dt)) c on a.date = c.date
+		left join
+		(select date(a.op_dt) date, count(1) bind_bank_card_count from customer_bank_card a
+		where
+		a.card_status_code = 'VERIFIED' and date(a.op_dt) &lt; date(now()) group by date(a.op_dt)) d on a.date = d.date
+		left join
+		(select date(a.op_dt) date, sum(a.change_val) recharge_amount from customer_balance_his a
+		where
+		a.change_type in ('NET_B2B','NET_B2C','A_PAY','WH_NO_CARD','SWIFT') and date(a.op_dt) &lt; date(now()) group by date(a.op_dt)) e on a.date = e.date
+		left join
+		(select date(a.op_dt) date, sum(abs(a.change_val)) withdraw_amount from customer_balance_his a
+		where
+		a.change_type in ('NORMAL','URGENT') and date(a.op_dt) &lt; date(now()) group by date(a.op_dt)) f on a.date = f.date
+		left join
+		(select date(a.op_dt) date, count(1) investment_times from project_investment_record a
+		where
+		(a.status = '0' or a.status = '3') and date(a.op_dt) &lt; date(now()) group by date(a.op_dt)) g on a.date = g.date
+		left join
+		(select date(a.op_dt) date, sum(amount) investment_amount from project_investment_record a
+		where
+		(a.status = '0' or a.status = '3') and date(a.op_dt) &lt; date(now()) group by date(a.op_dt)) h on a.date = h.date
+		<!--   首次投资人数  -->
+		left join
+		(select COUNT(*) investment_fist_number,date(b.minDate)  date FROM
+		(select date(min(a.op_dt)) minDate ,investment_user_id from  project_investment_record a where (a.status='0' or  a.status='3') GROUP BY a.investment_user_id) b    GROUP BY b.minDate
+		) i on a.date=i.date
+		<!--  首次投资额度  -->
+		left join
+		(select sum(b.amount) investment_fist_total_amount,b.minDate  date   FROM
+		(select date(min(a.op_dt)) minDate ,a.investment_user_id ,a.amount amount  from  project_investment_record a where (a.status='0' or  a.status='3') GROUP BY a.investment_user_id) b
+		GROUP BY b.minDate
+		) j on a.date=j.date
+		<!-- 复投次数 -->
+		left join
+		(select count(distinct(c.investment_user_id)) repeated_investment_number, date(c.op_dt) date from  project_investment_record  c  where  (c.status='0' or  c.status='3') and c.op_dt not in
+		(select min(a.op_dt) minDate  from project_investment_record a  where (a.status='0' or  a.status='3')  GROUP BY investment_user_id)
+		GROUP BY date(c.op_dt)) k  on a.date=k.date
+		<!--  复投额度 -->
+		left join
+		(select sum(c.amount) repeated_investment_total_amount, date(c.op_dt) date from project_investment_record  c where
+		(c.status='0' or  c.status='3') and c.op_dt not in
+		(select min(a.op_dt) minDate  from project_investment_record a where  (a.status='0' or  a.status='3') GROUP BY investment_user_id) GROUP BY date(c.op_dt)
+		) m on a.date=m.date
+		order by date;
+	</select>
+
+	<!--
+
+       将数据插入到表中
+       -->
+	<insert id="insertNeedInsertData" >
+		insert into operation_data
+		(date,register_count,open_third_account_count,
+		bind_bank_card_count,recharge_amount,withdraw_amount,
+		investment_times,investment_amount,investment_fist_number,investment_fist_total_amount,repeated_investment_number,repeated_investment_total_amount)
+		VALUES
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.date},#{item.register_count},#{item.open_third_account_count},#{item.bind_bank_card_count},
+			#{item.recharge_amount},#{item.withdraw_amount},#{item.investment_times},#{item.investment_amount},#{item.investment_fist_number},
+			#{item.investment_fist_total_amount},#{item.repeated_investment_number},#{item.repeated_investment_total_amount})
+		</foreach>
+	</insert>
+</mapper>

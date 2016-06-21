@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.marketing.dao.MarketingActivityInfoDao">
+    
+	<sql id="marketingActivityInfoColumns">
+		a.acticity_id AS "acticityId",
+		a.name AS "name",
+		a.begin_date AS "beginDate",
+		a.end_date AS "endDate",
+		a.begin_time AS "beginTime",
+		a.end_time AS "endTime",
+		a.biz_class_name AS "bizClassName",
+		a.introduction AS "introduction",
+		a.create_user_id AS "createUserId",
+		a.create_dt AS "createDt",
+		a.review_user_id AS "reviewUserId",
+		a.review_dt AS "reviewDt",
+		a.status AS "status"
+	</sql>
+	
+	<sql id="marketingActivityInfoJoins">
+	</sql>
+    
+	<select id="get" resultType="MarketingActivityInfo">
+		SELECT 
+			<include refid="marketingActivityInfoColumns"/>
+		FROM marketing_activity_info a
+		<include refid="marketingActivityInfoJoins"/>
+		WHERE a.acticity_id = #{acticityId}
+	</select>
+	
+	<select id="findList" resultType="MarketingActivityInfo">
+		SELECT 
+			<include refid="marketingActivityInfoColumns"/>
+		FROM marketing_activity_info a
+		<include refid="marketingActivityInfoJoins"/>
+		<where>
+			
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="beginDate != null and beginDate != ''">
+				AND a.begin_date = #{beginDate}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				AND a.end_date = #{endDate}
+			</if>
+			<if test="beginBeginTime != null  and beginBeginTime != ''">				AND a.begin_time >= #{beginBeginTime}			</if>			<if test="endBeginTime != null and endBeginTime != ''">				AND #{endBeginTime} >= a.begin_time			</if>
+			<if test="beginEndTime != null  and beginEndTime != ''">				AND a.end_time >= #{beginEndTime}			</if>			<if test="endEndTime != null and endEndTime != ''">				AND #{endEndTime} >= a.end_time			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MarketingActivityInfo">
+		SELECT 
+			<include refid="marketingActivityInfoColumns"/>
+		FROM marketing_activity_info a
+		<include refid="marketingActivityInfoJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getRelationActivityList" resultType="MarketingActivityInfo">
+		SELECT distinct
+			<include refid="marketingActivityInfoColumns"/>
+		FROM marketing_activity_info a
+		JOIN marketing_activity_user_behavior_limit ubl ON ubl.activity_code=a.acticity_id
+		JOIN marketing_activity_channel_limit cl ON cl.activity_id=a.acticity_id
+		<where>
+			ubl.action_type = #{behaviorCode} and cl.channel_id = #{channelId}
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			AND #{currDate} BETWEEN begin_date AND end_date
+			AND #{currTime} BETWEEN begin_time AND end_time
+		</where>
+	</select>
+	
+	<select id="getEffectiveActivityList" resultType="MarketingActivityInfo">
+		SELECT 
+			<include refid="marketingActivityInfoColumns"/>
+		FROM marketing_activity_info a
+		<where>
+			a.status = #{status}
+			AND #{currDate} BETWEEN begin_date AND end_date
+			AND #{currTime} BETWEEN begin_time AND end_time
+		</where>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="acticityId">
+		INSERT INTO marketing_activity_info(
+			name,
+			begin_date,
+			end_date,
+			begin_time,
+			end_time,
+			biz_class_name,
+			introduction,
+			create_user_id,
+			create_dt,
+			review_user_id,
+			review_dt,
+			status
+		) VALUES (
+			#{name},
+			#{beginDate},
+			#{endDate},
+			#{beginTime},
+			#{endTime},
+			#{bizClassName},
+			#{introduction},
+			#{createUserId},
+			#{createDt},
+			#{reviewUserId},
+			#{reviewDt},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE marketing_activity_info SET 	
+			name = #{name},
+			begin_date = #{beginDate},
+			end_date = #{endDate},
+			begin_time = #{beginTime},
+			end_time = #{endTime},
+			biz_class_name = #{bizClassName},
+			introduction = #{introduction},
+			create_user_id = #{createUserId},
+			create_dt = #{createDt},
+			review_user_id = #{reviewUserId},
+			review_dt = #{reviewDt},
+			status = #{status}
+		WHERE acticity_id = #{acticityId}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM marketing_activity_info
+		WHERE acticity_id = #{acticityId}
+	</update>
+	
+	<select id="getByBizClassName" resultType="MarketingActivityInfo">
+		select * from marketing_activity_info where biz_class_name = #{bizClassName} limit 1
+	</select>
+	
+	<select id="findListByStatus" resultType="MarketingActivityInfo">
+		select * from marketing_activity_info where status = #{status}
+	</select>
+</mapper>

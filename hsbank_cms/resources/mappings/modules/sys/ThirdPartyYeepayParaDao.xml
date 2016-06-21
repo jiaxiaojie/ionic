@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.sys.dao.ThirdPartyYeepayParaDao">
+    
+	<sql id="thirdPartyYeepayParaColumns">
+		a.id AS "id",
+		a.yeepay_platform_no AS "yeepayPlatformNo",
+		a.yeepay_gate_url_prefix AS "yeepayGateUrlPrefix",
+		a.yeepay_direct_url_prefix AS "yeepayDirectUrlPrefix",
+		a.yeepay_sign_rul_prefix AS "yeepaySignRulPrefix",
+		a.yeepay_callback_url_prefix AS "yeepayCallbackUrlPrefix",
+		a.yeepay_notify_url_prefix AS "yeepayNotifyUrlPrefix",
+		a.yeepay_callback_url_prefix_demo AS "yeepayCallbackUrlPrefixDemo",
+		a.yeepay_notify_url_prefix_demo AS "yeepayNotifyUrlPrefixDemo",
+		a.yeepay_tenderorderno_prefix AS "yeepayTenderordernoPrefix",
+		a.yeepay_gate_way_callback_url_prefix AS "yeepayGateWayCallbackUrlPrefix",
+		a.yeepay_gate_way_notify_prefix AS "yeepayGateWayNotifyPrefix",
+		a.yeepay_direct_notify_url_prefix AS "yeepayDirectNotifyUrlPrefix",
+		a.yeepay_gate_way_wireless_callback_url_prefix AS "yeepayGateWayWirelessCallbackUrlPrefix"
+	</sql>
+	
+	<sql id="thirdPartyYeepayParaJoins">
+	</sql>
+    
+	<select id="get" resultType="ThirdPartyYeepayPara">
+		SELECT 
+			<include refid="thirdPartyYeepayParaColumns"/>
+		FROM third_party_yeepay_para a
+		<include refid="thirdPartyYeepayParaJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ThirdPartyYeepayPara">
+		SELECT 
+			<include refid="thirdPartyYeepayParaColumns"/>
+		FROM third_party_yeepay_para a
+		<include refid="thirdPartyYeepayParaJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ThirdPartyYeepayPara">
+		SELECT 
+			<include refid="thirdPartyYeepayParaColumns"/>
+		FROM third_party_yeepay_para a
+		<include refid="thirdPartyYeepayParaJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO third_party_yeepay_para(
+			yeepay_platform_no,
+			yeepay_gate_url_prefix,
+			yeepay_direct_url_prefix,
+			yeepay_sign_rul_prefix,
+			yeepay_callback_url_prefix,
+			yeepay_notify_url_prefix,
+			yeepay_callback_url_prefix_demo,
+			yeepay_notify_url_prefix_demo,
+			yeepay_tenderorderno_prefix,
+			yeepay_gate_way_callback_url_prefix,
+			yeepay_gate_way_notify_prefix,
+			yeepay_direct_notify_url_prefix,
+			yeepay_gate_way_wireless_callback_url_prefix
+		) VALUES (
+			#{yeepayPlatformNo},
+			#{yeepayGateUrlPrefix},
+			#{yeepayDirectUrlPrefix},
+			#{yeepaySignRulPrefix},
+			#{yeepayCallbackUrlPrefix},
+			#{yeepayNotifyUrlPrefix},
+			#{yeepayCallbackUrlPrefixDemo},
+			#{yeepayNotifyUrlPrefixDemo},
+			#{yeepayTenderordernoPrefix},
+			#{yeepayGateWayCallbackUrlPrefix},
+			#{yeepayGateWayNotifyPrefix},
+			#{yeepayDirectNotifyUrlPrefix},
+			#{yeepayGateWayWirelessCallbackUrlPrefix}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE third_party_yeepay_para SET 	
+			yeepay_platform_no = #{yeepayPlatformNo},
+			yeepay_gate_url_prefix = #{yeepayGateUrlPrefix},
+			yeepay_direct_url_prefix = #{yeepayDirectUrlPrefix},
+			yeepay_sign_rul_prefix = #{yeepaySignRulPrefix},
+			yeepay_callback_url_prefix = #{yeepayCallbackUrlPrefix},
+			yeepay_notify_url_prefix = #{yeepayNotifyUrlPrefix},
+			yeepay_callback_url_prefix_demo = #{yeepayCallbackUrlPrefixDemo},
+			yeepay_notify_url_prefix_demo = #{yeepayNotifyUrlPrefixDemo},
+			yeepay_tenderorderno_prefix = #{yeepayTenderordernoPrefix},
+			yeepay_gate_way_callback_url_prefix = #{yeepayGateWayCallbackUrlPrefix},
+			yeepay_gate_way_notify_prefix = #{yeepayGateWayNotifyPrefix},
+			yeepay_direct_notify_url_prefix = 	#{yeepayDirectNotifyUrlPrefix},
+			yeepay_gate_way_wireless_callback_url_prefix = 	#{yeepayGateWayWirelessCallbackUrlPrefix}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM third_party_yeepay_para
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

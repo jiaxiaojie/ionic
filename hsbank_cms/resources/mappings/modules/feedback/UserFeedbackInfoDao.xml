@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.feedback.dao.UserFeedbackInfoDao">
+    
+	<sql id="userFeedbackInfoColumns">
+		a.id AS "id",
+		a.channel_id AS "channelId",
+		a.content AS "content",
+		a.create_dt AS "createDt",
+		a.account_id AS "accountId",
+		a.return_content AS "returnContent",
+		a.result AS "result"
+	</sql>
+	
+	<sql id="userFeedbackInfoJoins">
+	</sql>
+    
+	<select id="get" resultType="UserFeedbackInfo">
+		SELECT 
+			<include refid="userFeedbackInfoColumns"/>
+		FROM user_feedback_info a
+		<include refid="userFeedbackInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="UserFeedbackInfo">
+		SELECT 
+			<include refid="userFeedbackInfoColumns"/>
+		FROM user_feedback_info a
+		<include refid="userFeedbackInfoJoins"/>
+		<where>
+			
+			<if test="channelId != null and channelId != ''">
+				AND a.channel_id = #{channelId}
+			</if>
+			<if test="beginCreateDt != null  and beginCreateDt != ''">				AND a.create_dt >= #{beginCreateDt}			</if>			<if test="endCreateDt != null and endCreateDt != ''">				AND #{endCreateDt} >= a.create_dt			</if>
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			    ORDER BY a.create_dt desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="UserFeedbackInfo">
+		SELECT 
+			<include refid="userFeedbackInfoColumns"/>
+		FROM user_feedback_info a
+		<include refid="userFeedbackInfoJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO user_feedback_info(
+			channel_id,
+			content,
+			create_dt,
+			account_id,
+			return_content,
+			result
+		) VALUES (
+			#{channelId},
+			#{content},
+			#{createDt},
+			#{accountId},
+			#{returnContent},
+			#{result}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE user_feedback_info SET 	
+			return_content = #{returnContent},
+			result = #{result}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM user_feedback_info
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

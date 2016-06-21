@@ -1,0 +1,41 @@
+.about_right_content{ width:auto; overflow:hidden;padding:30px 30px 30px 30px;}
+.about_right_content .title{ padding-bottom: 10px; margin-bottom: 10px; height:40px;line-height:40px;font-weight:bold;font-size:18px; border-bottom: 1px solid #c7c7c7;}
+.about_right_content .span_text{overflow:hidden}
+.about_right_content hr{border-top:1px solid #c7c7c7;border-bottom:0 none white;margin:5px 20px 5px 20px;}
+.subCon{ position:relative; }
+.subCon .item{ margin-bottom:20px;}
+#subCon .nav{height:30px; padding:20px 0 0;float:right}
+#subCon .nav a, a:hover, a:focus, a:active{color:#b2b2b2; text-decoration:none}
+#subCon .subTit{height:50px; padding:10px 0 0}
+#subCon h2{padding:20px 0 10px 60px; color:#58646e;font-family:"Microsoft Yahei",Helvetica, Arial,"微软雅黑", STXihei, "华文细黑", sans-serif;font-weight:normal;}\
+#subCon hr{height:1px;border:none;border-top:1px solid #555555;}
+#subCon .date{padding:10px 0 10px 250px; color:#58646e;font-family:"Microsoft Yahei",Helvetica, Arial,"微软雅黑", STXihei, "华文细黑", sans-serif;font-weight:normal;}
+#subCon .postion{ margin: 30px 0 10px 0; font-size:14px; padding-left:22px; color: #666; font-weight:bold; font-size: 16px; background:url('../../images/gywm/icon_joinus_01.png') no-repeat 0 2px;}
+#subCon .subTitle{ color:#c98950; font-size:14px; padding: 12px 0;}
+.mt5{margin-top:5px}
+.mt10{margin-top:10px}
+.mt15{margin-top:15px}
+.mt20{margin-top:20px}
+.mt25{margin-top:25px}
+.mt30{margin-top:30px}
+.mt35{margin-top:35px}
+.mt40{margin-top:40px}
+.mt45{margin-top:45px}
+.mt50{margin-top:50px}
+.mt55{margin-top:55px}
+.mt60{margin-top:60px}
+.mt100{margin-top:100px}
+.f11{font-size:11px}
+.f12{font-size:12px}
+.f16{color:#444; font-size:16px}
+.bold{font-weight:bold}
+.letter{letter-spacing:-1px;}
+.buildA{position:relative; height:73px; padding:30px 0 6px;}
+.buildA ul {position:absolute; top:30px; left:113px;}
+.buildS1 { position:relative; background-color:#F1F1F1; border-radius: 4px; -o-border-radius: 4px; -ms-border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px;}
+.buildS1 .arrow_top{ position:absolute; top:-7px; left:50px; width:0; height: 0; display: inline-block; border-left: 100px solid transparent; border-right: 100px solid transparent; border-bottom: 100px solid #F1F1F1; border-width:7px; font-style: normal;}
+.buildS1 div {padding-left:20px;}
+.buildS1 div ul{padding-bottom:20px; font-size:14px;}
+.buildS1 div ul li {padding:0 20px 10px 28px; line-height:22px;}
+.buildS1 .buildF {position:relative;}
+.buildS1 .buildF ul + p {position:absolute; top:28px; right:38px;}

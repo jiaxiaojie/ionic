@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.log.dao.LogTimerTaskDao">
+    
+	<sql id="logTimerTaskColumns">
+		a.id AS "id",
+		a.task_name AS "taskName",
+		a.begin_dt AS "beginDt",
+		a.end_dt AS "endDt",
+		a.status AS "status",
+		a.remark AS "remark"
+	</sql>
+	
+	<sql id="logTimerTaskJoins">
+	</sql>
+    
+	<select id="get" resultType="LogTimerTask">
+		SELECT 
+			<include refid="logTimerTaskColumns"/>
+		FROM log_timer_task a
+		<include refid="logTimerTaskJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="LogTimerTask">
+		SELECT 
+			<include refid="logTimerTaskColumns"/>
+		FROM log_timer_task a
+		<include refid="logTimerTaskJoins"/>
+		<where>
+			<if test="taskName != null and taskName != ''">
+				AND a.task_name = #{taskName}
+			</if>
+			<if test="beginTime != null  and beginTime != ''">
+				AND a.begin_dt >= #{beginTime}
+			</if>
+			<if test="endTime != null and endTime != ''">
+				AND  #{endTime}>= a.end_dt
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+ 			order by begin_dt DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="LogTimerTask">
+		SELECT 
+			<include refid="logTimerTaskColumns"/>
+		FROM log_timer_task a
+		<include refid="logTimerTaskJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO log_timer_task(
+			task_name,
+			begin_dt,
+			end_dt,
+			status,
+			remark
+		) VALUES (
+			#{taskName},
+			#{beginDt},
+			#{endDt},
+			#{status},
+			#{remark}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE log_timer_task SET 	
+			task_name = #{taskName},
+			begin_dt = #{beginDt},
+			end_dt = #{endDt},
+			status = #{status},
+			remark = #{remark}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM log_timer_task
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="deleteSomeDaysAgoData">
+		delete from log_timer_task where begin_dt &lt; date_add(now(),interval -#{days} day);
+	</delete>
+</mapper>

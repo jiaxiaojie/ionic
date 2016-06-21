@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.marketing.dao.MobileAwardRecordDao">
+    
+	<sql id="mobileAwardRecordColumns">
+		a.id AS "id",
+		a.activity_id AS "activityId",
+		a.mobile AS "mobile",
+		a.prize_instance_id AS "prizeInstanceId",
+		a.op_dt AS "opDt",
+		a.op_term AS "opTerm",
+		a.status AS "status",
+		a.account_id AS "accountId",
+		a.award_dt AS "awardDt"
+	</sql>
+	
+	<sql id="mobileAwardRecordJoins">
+	</sql>
+    
+	<select id="get" resultType="MobileAwardRecord">
+		SELECT 
+			<include refid="mobileAwardRecordColumns"/>
+		FROM mobile_award_record a
+		<include refid="mobileAwardRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MobileAwardRecord">
+		SELECT 
+			<include refid="mobileAwardRecordColumns"/>
+		FROM mobile_award_record a
+		<include refid="mobileAwardRecordJoins"/>
+		<where>
+			
+			<if test="activityId != null and activityId != ''">
+				AND a.activity_id = #{activityId}
+			</if>
+			<if test="mobile != null and mobile != ''">
+				AND a.mobile = #{mobile}
+			</if>
+			<if test="prizeId != null and prizeId != ''">
+				AND a.prize_instance_id = #{prizeInstanceId}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MobileAwardRecord">
+		SELECT 
+			<include refid="mobileAwardRecordColumns"/>
+		FROM mobile_award_record a
+		<include refid="mobileAwardRecordJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO mobile_award_record(
+			activity_id,
+			mobile,
+			prize_instance_id,
+			op_dt,
+			op_term,
+			status,
+			account_id,
+			award_dt
+		) VALUES (
+			#{activityId},
+			#{mobile},
+			#{prizeInstanceId},
+			#{opDt},
+			#{opTerm},
+			#{status},
+			#{accountId},
+			#{awardDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE mobile_award_record SET 	
+			activity_id = #{activityId},
+			mobile = #{mobile},
+			prize_instance_id = #{prizeInstanceId},
+			op_dt = #{opDt},
+			op_term = #{opTerm},
+			status = #{status},
+			account_id = #{accountId},
+			award_dt = #{awardDt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM mobile_award_record
+		WHERE id = #{id}
+	</update>
+
+	<select id="getCountByActivityIdAndAwardType" resultType="java.lang.Integer">
+		select count(1)
+		from marketing_wheel_prize_info a
+		left join marketing_wheel_prize_instance b on a.id = b.prize_id
+		left join mobile_award_record c on b.id = c.prize_instance_id
+		left join project_investment_record d on c.account_id = d.investment_user_id and d.status in ('0','3')
+		where a.activity_id = #{activityId} and a.type = #{prizeType} and (c.account_id is null or d.id is null)
+	</select>
+
+	<select id="getCountByActivityIdAndMobile" resultType="java.lang.Integer">
+		select count(1) from mobile_award_record where activity_id = #{activityId} and mobile = #{mobile}
+	</select>
+
+	<select id="getByActivityIdAndMobileAndStatus" resultType="MobileAwardRecord">
+		select * from  mobile_award_record where activity_id = #{activityId} and mobile = #{mobile}
+		<if test="status != null">
+			and status = #{status}
+		</if>
+		limit 1
+	</select>
+
+	<select id="getByActivityIdAndAccountIdAndStatus" resultType="MobileAwardRecord">
+		select * from  mobile_award_record where activity_id = #{activityId} and account_id = #{accountId}
+		<if test="status != null">
+			and status = #{status}
+		</if>
+		limit 1
+	</select>
+</mapper>

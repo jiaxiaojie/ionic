@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.sys.dao.SysExchangeRateParaDao">
+    
+	<sql id="sysExchangeRateParaColumns">
+		a.id AS "id",
+		a.rate_type AS "rateType",
+		a.rate_name AS "rateName",
+		a.annualized_rate AS "annualizedRate",
+		a.create_dt AS "createDt",
+		a.status AS "status"
+	</sql>
+	
+	<sql id="sysExchangeRateParaJoins">
+	</sql>
+    
+	<select id="get" resultType="SysExchangeRatePara">
+		SELECT 
+			<include refid="sysExchangeRateParaColumns"/>
+		FROM sys_exchange_rate_para a
+		<include refid="sysExchangeRateParaJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getRateParaByRateType" resultType="SysExchangeRatePara">
+		SELECT 
+			<include refid="sysExchangeRateParaColumns"/>
+		FROM sys_exchange_rate_para a
+		<include refid="sysExchangeRateParaJoins"/>
+		WHERE a.rate_type = #{rateType} limit 1
+	</select>
+	
+	<select id="findList" resultType="SysExchangeRatePara">
+		SELECT 
+			<include refid="sysExchangeRateParaColumns"/>
+		FROM sys_exchange_rate_para a
+		<include refid="sysExchangeRateParaJoins"/>
+		<where>
+			
+			<if test="rateName != null and rateName != ''">
+				AND a.rate_name = #{rateName}
+			</if>
+			<if test="annualizedRate != null and annualizedRate != ''">
+				AND a.annualized_rate = #{annualizedRate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SysExchangeRatePara">
+		SELECT 
+			<include refid="sysExchangeRateParaColumns"/>
+		FROM sys_exchange_rate_para a
+		<include refid="sysExchangeRateParaJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO sys_exchange_rate_para(
+			rate_type,
+			rate_name,
+			annualized_rate,
+			create_dt,
+			status
+		) VALUES (
+			#{rateType},
+			#{rateName},
+			#{annualizedRate},
+			#{createDt},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_exchange_rate_para SET 	
+			rate_type = #{rateType},
+			rate_name = #{rateName},
+			annualized_rate = #{annualizedRate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM sys_exchange_rate_para
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

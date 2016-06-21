@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.operation.dao.DataQueryFormDao">
+    
+	<sql id="dataQueryFormColumns">
+		a.id AS "id",
+		a.query_id AS "queryId",
+		a.label AS "label",
+		a.parameter AS "parameter",
+		a.show_type AS "showType",
+		a.dict_type AS "dictType",
+		a.expression AS "expression",
+		a.nullable AS "nullable",
+		a.sort AS "sort",
+		a.date_format AS "dateFormat"
+	</sql>
+	
+	<sql id="dataQueryFormJoins">
+	</sql>
+    
+	<select id="get" resultType="DataQueryForm">
+		SELECT 
+			<include refid="dataQueryFormColumns"/>
+		FROM data_query_form a
+		<include refid="dataQueryFormJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="DataQueryForm">
+		SELECT 
+			<include refid="dataQueryFormColumns"/>
+		FROM data_query_form a
+		<include refid="dataQueryFormJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DataQueryForm">
+		SELECT 
+			<include refid="dataQueryFormColumns"/>
+		FROM data_query_form a
+		<include refid="dataQueryFormJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO data_query_form(
+			query_id,
+			label,
+			parameter,
+			show_type,
+			dict_type,
+			expression,
+			nullable,
+			sort,
+			date_format
+		) VALUES (
+			#{queryId},
+			#{label},
+			#{parameter},
+			#{showType},
+			#{dictType},
+			#{expression},
+			#{nullable},
+			#{sort},
+			#{dateFormat}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE data_query_form SET 	
+			query_id = #{queryId},
+			label = #{label},
+			parameter = #{parameter},
+			show_type = #{showType},
+			dict_type = #{dictType},
+			expression = #{expression},
+			nullable = #{nullable},
+			sort = #{sort},
+			date_format = #{dateFormat}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM data_query_form
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findListByQueryId" resultType="DataQueryForm">
+		select * from data_query_form where query_id = #{queryId} order by sort
+	</select>
+	
+	<delete id="deleteByQueryId">
+		delete from data_query_form where query_id = #{queryId}
+	</delete>
+</mapper>

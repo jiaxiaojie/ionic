@@ -1,0 +1,727 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.project.dao.ProjectInvestmentRecordDao">
+    
+	<sql id="projectInvestmentRecordColumns">
+		a.id AS "id",
+		a.project_id AS "projectId",
+		a.transfer_project_id AS "transferProjectId",
+		a.investment_user_id AS "investmentUserId",
+		a.platform_amount AS "platformAmount",
+		a.to_platform_money AS "toPlatformMoney",
+		a.to_borrowers_user_money AS "toBorrowersUserMoney",
+		ca.account_name AS "ca.accountName",
+		ca.avatar_image AS "ca.avatarImage",
+		cb.customer_name AS "cb.customerName",
+		cb.cert_num AS "cb.certNum",
+		cb.mobile AS "cb.mobile",
+		pb.project_name AS "pb.projectName",
+		a.amount AS "amount",
+		a.actual_amount AS "actualAmount",
+		a.ticket_ids AS "ticketIds",
+		a.rate_ticket_ids AS "rateTicketIds",
+		a.ticket_amount AS "ticketAmount",
+		a.investment_type AS "investmentType",
+		a.op_term AS "opTerm",
+		a.op_dt AS "opDt",
+		a.status AS "status",
+		a.third_party_order AS "thirdPartyOrder",
+		a.will_profit AS "willProfit",
+		a.real_profit AS "realProfit",
+		a.will_receive_principal AS "willReceivePrincipal",
+		a.will_receive_interest AS "willReceiveInterest",
+		a.up_to_platform_money AS "upToPlatformMoney",
+		a.down_to_platform_money AS "downToPlatformMoney"
+	</sql>
+	
+	<sql id="projectInvestmentRecordJoins">
+		JOIN customer_account ca ON  ca.account_id=a.investment_user_id
+		JOIN customer_base cb ON cb.account_id=ca.account_id
+		JOIN project_base pb ON pb.project_id=a.project_id
+	</sql>
+    
+	<select id="get" resultType="ProjectInvestmentRecord">
+		SELECT 
+			<include refid="projectInvestmentRecordColumns"/>
+		FROM project_investment_record a
+		<include refid="projectInvestmentRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getByThirdPartyOrder" resultType="ProjectInvestmentRecord">
+		SELECT 
+			<include refid="projectInvestmentRecordColumns"/>
+		FROM project_investment_record a
+		<include refid="projectInvestmentRecordJoins"/>
+		WHERE a.third_party_order = #{thirdPartyOrder}
+	</select>
+
+	<select id="getTodayRankingList" resultType="ProjectInvestmentRecord">
+		select sum(a.amount) as amount, a.investment_user_id, b.mobile AS "cb.mobile"
+		  from project_investment_record a
+		  LEFT JOIN customer_base b
+			on a.investment_user_id = b.account_id
+		 where a. status = '0'
+		 and date(a.op_dt) = date(now())
+		 group by a.investment_user_id
+		 ORDER BY amount desc limit #{limit}
+	</select>
+	
+	<select id="findListByThirdPartyOrder" resultType="ProjectInvestmentRecord">
+		SELECT 
+			<include refid="projectInvestmentRecordColumns"/>
+		FROM project_investment_record a
+		<include refid="projectInvestmentRecordJoins"/>
+		<where>
+			a.third_party_order = #{thirdPartyOrder} and a.status != '-1'
+		</where>		
+	</select>
+	
+	<select id="findList" resultType="ProjectInvestmentRecord">
+		SELECT 
+			<include refid="projectInvestmentRecordColumns"/>
+		FROM project_investment_record a
+		<include refid="projectInvestmentRecordJoins"/>
+		<where>
+
+
+			<if test="transferProjectId != null">
+				AND a.transfer_project_id = #{transferProjectId}
+			</if>
+
+			<if test="queryProjectId != null and queryProjectId != ''">
+				AND a.project_id = #{queryProjectId}
+			</if>
+			<if test="beginOpDt != null  and beginOpDt != ''">
+				AND a.op_dt >= #{beginOpDt}
+			</if>
+			<if test="endOpDt != null and endOpDt != ''">
+				AND #{endOpDt} >= a.op_dt
+			</if>
+			<if test="status != null and status != ''">
+				<if test="status == '0,3'">
+					AND a.status in  ('0', '3')
+				</if>
+				<if test="status != '0,3'">
+				AND a.status = #{status}
+				</if>
+				
+			</if>
+			<if test="investmentUserId != null and investmentUserId != ''">
+				AND a.investment_user_id = #{investmentUserId}
+			</if>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.op_dt DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findListByProjectId" resultType="ProjectInvestmentRecord">
+		SELECT 
+			<include refid="projectInvestmentRecordColumns"/>
+		FROM project_investment_record a
+		<include refid="projectInvestmentRecordJoins"/>
+		<where>
+			a.project_id = #{projectId} and transfer_project_id = '0'
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			order by a.op_dt desc
+		</where>		
+	</select>
+	
+	
+	<!-- 日投资额度统计（包括全部用户投资总额度和刷单用户投资总额度） -->
+	<select id="findCustomerInvestmentStatistics" resultType="map">
+	SELECT 
+	a.date  date,
+	case when a.sumAmount is null then 0 else a.sumAmount end as sumAmount,
+	case when b.friendsSumAmount is null then 0 else b.friendsSumAmount end as friendsSumAmount
+	 from 
+	(SELECT date(op_dt) date, sum(amount) sumAmount   from  project_investment_record 
+	<where>
+	date(op_dt) &lt;  date(now())  AND status in  ('0', '3')
+	<if test="beginOpDt != null  and beginOpDt != ''">
+				AND date(op_dt)>= date(#{beginOpDt})
+			</if>
+			<if test="endOpDt != null and endOpDt != ''">
+				AND date(#{endOpDt}) >= date(op_dt)
+			</if>
+	</where>
+	  GROUP BY date(op_dt)) a
+	LEFT JOIN
+	(SELECT sum(amount) friendsSumAmount,date(op_dt) date1 from  project_investment_record 	
+	<where>
+	investment_user_id  in (SELECT   account_id    from    customer_base where  mobile  in  (select * from  fd_not_true_user)) and date(op_dt) &lt; date(now())
+	 and date(op_dt) &lt;  date(now())  AND   status in  ('0', '3')
+		<if test="beginOpDt != null  and beginOpDt != ''">
+				AND date(op_dt)>= date(#{beginOpDt})
+			</if>
+			<if test="endOpDt != null and endOpDt != ''">
+				AND date(#{endOpDt}) >= date(op_dt)
+			</if>
+	  </where>
+	   GROUP BY date(op_dt)) b 
+	 on a.date=b.date1
+	  ORDER BY  a.date desc
+	</select>
+	
+	<!--  按日期查询全部用户每日投资额度清单 -->
+	<select id="findInvestmentRecordByDate" resultType="java.util.Map">
+			select b.date, b.amount,c.customer_name customerName  from 
+		(SELECT 
+			a.op_dt date,a.amount amount,a.investment_user_id investmentUserId
+		FROM project_investment_record a
+		<where>
+		and  date(a.op_dt)= date(#{date}) AND a.status in  ('0', '3')
+		</where>
+		) b	 ,customer_base c where c.account_id=b.investmentUserId
+			
+		order by date desc
+	</select>
+	
+	<!-- 按日期查询小伙伴每日投资额度清单-->
+	<select id="findFriendsInvestmentRecordByDate" resultType="java.util.Map">
+			select b.date, b.amount,c.customer_name customerName  from 
+		(SELECT 
+			a.op_dt date,a.amount amount,a.investment_user_id investmentUserId
+		FROM project_investment_record a
+		<where>
+		investment_user_id  in (SELECT   account_id    from    customer_base where  mobile  in  (select * from  fd_not_true_user)) and date(op_dt) &lt; date(now())
+		 and  a.status in  ('0', '3')
+		<if test="date !=null and date !='' ">
+		and  date(a.op_dt)= date(#{date}) 
+		</if>
+		</where>
+			) b	 ,customer_base c where c.account_id=b.investmentUserId		
+		order by date desc
+	</select>
+	
+	
+	
+	<select id="findListByProjectIdAndStatuses" resultType="ProjectInvestmentRecord">
+		SELECT 
+			<include refid="projectInvestmentRecordColumns"/>
+		FROM project_investment_record a
+		<include refid="projectInvestmentRecordJoins"/>
+		<where>
+			a.project_id = #{projectId} and transfer_project_id = '0'
+			AND a.status in  ('0', '3')
+			order by a.op_dt desc
+		</where>		
+	</select>
+	
+	<select id="getCountByProjectIdAndStatuses" resultType="java.lang.Integer">
+	   SELECT 
+			count(*)
+		FROM project_investment_record a
+		<where>
+			a.project_id = #{projectId} and transfer_project_id = '0'
+			AND a.status in  ('0', '3') 
+		</where>	
+	</select>
+	<select id="getCustomerStatusByAccountId" resultType="ProjectInvestmentRecord">
+	  select a.has_open_third_account as hasOpenThird from customer_account a
+             LEFT JOIN project_investment_record b ON a.account_id=b.investment_user_id;
+	</select>
+	
+	<select id="findListByProjectIdAndTransferProjectId" resultType="ProjectInvestmentRecord">
+		SELECT 
+			<include refid="projectInvestmentRecordColumns"/>
+		FROM project_investment_record a
+		<include refid="projectInvestmentRecordJoins"/>
+		<where>
+			a.project_id = #{projectId} and a.transfer_project_id = #{transferProjectId} and amount>0
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			order by a.op_dt desc
+		</where>		
+	</select>
+	
+	<select id="getCountByProjectIdAndTransferProjectId" resultType="java.lang.Integer">
+		SELECT 
+		    count(*)
+		FROM project_investment_record a
+		<where>
+			a.project_id = #{projectId} 
+			and a.transfer_project_id = #{transferProjectId} 
+		    and amount > 0  
+			AND (a.status='0' or a.status='3') 
+		</where>		
+	</select>
+	
+	<select id="findInvestmentListByOpDtAndStatus" resultType="ProjectInvestmentRecord">
+		SELECT 
+			<include refid="projectInvestmentRecordColumns"/>
+		FROM project_investment_record a
+		<include refid="projectInvestmentRecordJoins"/>
+		<where>
+			a.op_dt <![CDATA[ < #{theDate} ]]>
+			AND a.status = #{status}
+		</where>		
+	</select>
+	
+	<select id="findListByTheDateAndStatus" resultType="ProjectInvestmentRecord">
+		SELECT 
+			<include refid="projectInvestmentRecordColumns"/>
+		FROM project_investment_record a
+		<include refid="projectInvestmentRecordJoins"/>
+		<where>
+			DATE_FORMAT(a.op_dt, '%Y-%m-%d') <![CDATA[ >= DATE_FORMAT(#{beginDate}, '%Y-%m-%d') ]]>
+			AND DATE_FORMAT(a.op_dt, '%Y-%m-%d') <![CDATA[ <= DATE_FORMAT(#{endDate}, '%Y-%m-%d') ]]>
+			AND a.status = #{status}
+		</where>		
+	</select>
+
+	<select id="findLatestInvestPageList" resultType="ProjectInvestmentRecord">
+		SELECT
+		<include refid="projectInvestmentRecordColumns"/>
+		FROM project_investment_record a
+		<include refid="projectInvestmentRecordJoins"/>
+		<where>
+			a.status = #{status}
+			<if test="beginDate != null  and beginDate != ''">
+				AND DATE_FORMAT(a.op_dt, '%Y-%m-%d') <![CDATA[ >= DATE_FORMAT(#{beginDate}, '%Y-%m-%d') ]]>
+			</if>
+			<if test="endDate != null  and endDate != ''">
+				AND DATE_FORMAT(a.op_dt, '%Y-%m-%d') <![CDATA[ <= DATE_FORMAT(#{endDate}, '%Y-%m-%d') ]]>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.op_dt DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findInvestmentListThirdPartyOrderNotEmpty" resultType="ProjectInvestmentRecord">
+		SELECT 
+			<include refid="projectInvestmentRecordColumns"/>
+		FROM project_investment_record a
+		<include refid="projectInvestmentRecordJoins"/>
+		<where>
+			a.third_party_order is not null
+		</where>		
+	</select>
+	
+	<select id="findAllList" resultType="ProjectInvestmentRecord">
+		SELECT 
+			<include refid="projectInvestmentRecordColumns"/>
+		FROM project_investment_record a
+		<include refid="projectInvestmentRecordJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO project_investment_record(
+			project_id,
+			transfer_project_id,
+			investment_user_id,
+			amount,
+			actual_amount,
+			ticket_amount,
+			ticket_ids,
+			rate_ticket_ids,
+			platform_amount,
+			to_platform_money,
+			to_borrowers_user_money,
+			will_profit,
+			real_profit,
+			investment_type,
+			op_term,
+			op_dt,
+			status,
+			third_party_order,
+			will_receive_principal,
+			will_receive_interest,
+			up_to_platform_money,
+			down_to_platform_money
+		) VALUES (
+			#{projectId},
+			#{transferProjectId},
+			#{investmentUserId},
+			#{amount},
+			#{actualAmount},
+			#{ticketAmount},
+			#{ticketIds},
+			#{rateTicketIds},
+			#{platformAmount},
+			#{toPlatformMoney},
+			#{toBorrowersUserMoney},
+			#{willProfit},
+			#{realProfit},
+			#{investmentType},
+			#{opTerm},
+			#{opDt},
+			#{status},
+			#{thirdPartyOrder},
+			#{willReceivePrincipal},
+			#{willReceiveInterest},
+			#{upToPlatformMoney},
+			#{downToPlatformMoney}
+		)
+	</insert>
+	<select id="findInvestmentRunningProjectListByAccountId" parameterType="String" resultType="ProjectInvestmentRecord">
+		select b.id AS "id",a.project_id AS "projectBaseInfo.projectId",a.project_name AS "projectBaseInfo.projectName",a.project_status AS "projectBaseInfo.projectStatus",a.repayment_mode AS "projectBaseInfo.repaymentMode",a.bidding_deadline AS "projectBaseInfo.biddingDeadline",a.last_repayment_date AS "projectBaseInfo.lastRepaymentDate",a.repayment_mode AS "projectBaseInfo.repaymentMode", b.op_dt AS "opDt", b.amount AS "amount",b.will_profit AS "willProfit",b.status AS "status"
+		from project_base a,project_investment_record b
+		where b.project_id=a.project_id  and ( a.project_status='4' or a.project_status='5') and b.investment_user_id=#{accountId} and b.status=0
+		order by b.op_dt desc
+	</select>
+	
+	<select id="findInvestmentEndProjectListByAccountId" parameterType="String" resultType="ProjectInvestmentRecord">
+		select b.id AS "id",a.project_id AS "projectBaseInfo.projectId",a.project_name AS "projectBaseInfo.projectName",a.project_status AS "projectBaseInfo.projectStatus",a.bidding_deadline AS "projectBaseInfo.biddingDeadline",a.last_repayment_date AS "projectBaseInfo.lastRepaymentDate",a.repayment_mode AS "projectBaseInfo.repaymentMode", b.op_dt AS "opDt", b.amount AS "amount",b.will_profit AS "willProfit",b.real_profit AS "realProfit",b.status AS "status"
+		from project_base a,project_investment_record b
+		where b.project_id=a.project_id  and (a.project_status='6' or a.project_status='7') and b.investment_user_id=#{accountId} and b.status=1
+		order by b.op_dt desc 
+	</select>
+	
+	<select id="findCongealProjectCountByAccountId" parameterType="String" resultType="Integer">
+		select count(distinct(a.project_id)) 
+		from project_base a,project_investment_record b
+		where b.project_id=a.project_id  and a.project_status='3' and b.investment_user_id=#{accountId} and b.status=0
+	</select>
+	
+		<!-- 
+		 分组查询用户的投资额度
+		select SUM(amount) asAmount FROM project_investment_record  GROUP BY  investment_user_id;
+		 累计投资额度分为四个档次：
+		0＜累计投资额度≤5000 
+		5000＜累计投资额度≤10000
+		累计投资额度≤20000
+		累计投资额度＞20000
+		并根据时间段范围查询在相应投资额
+		 -->
+	 <select id="findCustomerInvestmentAmountDistributionNoPage" resultType="map">
+	 SELECT * FROM
+		(SELECT count(*) as zeroToFiveThousandCount,sum(sumAmount)  from (
+		SELECT SUM(m.amount) as sumAmount from (select amount,investment_user_id,op_dt from project_investment_record 
+		 <where>
+		        status in  ('0', '3')
+		<if test="beginOpDt != null  and beginOpDt != ''">
+						AND date(op_dt) >= date(#{beginOpDt})
+		</if>
+		<if test="endOpDt != null and endOpDt != ''">
+						AND date(#{endOpDt}) >=date(op_dt)
+		</if>
+		</where> 
+		) as m GROUP BY m.investment_user_id
+		) as n where   (  n.sumAmount &gt;= 0 and n.sumAmount &lt;= 5000    )) as zeroToFiveThousandCount,
+		
+		(SELECT count(*) as fiveThousandToTenThousandCount  from (
+		SELECT SUM(m.amount) as sumAmount from (select amount,investment_user_id,op_dt from project_investment_record 
+		<where>
+		              status in  ('0', '3')
+					<if test="beginOpDt != null  and beginOpDt != ''">
+						AND date(op_dt) >= date(#{beginOpDt})
+					</if>
+					<if test="endOpDt != null and endOpDt != ''">
+						AND date(#{endOpDt}) >=date(op_dt)
+					</if>
+				</where> 
+		) as m GROUP BY m.investment_user_id
+		) as n where (  n.sumAmount &gt; 5000 and n.sumAmount &lt;= 10000    )) as fiveThousandToTenThousandCount,
+		
+		(SELECT count(*) as tenThousandToTwentyThousandCount  from (
+		SELECT SUM(m.amount) as sumAmount from (select amount,investment_user_id,op_dt from project_investment_record 
+		<where>
+		status in  ('0', '3')
+		<if test="beginOpDt != null  and beginOpDt != ''">
+						AND date(op_dt) >= date(#{beginOpDt})
+		</if>
+		<if test="endOpDt != null and endOpDt != ''">
+						AND date(#{endOpDt}) >=date(op_dt)
+		</if>
+		</where> 
+		) as m GROUP BY m.investment_user_id
+		) as n where   (  n.sumAmount &gt;10000 and n.sumAmount &lt;= 20000   )) as tenThousandToTwentyThousandCount,
+		
+		(SELECT count(*) as twentyThousandCount  from (
+		SELECT SUM(m.amount) as sumAmount from (select amount,investment_user_id,op_dt from project_investment_record 
+		<where>
+		status in  ('0', '3')
+		<if test="beginOpDt != null  and beginOpDt != ''">
+						AND date(op_dt) >= date(#{beginOpDt})
+		</if>
+		<if test="endOpDt != null and endOpDt != ''">
+						AND date(#{endOpDt}) >=date(op_dt)
+		</if>
+		</where> 
+		) as m GROUP BY m.investment_user_id
+		) as n where n.sumAmount &gt; 20000) as twentyThousandCount
+	 </select>
+	 
+	 <!-- 求每个投资范围的平均投资金额值 -->
+	 	<select id="findCustomerInvestmentAmountDistributionAvgNoPage" resultType="map">
+			select b.avgAllAmount avgAmount1,c.avgAllAmount avgAmount2,d.avgAllAmount avgAmount3,e.avgAllAmount  avgAmount4 
+			from
+			 (select  avg(allAmount) avgAllAmount  from 
+			(SELECT  sum(amount) allAmount FROM project_investment_record 
+			<where> 
+			status in  ('0', '3')
+			<if test="beginOpDt != null  and beginOpDt != ''">
+				         		AND date(op_dt) >= date(#{beginOpDt})
+			</if>
+			<if test="endOpDt != null and endOpDt != ''">
+			 		     		AND date(#{endOpDt}) >=date(op_dt)
+			</if>
+			</where> 
+			GROUP BY investment_user_id)a
+			where (  a.allAmount &gt;= 0 and a.allAmount &lt;= 5000 ) ) b,
+			
+			(select  avg(allAmount) avgAllAmount from (SELECT  sum(amount) allAmount
+			FROM project_investment_record 
+			<where>
+			 status in  ('0', '3')
+			<if test="beginOpDt != null  and beginOpDt != ''">
+									AND date(op_dt) >= date(#{beginOpDt})
+			</if>
+			<if test="endOpDt != null and endOpDt != ''">
+									AND date(#{endOpDt}) >=date(op_dt)
+			</if>
+			</where> 
+			GROUP BY  investment_user_id)a
+			where (  a.allAmount &gt;5000 and a.allAmount &lt;= 10000    ) ) c,
+			
+			(select  avg(allAmount) avgAllAmount  from (SELECT  sum(amount) allAmount
+			FROM project_investment_record 
+			<where> 
+			status in  ('0', '3')
+			<if test="beginOpDt != null  and beginOpDt != ''">
+									AND date(op_dt) >= date(#{beginOpDt})
+			</if>
+			<if test="endOpDt != null and endOpDt != ''">
+			                        AND date(#{endOpDt}) >=date(op_dt)
+			</if>
+			</where> 
+			GROUP BY  investment_user_id)a
+			where (  a.allAmount &gt; 10000 and a.allAmount &lt;= 20000    )) d,
+			
+			(select  avg(allAmount) avgAllAmount  from (SELECT  sum(amount) allAmount
+			FROM
+				project_investment_record 
+			<where> status in  ('0', '3')
+			<if test="beginOpDt != null  and beginOpDt != ''">
+									AND date(op_dt) >= date(#{beginOpDt})
+								</if>
+			<if test="endOpDt != null and endOpDt != ''">
+									AND date(#{endOpDt}) >=date(op_dt)
+			</if>
+			</where> 
+			GROUP BY
+				investment_user_id)a
+			where a.allAmount &gt;= 20000  ) e
+	 </select>
+	 
+	 <!-- 投资总额度 -->
+	  <select id="findCustomerInvestmentAmount" resultType="map">
+	 select avg(amount) sumAmountAvg from project_investment_record 
+	 <where>
+	  status in('0','3')  
+	 <if test="beginOpDt != null  and beginOpDt != ''">
+					AND date(op_dt) >= #{beginOpDt}
+	 </if>
+	 <if test="endOpDt != null and endOpDt != ''">
+					AND #{endOpDt} >=date(op_dt)
+	 </if>
+	 </where> 
+	  </select>
+	 
+
+	
+	<select id="getPreRepaymentProjectCount" parameterType="String" resultType="Integer">
+		select count(distinct(a.project_id ))
+		from project_base a,project_investment_record b,project_repayment_split_record c
+		where b.project_id=a.project_id and c.investment_record_id=b.id and c.pre_penalty_money>0 and (a.project_status='6' or a.project_status='7') and b.investment_user_id=#{accountId} 
+	</select>
+	
+	
+	<update id="update">
+		UPDATE project_investment_record SET 	
+			project_id = #{projectId},
+			transfer_project_id=#{transferProjectId},
+			investment_user_id = #{investmentUserId},
+			amount = #{amount},
+			actual_amount=#{actualAmount},
+			ticket_amount=#{ticketAmount},
+			ticket_ids=#{ticketIds},
+			rate_ticket_ids=#{rateTicketIds},
+			platform_amount=#{platformAmount},
+			to_platform_money=#{toPlatformMoney},
+			to_borrowers_user_money=#{toBorrowersUserMoney},
+			will_profit=#{willProfit},
+			real_profit=#{realProfit},
+			investment_type = #{investmentType},
+			op_term = #{opTerm},
+			op_dt = #{opDt},
+			status = #{status},
+			third_party_order = #{thirdPartyOrder},
+			will_receive_principal= #{willReceivePrincipal},
+			will_receive_interest= #{willReceiveInterest},
+			up_to_platform_money= #{upToPlatformMoney},
+			down_to_platform_money= #{downToPlatformMoney}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM project_investment_record
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateStatus">
+		UPDATE project_investment_record 
+		  <set>
+            <if test="status != null and status != ''">
+                status = #{status}
+            </if>
+        </set>
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findListForCyz" resultType="ProjectInvestmentRecord">
+		select a.project_id AS "projectBaseInfo.projectId",a.project_name AS "projectBaseInfo.projectName",b.will_profit AS "willProfit",a.annualized_rate AS "projectBaseInfo.annualizedRate",a.repayment_mode AS "projectBaseInfo.repaymentMode",c.remaining_time AS "pes.remainingTime",c.status AS "pes.status",b.will_receive_principal+b.will_receive_interest AS "sumWillReceive",b.transfer_project_id AS "transferProjectId", b.id AS "id", b.op_dt AS "opDt",b.amount AS "amount",a.last_repayment_date AS "projectBaseInfo.lastRepaymentDate"
+		from project_base a,project_investment_record b,project_execute_snapshot c
+		where b.project_id=a.project_id and b.project_id=c.project_id and b.transfer_project_id=c.transfer_project_id
+		  and  a.project_status='5'
+		  and b.amount>0
+		  and b.investment_user_id=#{accountId} 
+		  and b.status=0
+		order by b.op_dt desc
+	</select>
+
+	<select id="findListForTbz" resultType="ProjectInvestmentRecord">
+	select a.project_name AS "projectBaseInfo.projectName",b.id AS "Id",a.annualized_rate AS "projectBaseInfo.annualizedRate", b.amount AS "amount",b.ticket_amount AS "ticketAmount",a.last_repayment_date AS "projectBaseInfo.lastRepaymentDate",b.actual_amount AS "actualAmount",b.platform_amount AS "platformAmount"
+		from project_base a,project_investment_record b
+		where b.project_id=a.project_id and b.transfer_project_id=0
+		  and (a.project_status='3' or a.project_status='4') 
+		  and b.investment_user_id=#{accountId} 
+		  and b.status=0
+		order by b.op_dt desc
+	</select>
+
+
+	<select id="findListForYjs" resultType="ProjectInvestmentRecord">
+	select a.project_name AS "projectBaseInfo.projectName",a.annualized_rate AS "projectBaseInfo.annualizedRate", b.amount AS "amount",b.real_profit AS "realProfit",b.will_profit AS "willProfit",c.finish_repay_dt AS "finishDate"
+		from project_base a,project_investment_record b,project_date_node c
+		where b.project_id=a.project_id and b.project_id=c.project_id 
+		  and (a.project_status='6' or a.project_status='7') 
+		  and b.investment_user_id=#{accountId} 
+		  and b.status in (1,3)
+		order by b.op_dt desc
+	</select>
+	<select id="getUpServiceCharge" resultType="java.lang.Double">
+		select case when  ISNULL(sum(up_to_platform_money)) then 0 else sum(up_to_platform_money) end  from project_investment_record where transfer_project_id=#{transferProjectId} and status=0
+	</select>
+	
+	<select id="getInvestCountByAccountId" resultType="java.lang.Integer">
+		select count(1) from project_investment_record where investment_user_id=#{accountId} and status in ('0','3')
+	</select>
+	
+	<select id="getInvestCountIsNewCustomerByAccountId" resultType="java.lang.Integer">
+		select count(1) from project_investment_record where investment_user_id=#{accountId} and (status='0' or status='2' or status='3')
+	</select>
+	
+	<select id="getSumWillProfit" resultType="java.lang.Double">
+		select sum(will_profit+will_receive_principal) from project_investment_record where project_id = #{projectId} and transfer_project_id = #{transferProjectId} and status = #{status}
+	</select>
+	
+	<select id="getSumAmount" resultType="java.lang.Double">
+		select sum(amount) from project_investment_record where project_id = #{projectId} and transfer_project_id = #{transferProjectId} and investment_user_id = #{accountId} and (status='0' or status='3') 
+	</select>
+	
+	<select id="getSumAmountWithStat" resultType="java.lang.Double">
+		select case when ISNULL(sum(amount)) then 0 else sum(amount) end AS amount from project_investment_record 
+		where investment_user_id = #{accountId} and (status='0' or status='3')
+		AND op_dt BETWEEN #{beginDataDt} AND #{endDataDt}
+	</select>
+	
+	<select id="sumAmount" resultType="java.lang.Double">
+		select case when ISNULL(sum(a.amount)) then 0 else sum(a.amount) end AS amount from project_investment_record a
+		JOIN project_base pb ON pb.project_id=a.project_id
+		where a.investment_user_id = #{accountId} 
+		
+		<if test="beginDataDt != null and endDataDt != null">
+                AND a.op_dt BETWEEN #{beginDataDt} AND #{endDataDt}
+        </if>
+		
+		<if test="isNewUser != null">
+                and pb.is_new_user=#{isNewUser}
+        </if>
+        <if test="status != null and status != '' ">
+                and a.status in(${status})
+        </if>
+	</select>
+	
+	<update id="updateWillReceiveInfoClean">
+		update project_investment_record set will_receive_principal=0,will_receive_interest=0 where id=#{investRecordId}
+	</update>
+	
+	<update id="updateWillReceiveInfo">
+		update project_investment_record set will_receive_principal=will_receive_principal-#{willPrincipal},will_receive_interest=will_receive_interest-#{willInterest} where id=#{investRecordId}
+	</update>
+	
+	<select id="getCustomerFirstNormalRecord" resultType="ProjectInvestmentRecord">
+		select * from project_investment_record where investment_user_id = #{accountId} and (status='0' or status='3') order by id limit 1
+	</select>
+	
+	<select id="getFifthNormalRecordIdByRecommenderMobile" resultType="java.lang.Long">
+		select min(a.id) from project_investment_record a left join customer_account b on b.account_id = a.investment_user_id
+		where ( a.transfer_project_id is null or a.transfer_project_id = 0)
+			and (a.`status`='0' or a.`status`='3') and b.recommender_type = '2' and b.recommender_mobile = #{recommenderMobile}
+			group by a.investment_user_id
+			order by a.id limit 4,1
+	</select>
+	
+	<select id="getRecordCountAfterRepaymentByAccountId" resultType="java.lang.Integer">
+		select count(*) from project_investment_record a left join project_base b on a.project_id=b.project_id
+			where (project_status='5' or project_status='6' or project_status='7') and a.status = '0' and investment_user_id = #{accountId}
+	</select>
+	
+	<select id="findDoubleEggList" resultType="ProjectInvestmentRecord">
+		select max(a.id) as id, a.investment_user_id as investmentUserId, a.op_term as opTerm
+		from project_investment_record a
+		left join customer_account b on a.investment_user_id = b.account_id
+		where date(a.op_dt) between date(#{beginDate}) and date(#{endDate}) and date(b.register_dt) between date(#{beginDate}) and date(#{endDate})
+		and (a.status = '0' or a.status = '3') and a.transfer_project_id = '0' and b.recommender_type = '2'
+		and a.amount &gt;= 1000 group by a.investment_user_id
+	</select>
+	
+	<select id="getCustomerFirstNormalRecordDuringTime" resultType="ProjectInvestmentRecord">
+		select * from project_investment_record
+		where investment_user_id = #{accountId} and transfer_project_id = 0 and (status = '0' or status = '3')
+			and op_dt &gt; #{beginDate} and op_dt &lt; #{endDate} limit 1
+	</select>
+	
+	<select id="getCustomerAnnualizedAmountDuringTime" resultType="java.lang.Double">
+		select sum(a.amount * b.project_duration / 12) amount
+		 from project_investment_record a,project_base b
+		 where a.transfer_project_id = 0 and a.project_id = b.project_id
+		 and (a.`status` = '0' or a.`status` = '3')
+		 and a.investment_user_id = #{accountId}
+		 and a.op_dt &gt;= #{startDate} and a.op_dt &lt;= #{endDate}
+		 group by a.investment_user_id
+	</select>
+
+	<!-- 平台的定期投资总额(累计募集) -->
+	<select id="getInvestmentAmount"  resultType="java.lang.String">
+		select IFNULL(SUM(amount),0) from project_investment_record where status in('0','3')
+	</select>
+</mapper>

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.operation.dao.ProjectOperationSummaryDao">
+    
+	<sql id="projectOperationSummaryColumns">
+		a.id AS "id",
+		a.finance_amount AS "financeAmount",
+		a.repay_principal AS "repayPrincipal",
+		a.repay_interest AS "repayInterest",
+		a.xin_finance_amount AS "xinFinanceAmount",
+		a.xin_repay_principal AS "xinRepayPrincipal",
+		a.xin_repay_interest AS "xinRepayInterest",
+		a.yue_finance_amount AS "yueFinanceAmount",
+		a.yue_repay_principal AS "yueRepayPrincipal",
+		a.yue_repay_interest AS "yueRepayInterest",
+		a.shuangyue_finance_amount AS "shuangyueFinanceAmount",
+		a.shuangyue_repay_principal AS "shuangyueRepayPrincipal",
+		a.shuangyue_repay_interest AS "shuangyueRepayInterest",
+		a.ji_finance_amount AS "jiFinanceAmount",
+		a.ji_repay_principal AS "jiRepayPrincipal",
+		a.ji_repay_interest AS "jiRepayInterest",
+		a.shuangji_finance_amount AS "shuangjiFinanceAmount",
+		a.shuangji_repay_principal AS "shuangjiRepayPrincipal",
+		a.shuangeji_repay_interest AS "shuangejiRepayInterest",
+		a.nian_finance_amount AS "nianFinanceAmount",
+		a.nian_repay_principal AS "nianRepayPrincipal",
+		a.nian_repay_interest AS "nianRepayInterest",
+		a.date AS "date"
+	</sql>
+	
+	<sql id="projectOperationSummaryJoins">
+	</sql>
+    
+	<select id="get" resultType="ProjectOperationSummary">
+		SELECT 
+			<include refid="projectOperationSummaryColumns"/>
+		FROM project_operation_summary a
+		<include refid="projectOperationSummaryJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	
+	<select id="findList" resultType="ProjectOperationSummary">
+		SELECT 
+			<include refid="projectOperationSummaryColumns"/>
+		FROM project_operation_summary a
+		<include refid="projectOperationSummaryJoins"/>
+		<where>
+			<if test="beginDate != null  and beginDate != ''">
+					AND a.date >= #{beginDate}
+				</if>
+				<if test="endDate != null and endDate != ''">
+					AND  #{endDate}>= a.date
+				</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			order by a.date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ProjectOperationSummary">
+		SELECT 
+			<include refid="projectOperationSummaryColumns"/>
+		FROM project_operation_summary a
+		<include refid="projectOperationSummaryJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO project_operation_summary(
+			finance_amount,
+			repay_principal,
+			repay_interest,
+			xin_finance_amount,
+			xin_repay_principal,
+			xin_repay_interest,
+			yue_finance_amount,
+			yue_repay_principal,
+			yue_repay_interest,
+			shuangyue_finance_amount,
+			shuangyue_repay_principal,
+			shuangyue_repay_interest,
+			ji_finance_amount,
+			ji_repay_principal,
+			ji_repay_interest,
+			shuangji_finance_amount,
+			shuangji_repay_principal,
+			shuangeji_repay_interest,
+			nian_finance_amount,
+			nian_repay_principal,
+			nian_repay_interest,
+			date
+		) VALUES (
+			#{financeAmount},
+			#{repayPrincipal},
+			#{repayInterest},
+			#{xinFinanceAmount},
+			#{xinRepayPrincipal},
+			#{xinRepayInterest},
+			#{yueFinanceAmount},
+			#{yueRepayPrincipal},
+			#{yueRepayInterest},
+			#{shuangyueFinanceAmount},
+			#{shuangyueRepayPrincipal},
+			#{shuangyueRepayInterest},
+			#{jiFinanceAmount},
+			#{jiRepayPrincipal},
+			#{jiRepayInterest},
+			#{shuangjiFinanceAmount},
+			#{shuangjiRepayPrincipal},
+			#{shuangejiRepayInterest},
+			#{nianFinanceAmount},
+			#{nianRepayPrincipal},
+			#{nianRepayInterest},
+			#{date}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE project_operation_summary SET 	
+			finance_amount = #{financeAmount},
+			repay_principal = #{repayPrincipal},
+			repay_interest = #{repayInterest},
+			xin_finance_amount = #{xinFinanceAmount},
+			xin_repay_principal = #{xinRepayPrincipal},
+			xin_repay_interest = #{xinRepayInterest},
+			yue_finance_amount = #{yueFinanceAmount},
+			yue_repay_principal = #{yueRepayPrincipal},
+			yue_repay_interest = #{yueRepayInterest},
+			shuangyue_finance_amount = #{shuangyueFinanceAmount},
+			shuangyue_repay_principal = #{shuangyueRepayPrincipal},
+			shuangyue_repay_interest = #{shuangyueRepayInterest},
+			ji_finance_amount = #{jiFinanceAmount},
+			ji_repay_principal = #{jiRepayPrincipal},
+			ji_repay_interest = #{jiRepayInterest},
+			shuangji_finance_amount = #{shuangjiFinanceAmount},
+			shuangji_repay_principal = #{shuangjiRepayPrincipal},
+			shuangeji_repay_interest = #{shuangejiRepayInterest},
+			nian_finance_amount = #{nianFinanceAmount},
+			nian_repay_principal = #{nianRepayPrincipal},
+			nian_repay_interest = #{nianRepayInterest},
+			date = #{date}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM project_operation_summary
+		WHERE id = #{id}
+	</update>
+	
+	<insert id="insertNeedInsertData">
+		insert into project_operation_summary
+			(date,finance_amount,repay_principal,repay_interest,xin_finance_amount,xin_repay_principal,xin_repay_interest,
+			yue_finance_amount,yue_repay_principal,yue_repay_interest,shuangyue_finance_amount,shuangyue_repay_principal,shuangyue_repay_interest,
+			ji_finance_amount,ji_repay_principal,ji_repay_interest,shuangji_finance_amount,shuangji_repay_principal,shuangeji_repay_interest,
+			nian_finance_amount,nian_repay_principal,nian_repay_interest)
+        select a.date,
+        ifnull((select sum(b.amount) from project_investment_record b where date(b.op_dt) &lt;= a.date and (b.`status` = '0' or b.`status` = '3') and transfer_project_id = 0),0) as 'finance_amount',
+        ifnull((select sum(b.principal) from project_repayment_split_record b,project_investment_record c where b.investment_record_id=c.id and c.transfer_project_id = 0 and date(b.actual_repayment_dt) &lt;= a.date and b.`status` = '1'),0) as 'repay_principal',
+        ifnull((select sum(b.interest) from project_repayment_split_record b,project_investment_record c where b.investment_record_id=c.id and c.transfer_project_id = 0 and date(b.actual_repayment_dt) &lt;= a.date and b.`status` = '1'),0) as 'repay_interest',
+        
+        ifnull((select sum(b.amount) from project_investment_record b,project_base c where b.project_id = c.project_id and date(b.op_dt) &lt;= a.date and (b.`status` = '0' or b.`status` = '3') and transfer_project_id = 0 and c.project_name like '新花生%'),0) as 'xin_finance_amount',
+        ifnull((select sum(b.principal) from project_repayment_split_record b,project_investment_record c,project_base d where b.investment_record_id=c.id and c.transfer_project_id = 0 and c.project_id = d.project_id and date(b.actual_repayment_dt) &lt;= a.date and b.`status` = '1' and d.project_name like '新花生%'),0) as 'xin_repay_principal',
+        ifnull((select sum(b.interest) from project_repayment_split_record b,project_investment_record c,project_base d where b.investment_record_id=c.id and c.transfer_project_id = 0 and c.project_id = d.project_id and date(b.actual_repayment_dt) &lt;= a.date and b.`status` = '1' and d.project_name like '新花生%'),0) as 'xin_repay_interest',
+        
+        ifnull((select sum(b.amount) from project_investment_record b,project_base c where b.project_id = c.project_id and date(b.op_dt) &lt;= a.date and (b.`status` = '0' or b.`status` = '3') and transfer_project_id = 0 and c.project_name like '月花生%'),0) as 'yue_finance_amount',
+        ifnull((select sum(b.principal) from project_repayment_split_record b,project_investment_record c,project_base d where b.investment_record_id=c.id and c.transfer_project_id = 0 and c.project_id = d.project_id and date(b.actual_repayment_dt) &lt;= a.date and b.`status` = '1' and d.project_name like '月花生%'),0) as 'yue_repay_principal',
+        ifnull((select sum(b.interest) from project_repayment_split_record b,project_investment_record c,project_base d where b.investment_record_id=c.id and c.transfer_project_id = 0 and c.project_id = d.project_id and date(b.actual_repayment_dt) &lt;= a.date and b.`status` = '1' and d.project_name like '月花生%'),0) as 'yue_repay_interest',
+        
+        ifnull((select sum(b.amount) from project_investment_record b,project_base c where b.project_id = c.project_id and date(b.op_dt) &lt;= a.date and (b.`status` = '0' or b.`status` = '3') and transfer_project_id = 0 and c.project_name like '双月花生%'),0) as 'shuangeyue_finance_amount',
+        ifnull((select sum(b.principal) from project_repayment_split_record b,project_investment_record c,project_base d where b.investment_record_id=c.id and c.transfer_project_id = 0 and c.project_id = d.project_id and date(b.actual_repayment_dt) &lt;= a.date and b.`status` = '1' and d.project_name like '双月花生%'),0) as 'shuangeyue_repay_principal',
+        ifnull((select sum(b.interest) from project_repayment_split_record b,project_investment_record c,project_base d where b.investment_record_id=c.id and c.transfer_project_id = 0 and c.project_id = d.project_id and date(b.actual_repayment_dt) &lt;= a.date and b.`status` = '1' and d.project_name like '双月花生%'),0) as 'shuangeyue_repay_interest',
+        
+        ifnull((select sum(b.amount) from project_investment_record b,project_base c where b.project_id = c.project_id and date(b.op_dt) &lt;= a.date and (b.`status` = '0' or b.`status` = '3') and transfer_project_id = 0 and c.project_name like '季花生%'),0) as 'ji_finance_amount',
+        ifnull((select sum(b.principal) from project_repayment_split_record b,project_investment_record c,project_base d where b.investment_record_id=c.id and c.transfer_project_id = 0 and c.project_id = d.project_id and date(b.actual_repayment_dt) &lt;= a.date and b.`status` = '1' and d.project_name like '季花生%'),0) as 'ji_repay_principal',
+        ifnull((select sum(b.interest) from project_repayment_split_record b,project_investment_record c,project_base d where b.investment_record_id=c.id and c.transfer_project_id = 0 and c.project_id = d.project_id and date(b.actual_repayment_dt) &lt;= a.date and b.`status` = '1' and d.project_name like '季花生%'),0) as 'ji_repay_interest',
+        
+        ifnull((select sum(b.amount) from project_investment_record b,project_base c where b.project_id = c.project_id and date(b.op_dt) &lt;= a.date and (b.`status` = '0' or b.`status` = '3') and transfer_project_id = 0 and c.project_name like '双季花生%'),0) as 'shuangji_finance_amount',
+        ifnull((select sum(b.principal) from project_repayment_split_record b,project_investment_record c,project_base d where b.investment_record_id=c.id and c.transfer_project_id = 0 and c.project_id = d.project_id and date(b.actual_repayment_dt) &lt;= a.date and b.`status` = '1' and d.project_name like '双季花生%'),0) as 'shuangji_repay_principal',
+        ifnull((select sum(b.interest) from project_repayment_split_record b,project_investment_record c,project_base d where b.investment_record_id=c.id and c.transfer_project_id = 0 and c.project_id = d.project_id and date(b.actual_repayment_dt) &lt;= a.date and b.`status` = '1' and d.project_name like '双季花生%'),0) as 'shuangji_repay_interest',
+        
+        ifnull((select sum(b.amount) from project_investment_record b,project_base c where b.project_id = c.project_id and date(b.op_dt) &lt;= a.date and (b.`status` = '0' or b.`status` = '3') and transfer_project_id = 0 and c.project_name like '年花生%'),0) as 'nian_finance_amount',
+        ifnull((select sum(b.principal) from project_repayment_split_record b,project_investment_record c,project_base d where b.investment_record_id=c.id and c.transfer_project_id = 0 and c.project_id = d.project_id and date(b.actual_repayment_dt) &lt;= a.date and b.`status` = '1' and d.project_name like '年花生%'),0) as 'nian_repay_principal',
+        ifnull((select sum(b.interest) from project_repayment_split_record b,project_investment_record c,project_base d where b.investment_record_id=c.id and c.transfer_project_id = 0 and c.project_id = d.project_id and date(b.actual_repayment_dt) &lt;= a.date and b.`status` = '1' and d.project_name like '年花生%'),0) as 'nian_repay_interest'
+        
+        from
+        (select * from
+            (select date(actual_repayment_dt) date from project_repayment_split_record a,project_investment_record b where a.investment_record_id = b.id and b.transfer_project_id = 0 and a.`status` = '1' group by date(actual_repayment_dt)
+                UNION
+                select date(op_dt) date from project_investment_record where (`status` = '0' or `status` = '3') and transfer_project_id = 0
+            ) a where date(a.date) &lt; date(now()) and a.date not in (select date(date) from project_operation_summary group by date(date))
+        ) a order by date(a.date)
+	</insert>
+</mapper>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerClientTokenDao">
+    
+	<sql id="customerClientTokenColumns">
+		a.customer_id AS "customerId",
+		a.token AS "token",
+		a.term_type AS "termType",
+		a.last_dt AS "lastDt"
+	</sql>
+	
+	<sql id="customerClientTokenJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomerClientToken">
+		SELECT 
+			<include refid="customerClientTokenColumns"/>
+		FROM customer_client_token a
+		<include refid="customerClientTokenJoins"/>
+		WHERE a.customer_id = #{id}
+	</select>
+	
+	<select id="getClientTokenByCustomerIdAndTermType" resultType="CustomerClientToken">
+		SELECT 
+			<include refid="customerClientTokenColumns"/>
+		FROM customer_client_token a
+		<include refid="customerClientTokenJoins"/>
+		WHERE a.customer_id = #{customerId}
+		AND a.term_type = #{termType}
+	</select>
+	
+	<select id="getByTokenAndTheDate" resultType="CustomerClientToken">
+		SELECT 
+			<include refid="customerClientTokenColumns"/>
+		FROM customer_client_token a
+		<include refid="customerClientTokenJoins"/>
+		WHERE a.token = #{token}
+		AND a.last_dt <![CDATA[ >= #{theDate} ]]>
+	</select>
+	
+	<select id="getByToken" resultType="CustomerClientToken">
+		SELECT 
+			<include refid="customerClientTokenColumns"/>
+		FROM customer_client_token a
+		<include refid="customerClientTokenJoins"/>
+		WHERE a.token = #{token}
+	</select>
+	
+	<select id="findList" resultType="CustomerClientToken">
+		SELECT 
+			<include refid="customerClientTokenColumns"/>
+		FROM customer_client_token a
+		<include refid="customerClientTokenJoins"/>
+		<where>
+			
+			<if test="customerId != null and customerId != ''">
+				AND a.customer_id = #{customerId}
+			</if>
+			<if test="lastDt != null and lastDt != ''">
+				AND a.last_dt = #{lastDt}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerClientToken">
+		SELECT 
+			<include refid="customerClientTokenColumns"/>
+		FROM customer_client_token a
+		<include refid="customerClientTokenJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_client_token(
+			customer_id,
+			token,
+			term_type,
+			last_dt
+		) VALUES (
+			#{customerId},
+			#{token},
+			#{termType},
+			#{lastDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_client_token SET 
+		  <if test="lastDt != null">
+              last_dt = #{lastDt},
+          </if>
+          <if test="token != null">
+              token = #{token}
+          </if>		
+		WHERE customer_id = #{customerId}
+		AND term_type = #{termType}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_client_token
+		WHERE customer_id = #{id}
+		AND term_type = #{termType}
+	</update>
+	
+</mapper>

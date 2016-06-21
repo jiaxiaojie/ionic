@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<functions
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="../config/function.xsd">
+
+    <function>
+        <class>com.thinkgem.jeesite.modules.sys.utils.DictUtils</class>
+        <method>getDictLabel</method>
+        <params>
+            <type>java.lang.String</type>
+            <type>java.lang.String</type>
+            <type>java.lang.String</type>
+        </params>
+        <return>java.lang.String</return>
+    </function>
+    
+    <function>
+        <class>com.thinkgem.jeesite.common.utils.DateUtils</class>
+        <method>formatDateByPattern</method>
+        <params>
+            <type>java.util.Date</type>
+            <type>java.lang.String</type>
+        </params>
+        <return>java.lang.String</return>
+    </function>
+
+
+    <function>
+        <class>com.thinkgem.jeesite.common.utils.StringUtils</class>
+        <method>vagueName</method>
+        <params>
+            <type>java.lang.String</type>
+        </params>
+        <return>java.lang.String</return>
+    </function>
+
+    <function>
+        <class>com.thinkgem.jeesite.common.utils.StringUtils</class>
+        <method>vagueAccountName</method>
+        <params>
+            <type>java.lang.String</type>
+        </params>
+        <return>java.lang.String</return>
+    </function>
+
+
+    <function>
+        <class>com.thinkgem.jeesite.modules.api.ApiUtil</class>
+        <method>imageUrlConver</method>
+        <params>
+            <type>java.lang.String</type>
+        </params>
+        <return>java.lang.String</return>
+    </function>
+
+
+
+</functions>

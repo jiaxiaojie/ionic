@@ -1,0 +1,10 @@
+初始化活期账户总览数据															--ydt
+创建表:project_operation_summary(项目运营数据汇总)								--ydt
+功能：活期产品前端赎回本金															--ydt
+功能：活期产品前端提取利息															--ydt
+项目运营数据汇总定时任务(数据填充)													--ydt
+增加投资排行类型字典(一月投资排行)													--ydt
+增加项目运营数据汇总菜单项															--hyc
+功能：一月活动：投资排行三重礼														--ydt
+customer_bank_card_his表添加字段change_dt(变更时间)								--ydt
+customer_bank_card表添加字段unbind_request_no(解绑请求流水号)						--ydt

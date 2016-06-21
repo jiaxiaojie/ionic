@@ -1,0 +1,41 @@
+#condition_top{width:980px;height:1px;background:url('../images/wytz/bg_condition_top.png') no-repeat 0 0;}
+#condition_middle{width:980px;background:url('../images/wytz/bg_condition_middle.png') repeat-y 0 0;}
+#condition_bottom{width:980px;height:40px;background:url('../images/wytz/bg_condition_bottom.png') no-repeat 0 0;}
+#condition{overflow:hidden;margin:20px 0 0 0;boder:1px;}
+#condition .line_1{float:left;margin-left:60px;height:40px;line-height:40px;width:910px;font-size:13px;}
+#condition .line_1 label{float:left;color:#999;margin: 5px 0 0 0;line-height: 20px;}
+#condition .line_1 ul{float:left;}
+#condition .line_1 .item{float:left;cursor:pointer;margin:0 0 10px 5px;line-height:20px;padding:5px 15px;-webkit-border-radius:4px;border-radius:4px}
+#condition .line_1 .item.active{background-color:#ca9c6f;color:#fff}
+#condition .line_1 .item:hover{background-color:#ca9c6f;color:#fff}
+
+#overview{margin:20px 0 15px 2px;}
+#overview li{display:inline-block;height:20px;width:155px;margin-left:0;line-height:20px;text-align:left;}
+#overview span{display:inline-block;}
+#overview em{margin:0 10px 0 3px;color:#c57500;font-style:normal;}
+
+#content_area .content_middle .content_row .line_dotted {float:left;height:1px;width:995px;margin-left:1px;margin-right:1px;background:url('../images/util/tab_bar/line_gray.png') repeat-x center;} 
+#content_area .content_bottom{width:1080px;height:52px;background:url('../images/util/juan_zhou/bg_bottom.png') no-repeat 0 0;}
+
+.enter_amount{ float:right; padding-right:20px;}
+.enter_amount p{ float:left; line-height:30px;}
+.enter_amount p.ea_input input{ width:40px; margin-bottom:0;}
+.enter_amount p.ea_text{ margin:0 10px;}
+.enter_amount p.ea_btn a{ width:50px; height:30px; line-height:30px; text-align:center; background-color:#CA9C6F; display:inline-block; color:#fff;    border-radius:4px;}
+.enter_amount p.ea_btn a:hover{}
+
+.field_1{ padding:20px 22px;}
+.field_1 dl{}
+.field_1 dl dt{ font-weight:normal;}
+.field_1 dl dd{ height:52px; line-height:52px;}
+.field_1 dl dd span{ font-size:46px; color:#dc525f;}
+
+.field_2{ padding:5px 19px 9px 19px;}
+.field_2 dl{}
+.field_2 dl dt{ float:left; font-weight:normal;}
+.field_2 dl dd{ float:right;}
+.field_2 dl dd span{ color:#dc525f;}
+
+
+
+

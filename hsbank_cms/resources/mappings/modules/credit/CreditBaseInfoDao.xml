@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.credit.dao.CreditBaseInfoDao">
+    
+	<sql id="creditBaseInfoColumns">
+		a.id AS "id",
+		a.credit_name AS "creditName",
+		a.credit_project_type AS "creditProjectType",
+		a.credit_original_money AS "creditOriginalMoney",
+		a.credit_financing_money AS "creditFinancingMoney",
+		
+		
+		
+		a.credit_interest AS "creditInterest",
+		a.financier_name AS "financierName",
+		a.real_borrower_name AS "realBorrowerName",
+		a.receivables_analogue_name AS "receivablesAnalogueName",
+		a.is_assigned AS "isAssigned",
+		a.raised_money_on_line AS "raisedMoneyOnLine",
+		a.raised_money_below_line AS "raisedMoneyBelowLine",
+		
+		
+		
+		a.raising_money AS "raisingMoney",
+		a.to_raise_money AS "toRaiseMoney",
+		a.credit_status AS "creditStatus",
+		a.relevant_document_original AS "relevantDocumentOriginal",
+		a.public_document AS "publicDocument",
+		a.raise_begin_date AS "raiseBeginDate",
+		a.raise_end_date AS "raiseEndDate",
+		a.create_date AS "createDate"
+		
+		,
+		a.business_license AS "businessLicense",
+		a.trading_contract AS "tradingContract",
+		a.loan_contract AS "loanContract",
+		a.central_bank_registration_information AS "centralBankRegistrationInformation",
+		a.field_trip_photos AS "fieldTripPhotos",
+		a.invoice AS "invoice",
+		a.logistics_sign_receipts AS "logisticsSignReceipts"
+		
+		,a.credit_real_begin_date AS "creditRealBeginDate"
+		,a.credit_real_end_date AS "creditRealEndDate"
+		,a.credit_financing_begin_date AS "creditFinancingBeginDate"
+		,a.credit_financing_end_date AS "creditFinancingEndDate"
+		
+		,a.is_draft AS "isDraft"
+	</sql>
+	
+	<sql id="creditBaseInfoJoins">
+	</sql>
+    
+	<select id="get" resultType="CreditBaseInfo">
+		SELECT 
+			<include refid="creditBaseInfoColumns"/>
+		FROM credit_base_info a
+		<include refid="creditBaseInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getByEntity" resultType="CreditBaseInfo">
+		SELECT 
+			a.id
+		FROM credit_base_info a
+		WHERE 1=1 
+			<if test="creditName != null and creditName != ''">
+				AND a.credit_name = #{creditName}
+			</if>
+			limit 1
+	</select>
+	
+	<select id="findList" resultType="CreditBaseInfo">
+		SELECT 
+			<include refid="creditBaseInfoColumns"/>
+		FROM credit_base_info a
+		<include refid="creditBaseInfoJoins"/>
+		<where>
+			
+			<if test="creditName != null and creditName != ''">
+				AND a.credit_name LIKE
+					<if test="dbName == 'oracle'">'%'||#{creditName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{creditName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{creditName},'%')</if>
+			</if>
+			<if test="creditProjectType != null and creditProjectType != ''">
+				AND a.credit_project_type = #{creditProjectType}
+			</if>
+			<if test="isAssigned != null and isAssigned != ''">
+				AND a.is_assigned = #{isAssigned}
+			</if>
+			<if test="creditStatus != null and creditStatus != ''">
+				AND a.credit_status = #{creditStatus}
+			</if>
+			
+			<if test="raiseBeginDate != null">
+				AND a.raise_begin_date >= #{raiseBeginDate}
+			</if>
+			<if test="raiseEndDate != null">
+				AND  #{raiseEndDate}>= a.raise_end_date
+			</if>
+			
+			<if test="isDraft != null and isDraft != ''">
+				AND a.is_draft = #{isDraft}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CreditBaseInfo">
+		SELECT 
+			<include refid="creditBaseInfoColumns"/>
+		FROM credit_base_info a
+		<include refid="creditBaseInfoJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO credit_base_info(
+			credit_name,
+			credit_project_type,
+			credit_original_money,
+			credit_financing_money,
+			
+			credit_interest,
+			financier_name,
+			real_borrower_name,
+			receivables_analogue_name,
+			is_assigned,
+			raised_money_on_line,
+			raised_money_below_line,
+			raising_money,
+			to_raise_money,
+			credit_status,
+			relevant_document_original,
+			public_document,
+			raise_begin_date,
+			raise_end_date,
+			create_date
+			
+			
+			,
+			business_license,
+			trading_contract,
+			loan_contract,
+			central_bank_registration_information,
+			field_trip_photos,
+			invoice,
+			logistics_sign_receipts
+			
+			,credit_real_begin_date
+			,credit_real_end_date
+			,credit_financing_begin_date
+			,credit_financing_end_date
+			
+			,is_draft
+		) VALUES (
+			#{creditName},
+			#{creditProjectType},
+			#{creditOriginalMoney},
+			#{creditFinancingMoney},
+			
+			#{creditInterest},
+			#{financierName},
+			#{realBorrowerName},
+			#{receivablesAnalogueName},
+			#{isAssigned},
+			#{raisedMoneyOnLine},
+			#{raisedMoneyBelowLine},
+			#{raisingMoney},
+			#{toRaiseMoney},
+			#{creditStatus},
+			#{relevantDocumentOriginal},
+			#{publicDocument},
+			#{raiseBeginDate},
+			#{raiseEndDate},
+			#{createDate}
+			,
+			#{businessLicense},
+			#{tradingContract},
+			#{loanContract},
+			#{centralBankRegistrationInformation},
+			#{fieldTripPhotos},
+			#{invoice},
+			#{logisticsSignReceipts}
+			
+			,#{creditRealBeginDate}
+			,#{creditRealEndDate}
+			,#{creditFinancingBeginDate}
+			,#{creditFinancingEndDate}
+			
+			,#{isDraft}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE credit_base_info SET 	
+			credit_name = #{creditName},
+			credit_project_type = #{creditProjectType},
+			credit_original_money = #{creditOriginalMoney},
+			credit_financing_money = #{creditFinancingMoney},
+			
+			credit_interest = #{creditInterest},
+			financier_name = #{financierName},
+			real_borrower_name = #{realBorrowerName},
+			receivables_analogue_name = #{receivablesAnalogueName},
+			is_assigned = #{isAssigned},
+			raised_money_on_line = #{raisedMoneyOnLine},
+			raised_money_below_line = #{raisedMoneyBelowLine},
+			
+			raising_money = #{raisingMoney},
+			to_raise_money = #{toRaiseMoney},
+			credit_status = #{creditStatus},
+			relevant_document_original = #{relevantDocumentOriginal},
+			public_document = #{publicDocument},
+			raise_begin_date = #{raiseBeginDate},
+			raise_end_date = #{raiseEndDate}
+			,
+			business_license = #{businessLicense},
+			trading_contract = #{tradingContract},
+			loan_contract = #{loanContract},
+			central_bank_registration_information = #{centralBankRegistrationInformation},
+			field_trip_photos = #{fieldTripPhotos},
+			invoice = #{invoice},
+			logistics_sign_receipts = #{logisticsSignReceipts}
+			
+			,credit_real_begin_date = #{creditRealBeginDate}
+			
+			,credit_real_end_date = #{creditRealEndDate}
+			,credit_financing_begin_date = #{creditFinancingBeginDate}
+			,credit_financing_end_date = #{creditFinancingEndDate}
+			
+			,is_draft = #{isDraft}
+		WHERE id = #{id}
+	</update>
+	
+	
+	
+	
+	<update id="updateStatus">
+		UPDATE credit_base_info SET 
+			credit_status = #{CREDIT_STATUS_RAISE_END}
+		WHERE unix_timestamp(date_format(#{currentDate},'%Y-%c-%d')) > unix_timestamp(date_format(raise_end_date,'%Y-%c-%d')) and credit_status = '0'
+	</update>
+	
+	<update id="updateStatusByIdAndStatus">
+		UPDATE credit_base_info SET 
+			credit_status = #{status}
+		where id = #{creditId}
+	</update>
+	
+	
+	
+	
+	
+	<update id="addRaisedMoneyOnLine">
+		UPDATE credit_base_info SET 
+			raised_money_on_line = ifnull(raised_money_on_line,0) + #{endFinanceMoney}
+		WHERE  id = #{creditId}
+	</update>
+	
+	<update id="addRaisedMoneyBelowLine">
+		UPDATE credit_base_info SET 
+			raised_money_below_line = ifnull(raised_money_below_line,0) + #{endFinanceMoney}
+		WHERE  id = #{creditId}
+	</update>
+	
+	<update id="addRaisingMoney">
+		UPDATE credit_base_info SET 
+			raising_money = ifnull(raising_money,0) + #{financeMoney}
+		WHERE  id = #{creditId}
+	</update>
+	
+	<update id="addToRaiseMoney">
+		UPDATE credit_base_info SET 
+			to_raise_money = ifnull(to_raise_money,0) + #{money}
+		WHERE  id = #{creditId}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM credit_base_info
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

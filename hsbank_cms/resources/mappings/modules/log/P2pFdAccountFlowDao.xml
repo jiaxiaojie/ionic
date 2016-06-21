@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.log.dao.P2pFdAccountFlowDao">
+    
+	<sql id="p2pFdAccountFlowColumns">
+		a.id AS "id",
+		a.change_val AS "changeVal",
+		a.project_id AS "projectId",
+		a.transfer_project_id AS "transferProjectId",
+		a.investment_id AS "investmentId",
+		a.account_id AS "accountId",
+		a.detail AS "detail",
+		a.create_dt AS "createDt",
+		a.third_party_seq AS "thirdPartySeq",
+		a.third_party_result AS "thirdPartyResult",
+		a.result AS "result",
+		a.notify_content AS "notifyContent",
+		a.notify_code AS "notifyCode"
+		
+	</sql>
+	
+	<sql id="p2pFdAccountFlowJoins">
+	</sql>
+    
+	<select id="get" resultType="P2pFdAccountFlow">
+		SELECT 
+			<include refid="p2pFdAccountFlowColumns"/>
+		FROM p2p_fd_account_flow a
+		<include refid="p2pFdAccountFlowJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="P2pFdAccountFlow">
+		SELECT 
+			<include refid="p2pFdAccountFlowColumns"/>
+		FROM p2p_fd_account_flow a
+		<include refid="p2pFdAccountFlowJoins"/>
+		<where>
+			
+			<if test="beginChangeVal != null  and beginChangeVal != ''">				AND a.change_val >= #{beginChangeVal}			</if>			<if test="endChangeVal != null and endChangeVal != ''">				AND #{endChangeVal} >= a.change_val			</if>
+			<if test="projectId != null and projectId != ''">
+				AND a.project_id = #{projectId}
+			</if>
+			<if test="transferProjectId != null and transferProjectId != ''">
+				AND a.transfer_project_id = #{transferProjectId}
+			</if>
+			<if test="investmentId != null and investmentId != ''">
+				AND a.investment_id = #{investmentId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="P2pFdAccountFlow">
+		SELECT 
+			<include refid="p2pFdAccountFlowColumns"/>
+		FROM p2p_fd_account_flow a
+		<include refid="p2pFdAccountFlowJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO p2p_fd_account_flow(
+			change_val,
+			project_id,
+			transfer_project_id,
+			investment_id,
+			account_id,
+			detail,
+			create_dt,
+			third_party_seq,
+			third_party_result,
+			result,
+			notify_content,
+			notify_code
+		) VALUES (
+			#{changeVal},
+			#{projectId},
+			#{transferProjectId},
+			#{investmentId},
+			#{accountId},
+			#{detail},
+			#{createDt},
+			#{thirdPartySeq},
+			#{thirdPartyResult},
+			#{result},
+			#{notifyContent},
+			#{notifyCode}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE p2p_fd_account_flow SET 	
+			change_val = #{changeVal},
+			project_id = #{projectId},
+			transfer_project_id = #{transferProjectId},
+			investment_id = #{investmentId},
+			account_id = #{accountId},
+			detail = #{detail},
+			create_dt = #{createDt},
+			third_party_seq = #{thirdPartySeq},
+			third_party_result = #{thirdPartyResult},
+			result = #{result},
+			notify_content=#{notifyContent},
+			notify_code=#{notifyCode}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM p2p_fd_account_flow
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.integral.dao.IntegralMallProductTypeDao">
+    
+	<sql id="integralMallProductTypeColumns">
+		a.type_id AS "typeId",
+		a.type_name AS "typeName",
+		a.parent_type_id AS "parentTypeId",
+		a.type_log AS "typeLog"
+	</sql>
+	
+	<sql id="integralMallProductTypeJoins">
+	</sql>
+    
+	<select id="get" resultType="IntegralMallProductType">
+		SELECT 
+			<include refid="integralMallProductTypeColumns"/>
+		FROM integral_mall_product_type a
+		<include refid="integralMallProductTypeJoins"/>
+		WHERE a.type_id = #{id}
+	</select>
+	
+	<select id="findList" resultType="IntegralMallProductType">
+		SELECT 
+			<include refid="integralMallProductTypeColumns"/>
+		FROM integral_mall_product_type a
+		<include refid="integralMallProductTypeJoins"/>
+		<where>
+			
+			<if test="typeName != null and typeName != ''">
+				AND a.type_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{typeName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{typeName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{typeName},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="IntegralMallProductType">
+		SELECT 
+			<include refid="integralMallProductTypeColumns"/>
+		FROM integral_mall_product_type a
+		<include refid="integralMallProductTypeJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO integral_mall_product_type(
+			type_name,
+			parent_type_id,
+			type_log
+		) VALUES (
+			#{typeName},
+			#{parentTypeId},
+			#{typeLog}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE integral_mall_product_type SET 	
+			type_name = #{typeName},
+			parent_type_id = #{parentTypeId},
+			type_log = #{typeLog}
+		WHERE type_id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM integral_mall_product_type
+		WHERE type_id = #{id}
+	</update>
+	
+</mapper>

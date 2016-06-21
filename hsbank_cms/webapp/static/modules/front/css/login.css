@@ -1,0 +1,31 @@
+#div_login{height:529px;width:980px;padding-bottom:120px;margin-top:20px;margin-left:auto;margin-right:auto;background:url('../images/login/bg.png') no-repeat center 0;}
+#div_login .login_area{float:right;height:450px;width:300px;margin:55px 30px 0 0;}
+#div_login .login_area .spanLine{display:inline-block;padding-top:15px;width:20px;margin-left:5px;}
+#div_login .login_area .spanText{display:inline-block;padding-top:42px;margin-left:0;text-align:center;font-size:25px;}
+#div_login .login_area .div_line{height:1px;width:1920px;margin-top:10px;margin-bottom:10px;margin-left:auto;margin-right:auto;}
+#div_login .login_area .account_row{height:45px;width:258px;margin:15px 0 0 20px;background:url('../images/util/icon_account.jpg') no-repeat center 0;}
+#div_login .login_area .account_row input{height:30px;width:198px;margin:2px 0 0 45px;border:0;}
+#div_login .login_area .password_row{height:45px;width:258px;margin:20px 0 0 20px;background:url('../images/util/icon_password.png') no-repeat center 0;}
+#div_login .login_area .password_row input{height:30px;width:198px;margin:3px 0 0 45px;border:0;}
+#div_login .login_area .validate_code_row{height:45px;width:258px;margin:20px 0 0 20px;}
+#div_login .login_area .validate_code_row input{height:30px;width:100px;margin:3px 0 0 0;border:1;}
+#div_login .login_area .validate_code_row img{cursor:pointer;}
+#div_login .login_area .tip_row{height:30px;width:258px;margin:20px 0 0 20px;}
+#div_login .login_area .spanLeftGray{cursor:pointer;float:left;color:#838383;margin-left:3px;padding-top:1px;}
+#div_login .login_area .spanRightGray{cursor:pointer;float:right;color:#838383;margin-left:10px;padding-top:1px;}
+#div_login .login_area .spanLeftBlue{cursor:pointer;float:left;color:#008fcc;margin-left:2px;padding-top:1px;}
+#div_login .login_area .spanRightBlue{cursor:pointer;float:right;color:#008fcc;margin-right:4px;padding-top:1px;}
+#div_login .login_area .error_row{height:30px;width:258px;margin:20px 0 0 20px;}
+#div_login .login_area .error_row .error{color:red;}
+#div_login .login_area .login_row{cursor:pointer;margin:20px 0 0 20px;height:45px;line-height:45px;width:261px;text-align:center;margin-left:auto;margin-right:auto;font-size:14px;color:white;background:url('../images/util/button/bt_brown_210x43.png') no-repeat center 0}
+#div_login .login_area .login_row_disabled{margin:20px 0 0 20px;height:45px;line-height:45px;width:261px;text-align:center;margin-left:auto;margin-right:auto;font-size:14px;color:#cbcbcb;background:url('../images/util/button/bt_brown_210x43.png') no-repeat center 0}
+#div_login .login_area .line_row{margin-left:auto;margin-right:auto;height:1px;width:258px;background:url('../images/login/line-denglu.gif') repeat center 0}
+#div_login .login_area .spanSNS{display:inline-block;margin-left:0;}
+#div_login .login_area .weixin a:link{display:block; width:32px; height:22px; background:url('../images/util/weix.png') no-repeat center 0;}
+#div_login .login_area .spanSNS .weixin a:visited{display:block; width:32px; height:22px; background:url('../images/util/weix.png') no-repeat center 0;}
+#div_login .login_area .spanSNS .weixin a:hover{background:url('../images/util/weix-b.png') no-repeat center 0;} 
+#div_login .login_area .spanSNS .weixin a:active{background:url('../images/util/weix-b.png') no-repeat center 0;} 
+#div_login .login_area .spanSNS .weibo a:link{display:inline-block; width:32px; height:22px; background:url('../images/util/sina.png') no-repeat center 0;}
+#div_login .login_area .spanSNS .weibo a:visited{display:inline-block; width:32px; height:22px; background:url('../images/util/sina.png') no-repeat center 0;}
+#div_login .login_area .spanSNS .weibo a:hover{background:url('../images/util/sina-b.png') no-repeat center 0;}
+#div_login .login_area .spanSNS .weibo a:active{background:url('../images/util/sina-b.png') no-repeat center 0;}

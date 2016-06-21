@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.marketing.dao.EuropeanCupTopScorerDao">
+    
+	<sql id="europeanCupTopScorerColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.activity_id AS "activityId",
+		a.total_goals AS "totalGoals",
+		a.used_scratch_times AS "usedScratchTimes",
+		a.op_dt AS "opDt"
+	</sql>
+	
+	<sql id="europeanCupTopScorerJoins">
+	</sql>
+    
+	<select id="get" resultType="EuropeanCupTopScorer">
+		SELECT 
+			<include refid="europeanCupTopScorerColumns"/>
+		FROM european_cup_top_scorer a
+		<include refid="europeanCupTopScorerJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="getByAccountIdAndActivityId" resultType="EuropeanCupTopScorer">
+		SELECT
+		<include refid="europeanCupTopScorerColumns"/>
+		FROM european_cup_top_scorer a
+		<include refid="europeanCupTopScorerJoins"/>
+		WHERE a.account_id = #{accountId} and a.activity_id = #{activityId} limit 1
+	</select>
+	
+	<select id="findList" resultType="EuropeanCupTopScorer">
+		SELECT 
+			<include refid="europeanCupTopScorerColumns"/>
+		FROM european_cup_top_scorer a
+		<include refid="europeanCupTopScorerJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="opDt != null and opDt != ''">
+				AND a.op_dt = #{opDt}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="EuropeanCupTopScorer">
+		SELECT 
+			<include refid="europeanCupTopScorerColumns"/>
+		FROM european_cup_top_scorer a
+		<include refid="europeanCupTopScorerJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO european_cup_top_scorer(
+			account_id,
+			activity_id,
+			total_goals,
+			used_scratch_times,
+			op_dt
+		) VALUES (
+			#{accountId},
+			#{activityId},
+			#{totalGoals},
+			#{usedScratchTimes},
+			#{opDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE european_cup_top_scorer SET 	
+			total_goals = #{totalGoals},
+			used_scratch_times = #{usedScratchTimes},
+			op_dt = #{opDt}
+		WHERE id = #{id}
+	</update>
+
+	<update id="updateTotalGoalsByAccountIdAndActivityId">
+		UPDATE european_cup_top_scorer SET
+		total_goals = total_goals + #{totalGoals},
+		op_dt = now()
+		WHERE account_id = #{accountId} and activity_id = #{activityId}
+	</update>
+
+	<update id="updateUsedScratchTimesByAccountIdAndActivityId">
+		UPDATE european_cup_top_scorer SET
+		used_scratch_times = used_scratch_times + #{usedScratchTimes}
+		WHERE account_id = #{accountId} and activity_id = #{activityId}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM european_cup_top_scorer
+		WHERE id = #{id}
+	</update>
+
+	<select id="getTop10Scorer" resultType="EuropeanCupTopScorer">
+		SELECT
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.activity_id AS "activityId",
+		a.total_goals AS "totalGoals",
+		b.mobile AS "mobile"
+		FROM european_cup_top_scorer a
+		left join customer_base b on a.account_id = b.account_id
+		where date(a.op_dt) between date(#{startDate}) and date(#{endDate})
+		and a.activity_id = #{activityId} order by a.total_goals desc,a.op_dt asc limit 10
+	</select>
+	
+</mapper>

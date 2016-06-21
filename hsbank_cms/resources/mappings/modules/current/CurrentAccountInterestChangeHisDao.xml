@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.current.dao.CurrentAccountInterestChangeHisDao">
+    
+	<sql id="currentAccountInterestChangeHisColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.project_id AS "projectId",
+		a.change_value AS "changeValue",
+		a.change_type AS "changeType",
+		a.change_reason AS "changeReason",
+		a.op_term AS "opTerm",
+		a.op_dt AS "opDt",
+		a.third_account_request_no AS "thirdAccountRequestNo",
+		pi.name AS "currentProjectInfo.name",
+		cb.mobile AS "cb.mobile",
+		pi.code AS "currentProjectInfo.code"
+	</sql>
+	
+	<sql id="currentAccountInterestChangeHisJoins">
+	JOIN current_project_info pi ON pi.id=a.project_id
+	JOIN customer_base cb ON cb.account_id=a.account_id
+	</sql>
+    
+	<select id="get" resultType="CurrentAccountInterestChangeHis">
+		SELECT 
+			<include refid="currentAccountInterestChangeHisColumns"/>
+		FROM current_account_interest_change_his a
+		<include refid="currentAccountInterestChangeHisJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CurrentAccountInterestChangeHis">
+		SELECT 
+			<include refid="currentAccountInterestChangeHisColumns"/>
+		FROM current_account_interest_change_his a
+		<include refid="currentAccountInterestChangeHisJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="projectId != null and projectId != ''">
+				AND a.project_id = #{projectId}
+			</if>
+			<if test="changeValue != null and changeValue != ''">
+				AND a.change_value = #{changeValue}
+			</if>
+			<if test="changeType != null and changeType != ''">
+				AND a.change_type = #{changeType}
+			</if>
+			<if test="beginOpDt != null  and beginOpDt != ''">
+				AND a.op_dt >= #{beginOpDt}
+			</if>
+			<if test="endOpDt != null and endOpDt != ''">
+				AND #{endOpDt} >= a.op_dt
+			</if>
+			
+			<if test="cb != null ">
+				<if test="cb.mobile != null and cb.mobile != ''">
+				AND  cb.mobile  LIKE 
+					<if test="dbName == 'oracle'">'%'||#{cb.mobile}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{cb.mobile}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{cb.mobile},'%')</if>
+			</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CurrentAccountInterestChangeHis">
+		SELECT 
+			<include refid="currentAccountInterestChangeHisColumns"/>
+		FROM current_account_interest_change_his a
+		<include refid="currentAccountInterestChangeHisJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="searchMyInterestPageList" resultType="CurrentAccountInterestChangeHis">
+		SELECT 
+			a.id AS "id",
+			a.account_id AS "accountId",
+			a.project_id AS "projectId",
+			a.change_value AS "changeValue",
+			a.change_type AS "changeType",
+			a.change_reason AS "changeReason",
+			a.op_term AS "opTerm",
+			a.op_dt AS "opDt",
+			a.third_account_request_no AS "thirdAccountRequestNo"
+			FROM current_account_interest_change_his a
+		<where>
+			a.account_id = #{accountId} AND a.project_id = #{projectId}
+			AND a.change_type = #{changeType}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			    ORDER BY a.op_dt desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<select id="getInterestPageList" resultType="CurrentAccountInterestChangeHis">
+		SELECT 
+			a.id AS "id",
+			a.account_id AS "accountId",
+			a.project_id AS "projectId",
+			a.change_value AS "changeValue",
+			a.change_type AS "changeType",
+			a.change_reason AS "changeReason",
+			a.op_term AS "opTerm",
+			a.op_dt AS "opDt",
+			a.third_account_request_no AS "thirdAccountRequestNo"
+			FROM current_account_interest_change_his a
+		<where>
+			a.account_id = #{accountId} AND a.project_id = #{projectId}
+			<if test="changeType != null and changeType != ''">
+				AND a.change_type = #{changeType}
+			</if>
+            AND (a.change_type ='0' or a.change_type='1')
+		</where>		
+		ORDER BY a.op_dt desc 
+		limit #{startNumber},#{endNumber}
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO current_account_interest_change_his(
+			account_id,
+			project_id,
+			change_value,
+			change_type,
+			change_reason,
+			op_term,
+			op_dt,
+			third_account_request_no
+		) VALUES (
+			#{accountId},
+			#{projectId},
+			#{changeValue},
+			#{changeType},
+			#{changeReason},
+			#{opTerm},
+			#{opDt},
+			#{thirdAccountRequestNo}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE current_account_interest_change_his SET 	
+			account_id = #{accountId},
+			project_id = #{projectId},
+			change_value = #{changeValue},
+			change_type = #{changeType},
+			change_reason = #{changeReason},
+			third_account_request_no = #{thirdAccountRequestNo}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM current_account_interest_change_his
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getCountByAccountIdAndProjectId" resultType="java.lang.Long">
+		select count(1) from current_account_interest_change_his where account_id = #{accountId} and project_id = #{projectId} and change_type = #{changeType} and date(op_dt) = date(#{date})
+	</select>
+	
+	<select id="getYesterdayProfit" resultType="java.lang.Double">
+		select sum(change_value) AS yesterdayProfit
+		    from current_account_interest_change_his 
+		    <where>
+				account_id =#{accountId} and change_type =#{changeType} 
+			    AND date(op_dt) = date(#{date})
+				<if test="projectId != null and projectId != ''">
+					AND project_id = #{projectId}
+				</if>
+			</where>
+	</select>
+	
+	<select id="getSumProfit" resultType="java.lang.Double">
+		select sum(change_value) AS sumProfit
+		    from current_account_interest_change_his 
+		    <where>
+				account_id =#{accountId} and change_type =#{changeType} 
+				<if test="projectId != null and projectId != ''">
+					AND project_id = #{projectId}
+				</if>
+			</where>
+	</select>
+</mapper>

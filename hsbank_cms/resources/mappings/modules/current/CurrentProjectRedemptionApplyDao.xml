@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.current.dao.CurrentProjectRedemptionApplyDao">
+    
+	<sql id="currentProjectRedemptionApplyColumns">
+		a.id AS "id",
+		a.hold_id AS "holdId",
+		a.redeem_principal AS "redeemPrincipal",
+		a.redeem_interest AS "redeemInterest",
+		a.apply_term AS "applyTerm",
+		a.apply_dt AS "applyDt",
+		a.status AS "status",
+		a.review_dt AS "reviewDt",
+		a.review_user_id AS "reviewUserId",
+		a.finish_dt AS "finishDt",
+		c.name AS "currentProjectHoldInfo.currentProjectInfo.name",
+		c.code AS "currentProjectHoldInfo.currentProjectInfo.code",
+		d.mobile AS "currentProjectHoldInfo.customerBase.mobile"
+	</sql>
+	
+	<sql id="currentProjectRedemptionApplyJoins">
+		LEFT JOIN current_project_hold_info b ON a.hold_id=b.id
+		LEFT JOIN current_project_info c ON b.project_id=c.id
+		LEFT JOIN customer_base d ON b.account_id=d.account_id
+	</sql>
+    
+	<select id="get" resultType="CurrentProjectRedemptionApply">
+		SELECT 
+			<include refid="currentProjectRedemptionApplyColumns"/>
+		FROM current_project_redemption_apply a
+		<include refid="currentProjectRedemptionApplyJoins"/>
+		   where a.id = #{id} 
+	</select>
+	
+	<select id="findList" resultType="CurrentProjectRedemptionApply">
+		SELECT 
+			<include refid="currentProjectRedemptionApplyColumns"/>
+		FROM current_project_redemption_apply a
+		<include refid="currentProjectRedemptionApplyJoins"/>
+		<where>
+			<if test="holdId != null and holdId != ''">
+				AND a.hold_id = #{holdId}
+			</if>
+			<if test="redeemPrincipal != null and redeemPrincipal != ''">
+				AND a.redeem_principal &gt;= #{redeemPrincipal}
+			</if>
+			<if test="redeemInterest != null and redeemInterest != ''">
+				AND a.redeem_interest &gt;= #{redeemInterest}
+			</if>
+			<if test="beginApplyDt != null  and beginApplyDt != ''">				AND a.apply_dt >= #{beginApplyDt}			</if>			<if test="endApplyDt != null and endApplyDt != ''">				AND #{endApplyDt} >= a.apply_dt			</if> 
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="currentProjectHoldInfo != null and currentProjectHoldInfo.currentProjectInfo != null and currentProjectHoldInfo.currentProjectInfo.name != null and currentProjectHoldInfo.currentProjectInfo.name != ''">
+				AND c.name   LIKE 
+					<if test="dbName == 'oracle'">'%'||#{currentProjectHoldInfo.currentProjectInfo.name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{currentProjectHoldInfo.currentProjectInfo.name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{currentProjectHoldInfo.currentProjectInfo.name},'%')</if> 
+			</if>
+			<if test="currentProjectHoldInfo != null and currentProjectHoldInfo.customerBase != null and currentProjectHoldInfo.customerBase.mobile != null and currentProjectHoldInfo.customerBase.mobile != ''">
+				AND d.mobile   LIKE 
+					<if test="dbName == 'oracle'">'%'||#{currentProjectHoldInfo.customerBase.mobile}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{currentProjectHoldInfo.customerBase.mobile}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{currentProjectHoldInfo.customerBase.mobile},'%')</if> 
+			</if>
+			
+			<if test="projectId != null and projectId != ''">
+				AND b.project_id = #{projectId}
+			</if>
+			<if test="accountId != null and accountId != ''">
+				AND b.account_id = #{accountId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				<if test="page.orderBy  == 'statusTop0'">
+					ORDER BY field(a.status ,'0','1','-1','2')
+				</if>
+				<if test="page.orderBy  != 'statusTop0'">
+					ORDER BY ${page.orderBy}
+				</if>
+				
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	<select id="findAllList" resultType="CurrentProjectRedemptionApply">
+		SELECT 
+			<include refid="currentProjectRedemptionApplyColumns"/>
+		FROM current_project_redemption_apply a
+		<include refid="currentProjectRedemptionApplyJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	<!-- 根据天查询每天审核赎回的人数 -->
+
+	<select id="findRedemptionInfoList" resultType="java.util.Map">
+		SELECT
+		t.apply_dt AS date,
+		count(*) AS ALLRedemptionNum,
+		sum(case when STATUS in ('1','2') then 1 else 0 end) AS totalNum,
+		sum(case when STATUS ='2' then 1 else 0 end) AS RedemptionFinish
+		from current_project_redemption_apply t
+		<where>
+		<if test="startDate != null">
+				AND date(t.apply_dt) &gt;= date(#{startDate})
+		</if>
+		<if test="endDate != null">
+				AND date(t.apply_dt) &lt;= date(#{endDate})
+		</if>
+		</where>
+		group by date_format(t.apply_dt, '%Y-%m-%d')
+		order by t.apply_dt desc
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO current_project_redemption_apply(
+			hold_id,
+			redeem_principal,
+			redeem_interest,
+			apply_term,
+			apply_dt,
+			status,
+			review_dt,
+			review_user_id,
+			finish_dt
+		) VALUES (
+			#{holdId},
+			#{redeemPrincipal},
+			#{redeemInterest},
+			#{applyTerm},
+			#{applyDt},
+			#{status},
+			#{reviewDt},
+			#{reviewUserId},
+			#{finishDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE current_project_redemption_apply SET 	
+			hold_id = #{holdId},
+			redeem_principal = #{redeemPrincipal},
+			redeem_interest = #{redeemInterest},
+			apply_term = #{applyTerm},
+			apply_dt = #{applyDt},
+			status = #{status},
+			review_dt = #{reviewDt},
+			review_user_id = #{reviewUserId},
+			finish_dt = #{finishDt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updatePrincipalById">
+	update current_project_hold_info a,current_project_redemption_apply b
+	set a.apply_redeem_principal = a.apply_redeem_principal - b.redeem_principal
+	where a.id=b.hold_id and b.id = #{id};
+</update>
+	
+	
+	
+	<update id="delete">
+		DELETE FROM current_project_redemption_apply
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findListByAccountId" resultType="CurrentProjectRedemptionApply">
+		select a.* from current_project_redemption_apply a, current_project_hold_info b
+		where a.hold_id = b.id and b.account_id = #{accountId} and date(a.apply_dt) = date(#{date}) and a.status in
+			<foreach collection="statuses" index="index" item="status" open="(" separator="," close=")">
+				#{status}
+			</foreach>
+	</select>
+	
+	<select id="findListByStatus" resultType="CurrentProjectRedemptionApply">
+		select * from current_project_redemption_apply where status = #{status}
+	</select>
+	
+	<update id="updateByPayRedeem">
+		update current_project_redemption_apply set status = '2', finish_dt = now() where id = #{id}
+	</update>
+</mapper>

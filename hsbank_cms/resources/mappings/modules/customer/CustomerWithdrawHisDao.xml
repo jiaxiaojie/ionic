@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerWithdrawHisDao">
+    
+	<sql id="customerWithdrawHisColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.amount AS "amount",
+		a.fee_mode AS "feeMode",
+		a.withdraw_type AS "withdrawType",
+		a.bank_card_no AS "bankCardNo",
+		a.bank_code AS "bankCode",
+		a.remark AS "remark",
+		a.third_party_req AS "thirdPartyReq",
+		a.op_dt AS "opDt",
+		a.op_term_type AS "opTermType"
+	</sql>
+	
+	<sql id="customerWithdrawHisJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomerWithdrawHis">
+		SELECT 
+			<include refid="customerWithdrawHisColumns"/>
+		FROM customer_withdraw_his a
+		<include refid="customerWithdrawHisJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerWithdrawHis">
+		SELECT 
+			<include refid="customerWithdrawHisColumns"/>
+		FROM customer_withdraw_his a
+		<include refid="customerWithdrawHisJoins"/>
+		<where>
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="bankCardNo != null and bankCardNo != ''">
+				AND a.bank_card_no LIKE
+				<if test="dbName == 'oracle'">'%'||#{bankCardNo}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{bankCardNo}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{bankCardNo},'%')</if>
+			</if>
+			<if test="beginOpDt != null and endOpDt != null and beginOpDt != '' and endOpDt != ''">
+				AND a.op_dt BETWEEN #{beginOpDt} AND #{endOpDt}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerWithdrawHis">
+		SELECT 
+			<include refid="customerWithdrawHisColumns"/>
+		FROM customer_withdraw_his a
+		<include refid="customerWithdrawHisJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_withdraw_his(
+			account_id,
+			amount,
+			fee_mode,
+			withdraw_type,
+			bank_card_no,
+			bank_code,
+			remark,
+			third_party_req,
+			op_dt,
+			op_term_type
+		) VALUES (
+			#{accountId},
+			#{amount},
+			#{feeMode},
+			#{withdrawType},
+			#{bankCardNo},
+			#{bankCode},
+			#{remark},
+			#{thirdPartyReq},
+			#{opDt},
+			#{opTermType}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_withdraw_his SET 	
+			account_id = #{accountId},
+			amount = #{amount},
+			fee_mode = #{feeMode},
+			withdraw_type = #{withdrawType},
+			bank_card_no = #{bankCardNo},
+			bank_code = #{bankCode},
+			remark = #{remark},
+			third_party_req = #{thirdPartyReq},
+			op_dt = #{opDt},
+			op_term_type = #{opTermType}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_withdraw_his
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

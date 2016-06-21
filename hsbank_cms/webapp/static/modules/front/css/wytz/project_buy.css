@@ -1,0 +1,10 @@
+.buy_1{ margin:40px 20px 0px; padding-bottom:40px; border-bottom:1px solid #ddd;}
+.coupons_list{ background-color:#f1f1f1;}
+.buy_2{ margin:40px 20px;}
+.code_area{ line-height:36px; font-size:14px; margin-bottom:20px;}
+.code_area b{ float:left; width:150px; height:36px; text-align:right; font-weight:normal; color:#666; margin-right:20px;}
+.code_area p{ float:left; line-height:36px;}
+.code_area p input{ float:left; height:26px; line-height:26px; margin-right:10px; margin-bottom:0;}
+.code_area p .vcode{ float:left; margin-right:10px; width:100px; height:34px; line-height:34px; text-align:center; border:1px solid #ddd; display:block; border-radius:3px; -webkit-border-radius:3px;}
+.code_area p .btn_text_black{ float:left;}
+.code_area p .vcode img{ display:inline-block;}

@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.credit.dao.CreditInvestUserInfoDao">
+    
+	<sql id="creditInvestUserInfoColumns">
+		a.id AS "id",
+		a.investor_name AS "investorName",
+		a.investor_gender AS "investorGender",
+		a.investor_birthday AS "investorBirthday",
+		a.investor_contact_info AS "investorContactInfo",
+		a.id_number AS "idNumber",
+		a.id_address AS "idAddress",
+		a.id_type AS "idType",
+		a.bank_card_no AS "bankCardNo",
+		a.opening_bank AS "openingBank",
+		a.create_date AS "createDate"
+	</sql>
+	
+	<sql id="creditInvestUserInfoJoins">
+	</sql>
+	
+	<select id="getByEntity" resultType="CreditInvestUserInfo">
+		SELECT 
+			a.id
+		FROM credit_invest_user_info a
+		WHERE 1=1 
+			<if test="idNumber != null and idNumber != ''">
+				AND a.id_number = #{idNumber}
+			</if>
+			<if test="idType != null and idType != ''">
+				AND a.id_type = #{idType}
+			</if>
+			limit 1
+	</select>
+    
+	<select id="get" resultType="CreditInvestUserInfo">
+		SELECT 
+			<include refid="creditInvestUserInfoColumns"/>
+		FROM credit_invest_user_info a
+		<include refid="creditInvestUserInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CreditInvestUserInfo">
+		SELECT 
+			<include refid="creditInvestUserInfoColumns"/>
+		FROM credit_invest_user_info a
+		<include refid="creditInvestUserInfoJoins"/>
+		<where>
+			
+			<if test="investorName != null and investorName != ''">
+				AND a.investor_name  LIKE 
+					<if test="dbName == 'oracle'">'%'||#{investorName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{investorName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{investorName},'%')</if>
+			</if>
+			<if test="investorGender != null and investorGender != ''">
+				AND a.investor_gender = #{investorGender}
+			</if>
+			<if test="investorContactInfo != null and investorContactInfo != ''">
+				AND a.investor_contact_info = #{investorContactInfo}
+			</if>
+			<if test="idNumber != null and idNumber != ''">
+				AND a.id_number = #{idNumber}
+			</if>
+			<if test="idType != null and idType != ''">
+				AND a.id_type = #{idType}
+			</if>
+			<if test="beginInvestorBirthday != null and beginInvestorBirthday != ''">
+				AND date_format(a.investor_birthday,'%m-%d') >= #{beginInvestorBirthday}
+			</if>
+			<if test="endInvestorBirthday != null and endInvestorBirthday != ''">
+				AND  #{endInvestorBirthday}>= date_format(a.investor_birthday,'%m-%d')
+			</if>
+			
+			<if test="investorBirthYear != null and investorBirthYear != ''">
+				AND  #{investorBirthYear} = date_format(a.investor_birthday,'%Y')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+		<select id="repaymentRemindList" resultType="CreditInvestUserInfo">
+		SELECT 
+			<include refid="creditInvestUserInfoColumns"/>
+			,c.expiring_date AS "creditMachineAccount.endExpiringDate"
+			,c.invest_money AS "creditMachineAccount.investMoney",
+			cbi.credit_name AS "creditMachineAccount.creditBaseInfo.creditName"
+		FROM credit_invest_user_info a
+			left JOIN credit_machine_account c ON c.credit_invest_user_id=a.id
+			left JOIN credit_base_info cbi ON cbi.id=c.credit_id
+		where 1=1
+			<if test="investorName != null and investorName != ''">
+				AND a.investor_name  LIKE 
+					<if test="dbName == 'oracle'">'%'||#{investorName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{investorName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{investorName},'%')</if>
+			</if>
+			<if test="investorGender != null and investorGender != ''">
+				AND a.investor_gender = #{investorGender}
+			</if>
+			<if test="investorContactInfo != null and investorContactInfo != ''">
+				AND a.investor_contact_info = #{investorContactInfo}
+			</if>
+			<if test="idNumber != null and idNumber != ''">
+				AND a.id_number = #{idNumber}
+			</if>
+			<if test="idType != null and idType != ''">
+				AND a.id_type = #{idType}
+			</if>
+			<if test="beginInvestorBirthday != null">
+				AND a.investor_birthday >= #{beginInvestorBirthday}
+			</if>
+			<if test="endInvestorBirthday != null">
+				AND  #{endInvestorBirthday}>= a.investor_birthday
+			</if>
+			<if test="creditMachineAccount != null">
+				<if test="creditMachineAccount.id != null and creditMachineAccount.id != ''">
+					AND c.id = #{creditMachineAccount.id}
+				</if>
+				<if test="creditMachineAccount.creditId != null and creditMachineAccount.creditId != ''">
+					AND c.credit_id = #{creditMachineAccount.creditId}
+				</if>
+				<if test="creditMachineAccount.expiringDate != null">
+					AND c.expiring_date = #{creditMachineAccount.expiringDate}
+				</if>
+				<if test="creditMachineAccount.beginExpiringDate != null">
+					AND c.expiring_date >= #{creditMachineAccount.beginExpiringDate}
+				</if>
+				<if test="creditMachineAccount.endExpiringDate != null">
+					AND  #{creditMachineAccount.endExpiringDate}>= c.expiring_date
+				</if>
+			</if>
+		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<select id="birthdayRemindList" resultType="CreditInvestUserInfo">
+		SELECT 
+			<include refid="creditInvestUserInfoColumns"/>
+			,c.expiring_date AS "creditMachineAccount.endExpiringDate"
+			,c.invest_money AS "creditMachineAccount.investMoney",
+			cbi.credit_name AS "creditMachineAccount.creditBaseInfo.creditName"
+		FROM credit_invest_user_info a
+			left JOIN credit_machine_account c ON c.credit_invest_user_id=a.id
+			left JOIN credit_base_info cbi ON cbi.id=c.credit_id
+			where 1=1
+			<if test="investorName != null and investorName != ''">
+				AND a.investor_name  LIKE 
+					<if test="dbName == 'oracle'">'%'||#{investorName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{investorName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{investorName},'%')</if>
+			</if>
+			<if test="investorGender != null and investorGender != ''">
+				AND a.investor_gender = #{investorGender}
+			</if>
+			<if test="investorContactInfo != null and investorContactInfo != ''">
+				AND a.investor_contact_info = #{investorContactInfo}
+			</if>
+			<if test="idNumber != null and idNumber != ''">
+				AND a.id_number = #{idNumber}
+			</if>
+			<if test="idType != null and idType != ''">
+				AND a.id_type = #{idType}
+			</if>
+			<if test="beginInvestorBirthday != null and beginInvestorBirthday != ''">
+				AND date_format(a.investor_birthday,'%m-%d') >= #{beginInvestorBirthday}
+			</if>
+			<if test="endInvestorBirthday != null and endInvestorBirthday != ''">
+				AND  #{endInvestorBirthday}>= date_format(a.investor_birthday,'%m-%d')
+			</if>
+			<if test="creditMachineAccount != null">
+				
+				<if test="creditMachineAccount.creditId != null and creditMachineAccount.creditId != ''">
+					AND c.credit_id = #{creditMachineAccount.creditId}
+				</if>
+				<if test="creditMachineAccount.expiringDate != null">
+					AND c.expiring_date = #{creditMachineAccount.expiringDate}
+				</if>
+				
+				<if test="creditMachineAccount.beginExpiringDate != null">
+					AND c.expiring_date >= #{creditMachineAccount.beginExpiringDate}
+				</if>
+				<if test="creditMachineAccount.endExpiringDate != null">
+					AND  #{creditMachineAccount.endExpiringDate}>= c.expiring_date
+				</if>
+			</if>
+			group by a.id
+		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	
+	
+	<select id="findAllList" resultType="CreditInvestUserInfo">
+		SELECT 
+			<include refid="creditInvestUserInfoColumns"/>
+		FROM credit_invest_user_info a
+		<include refid="creditInvestUserInfoJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO credit_invest_user_info(
+			investor_name,
+			investor_gender,
+			investor_birthday,
+			investor_contact_info,
+			id_number,
+			id_address,
+			id_type,
+			bank_card_no,
+			opening_bank,
+			create_date
+		) VALUES (
+			#{investorName},
+			#{investorGender},
+			#{investorBirthday},
+			#{investorContactInfo},
+			#{idNumber},
+			#{idAddress},
+			#{idType},
+			#{bankCardNo},
+			#{openingBank},
+			#{createDate}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE credit_invest_user_info SET 	
+			investor_name = #{investorName},
+			investor_gender = #{investorGender},
+			investor_birthday = #{investorBirthday},
+			investor_contact_info = #{investorContactInfo},
+			id_number = #{idNumber},
+			id_address = #{idAddress},
+			id_type = #{idType},
+			bank_card_no = #{bankCardNo},
+			opening_bank = #{openingBank}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM credit_invest_user_info
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

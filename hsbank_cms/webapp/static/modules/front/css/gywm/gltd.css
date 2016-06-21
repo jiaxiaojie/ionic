@@ -1,0 +1,15 @@
+.about_right_content{ width:auto; overflow:hidden;padding:30px 30px 30px 30px;}
+.about_right_content .title{ padding-bottom: 10px; margin-bottom: 10px; height:40px;line-height:40px;font-weight:bold;font-size:18px; border-bottom: 1px solid #c7c7c7;}
+.about_right_content .left_text{ width:500px; line-height:26px; font-weight:normal; font-size:12px;}
+.about_right_content .right_text{float:right;height:26px;line-height:26px;font-weight:normal;font-size:14px;}
+.about_right_content hr{border-top:1px solid #c7c7c7;border-bottom:0 none white;margin:5px 20px 5px 20px;}
+.about_right_content .hr_dashed{ width:100%; border-top:1px dashed #c7c7c7;border-bottom:0 none white;margin:20px 60px 20px 0;}
+.area_001{ padding-top: 20px; height:220px;}
+.slogan{ margin-top: 10px;}
+.slogan .double_quotes_left, .double_quotes_right{ width: 30px; height: 40px; line-height: 40px; display: block; float: left; text-align: left; font-size:32px; font-family:serif; font-style:normal; color:#956230;}
+.slogan .double_quotes_left{ margin-left:-14px;}
+.slogan .double_quotes_right{ margin-top:14px;}
+.slogan .text{ float: left; height: 40px; line-height: 40px;font-size:14px; margin-left:5px; margin-right:5px;}
+
+
+

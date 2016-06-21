@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.cms.dao.ActivityDao">
+
+	<resultMap type="com.thinkgem.jeesite.modules.entity.Activity" id="Activity">
+	    <result property="id" column="id"/>
+	    <result property="activityDescription" column="activity_description"/>
+	    <result property="activityJoin" column="activity_join"/>
+	    <result property="activityCover" column="activity_cover"/>
+		<result property="type" column="type" />
+		<result property="target" column="target" />
+	    <result property="activityStatus" column="activity_status"/>
+	    <result property="delFlag" column="del_flag"/>
+	    <result property="startDt" column="start_dt"/>
+	    <result property="endDt" column="end_dt"/>
+	    <result property="createUserId" column="create_user_id"/>
+	    <result property="createDt" column="create_dt"/>
+	    <result property="reviewUserId" column="review_user_id"/>
+	    <result property="reviewDt" column="review_dt"/>
+	    <result property="title" column="title"/>
+	    <result property="sort" column="sort"/>
+	    <result property="termCodes" column="termCodes" typeHandler="com.thinkgem.jeesite.modules.cms.handler.ArrayTypeHandler"/>
+	</resultMap>
+    
+	<sql id="activityColumns">
+		a.id AS "id",
+		a.activity_description AS "activityDescription",
+		a.activity_join AS "activityJoin",
+		a.activity_cover AS "activityCover",
+		a.type AS "type",
+		a.target AS "target",
+		a.activity_status AS "activityStatus",
+		a.del_flag AS "delFlag",
+		a.start_dt AS "startDt",
+		a.end_dt AS "endDt",
+		a.create_user_id AS "createUserId",
+		a.create_dt AS "createDt",
+		a.review_user_id AS "reviewUserId",
+		a.review_dt AS "reviewDt",
+		a.title AS "title",
+		a.sort AS "sort",
+		a.termCodes AS "termCodes"
+		
+	</sql>
+	
+	<sql id="activityJoins">
+	</sql>
+
+
+<!-- 查询活动信息 -->
+	<select id="findActivityInfo" resultType="Activity">
+		select
+		<include refid="activityColumns"/>
+		FROM cms_activity a
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		    AND now() >= a.start_dt
+			AND a.end_dt > now()
+			AND a.activity_status = '1'
+			<if test="termCodes != null  and termCodes != ''">
+				AND a.termCodes LIKE
+				<if test="dbName == 'oracle'">'%,'||#{termCodes}||',%'</if>
+				<if test="dbName == 'mssql'">'%,'+#{termCodes}+',%'</if>
+				<if test="dbName == 'mysql'">concat('%,',#{termCodes},',%')</if>
+			</if>
+		</where>
+		ORDER BY sort desc LIMIT 1
+	</select>
+
+
+
+
+	<select id="get" resultMap="Activity">
+		SELECT 
+			<include refid="activityColumns"/>
+		FROM cms_activity a
+		<include refid="activityJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findLast" resultType="Activity">
+		SELECT 
+			<include refid="activityColumns"/>
+		FROM cms_activity a
+		<include refid="activityJoins"/>
+		 order by create_dt desc limit 1
+	</select>
+	
+	
+	<select id="findNewActivity" resultType="Activity">
+		SELECT 
+			<include refid="activityColumns"/>
+		FROM cms_activity a
+		<include refid="activityJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} 
+			and  now()> a.start_dt
+			AND a.activity_status = '1'
+			<if test="termCode != null  and termCode != ''">
+				AND a.termCodes LIKE 
+					<if test="dbName == 'oracle'">'%,'||#{termCode}||',%'</if>
+					<if test="dbName == 'mssql'">'%,'+#{termCode}+',%'</if>
+					<if test="dbName == 'mysql'">concat('%,',#{termCode},',%')</if>
+			</if>
+			
+		</where>
+		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+			
+		
+	</select>
+	
+	<select id="findList" resultType="Activity">
+		SELECT 
+			<include refid="activityColumns"/>
+		FROM cms_activity a
+		<include refid="activityJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="activityStatus != null and activityStatus != ''">
+				AND a.activity_status = #{activityStatus}
+			</if>
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+			<if test="actStatus != null and actStatus != ''">
+				<if test="actStatus==0">
+					and a.start_dt > now()
+				</if>
+				<if test="actStatus==1">
+					and  now() >= a.start_dt and a.end_dt > now()
+				</if>
+				<if test="actStatus==2">
+					and  now() >= a.end_dt
+				</if>
+				
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Activity">
+		SELECT 
+			<include refid="activityColumns"/>
+		FROM cms_activity a
+		<include refid="activityJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO cms_activity(
+			activity_description,
+			activity_join,
+			type,
+			target,
+			activity_cover,
+			activity_status,
+			del_flag,
+			start_dt,
+			end_dt,
+			create_user_id,
+			create_dt,
+			title,
+			sort,
+			termCodes
+		) VALUES (
+			#{activityDescription},
+			#{activityJoin},
+			#{type},
+			#{target},
+			#{activityCover},
+			#{activityStatus},
+			#{delFlag},
+			#{startDt},
+			#{endDt},
+			#{createUserId},
+			#{createDt},
+			#{title},
+			#{sort},
+			#{termCodes, jdbcType=ARRAY, typeHandler=com.thinkgem.jeesite.modules.cms.handler.ArrayTypeHandler}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE cms_activity SET 	
+			activity_description = #{activityDescription},
+			activity_join = #{activityJoin},
+			type = #{type},
+			target = #{target},
+			activity_cover = #{activityCover},
+			activity_status = #{activityStatus},
+			start_dt = #{startDt},
+			end_dt = #{endDt},
+			review_user_id = #{reviewUserId},
+			review_dt = #{reviewDt},
+			title = #{title},
+			sort = #{sort},
+			termCodes = #{termCodes, jdbcType=ARRAY, typeHandler=com.thinkgem.jeesite.modules.cms.handler.ArrayTypeHandler}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE cms_activity SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getActivityListPage" resultType="Activity">
+		SELECT 
+			<include refid="activityColumns"/>
+		FROM cms_activity a
+		<include refid="activityJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} 
+			and  now()> a.start_dt
+			AND a.activity_status = '1'
+			<if test="termCode != null  and termCode != ''">
+				AND a.termCodes LIKE 
+					<if test="dbName == 'oracle'">'%,'||#{termCode}||',%'</if>
+					<if test="dbName == 'mssql'">'%,'+#{termCode}+',%'</if>
+					<if test="dbName == 'mysql'">concat('%,',#{termCode},',%')</if>
+			</if>
+			order by a.sort DESC
+			limit #{startNumber},#{endNumber}
+		</where>
+	</select>
+	
+</mapper>

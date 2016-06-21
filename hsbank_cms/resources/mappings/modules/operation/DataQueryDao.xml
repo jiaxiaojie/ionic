@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.operation.dao.DataQueryDao">
+    
+	<sql id="dataQueryColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.from_content AS "fromContent",
+		a.filter_content AS "filterContent",
+		a.group_by_content AS "groupByContent",
+		a.having_content AS "havingContent",
+		a.order_by_content AS "orderByContent",
+		a.limit_content AS "limitContent",
+		a.description AS "description"
+	</sql>
+	
+	<sql id="dataQueryJoins">
+	</sql>
+    
+	<select id="get" resultType="DataQuery">
+		SELECT 
+			<include refid="dataQueryColumns"/>
+		FROM data_query a
+		<include refid="dataQueryJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="DataQuery">
+		SELECT 
+			<include refid="dataQueryColumns"/>
+		FROM data_query a
+		<include refid="dataQueryJoins"/>
+		<where>
+			
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DataQuery">
+		SELECT 
+			<include refid="dataQueryColumns"/>
+		FROM data_query a
+		<include refid="dataQueryJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO data_query(
+			name,
+			from_content,
+			filter_content,
+			order_by_content,
+			limit_content,
+			group_by_content,
+			having_content,
+			description
+		) VALUES (
+			#{name},
+			#{fromContent},
+			#{filterContent},
+			#{orderByContent},
+			#{limitContent},
+			#{groupByContent},
+			#{havingContent},
+			#{description}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE data_query SET 	
+			name = #{name},
+			from_content = #{fromContent},
+			filter_content = #{filterContent},
+			order_by_content = #{orderByContent},
+			limit_content = #{limitContent},
+			group_by_content = #{groupByContent},
+			having_content = #{havingContent},
+			description = #{description}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM data_query
+		WHERE id = #{id}
+	</update>
+	
+	<select id="query" resultType="java.util.Map">
+		select <![CDATA[${rows}]]>
+		from <![CDATA[${fromContent}]]>
+		<where>
+			<if test="filterContent != null and filterContent != ''">
+				and <![CDATA[${filterContent}]]>
+			</if>
+			<foreach collection="filterSqls" index="index" item="filterSql" open=" and " separator=" and ">
+				<![CDATA[${filterSql}]]>
+			</foreach>
+		</where>
+		<if test="groupByContent != null and groupByContent != ''">
+			group by <![CDATA[${groupByContent}]]>
+		</if>
+		<if test="havingContent != null and havingContent != ''">
+			having <![CDATA[${havingContent}]]>
+		</if>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				<if test="orderByContent != null and orderByContent != ''">
+					order by <![CDATA[${orderByContent}]]>
+				</if>
+			</otherwise>
+		</choose>
+		<if test="limitContent != null and limitContent != ''">
+			limit <![CDATA[${limitContent}]]>
+		</if>
+	</select>
+	
+	<select id="getByMenuId" resultType="DataQuery">
+		select a.*,b.title,b.exportable from data_query a,data_query_menu b where a.id = b.query_id and b.menu_id = #{menuId} limit 1
+	</select>
+</mapper>

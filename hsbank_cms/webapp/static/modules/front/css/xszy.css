@@ -1,0 +1,119 @@
+.xszy_page{font-family: "微软雅黑";}
+.xszy_wrapper{background:#FFF;border:1px solid #bb9a75;margin-bottom:30px;padding-bottom:30px;}
+.tab_wrapper{background:url('../images/wyrz/top_tracery.png') no-repeat 0 0 ;border-bottom: 1px dashed #a4a0a0;height: 45px;position: relative;}
+.tab_wrapper ul{padding-left:40px;}
+.tab_wrapper li{float:left;border-right:1px dashed #a4a0a0;width:147px;height:45px;line-height:45px;text-align:center;position: relative;}
+.tab_wrapper li span{width:147px;height:45px;line-height:45px;text-align:center;position:absolute;top:0;left:0;cursor:pointer;}
+.tab_wrapper li.current span{background:url('../images/xszy/bg_tab.png') no-repeat;background-position: 29px 0px;height: 60px;}
+.content_wrapper{width:980px; margin: 0 auto;}
+.content_wrapper>ul{}
+.content_wrapper>ul>li{}
+/*投资*/
+.invest_wrapper{ width: 810px; margin: 0 auto;}
+.invest_wrapper dl dt{line-height: 36px;font-size: 36px;text-align: center;margin: 90px 0 0;color: #656565;font-weight: 400;}
+.invest_wrapper dl dd{border-bottom: 1px dashed #c7c7c7;}
+.invest_wrapper dl dd .description{color: #787878;font-size: 18px;text-align: center;padding: 29px 0 50px;}
+.invest_wrapper dl.what{}
+.invest_wrapper dl.what dd ul{}
+.invest_wrapper dl.what dd ul li{padding-left:80px;float:left;width:270px;height:70px;margin-right:55px;margin-bottom:80px;}
+.invest_wrapper dl.what dd ul li img{float:left;}
+.invest_wrapper dl.what dd ul li .number{padding-left:5px;font-size: 36px;line-height: 36px;color:#a46f33;}
+.invest_wrapper dl.what dd ul li .title{padding-left:5px;font-size: 18px;color: #6d6d6d;}
+.invest_wrapper dl.why{}
+.invest_wrapper dl.why dd{}
+.invest_wrapper dl.why dd ul{padding: 70px 0 60px 5px;}
+.invest_wrapper dl.why dd ul li{width: 200px;float: left;margin-right: 68px;text-align: center;}
+.invest_wrapper dl.why dd ul li img{}
+.invest_wrapper dl.why dd ul li div{line-height: 24px;color: #768082;font-size: 16px;text-align: center;}
+.invest_wrapper dl.why dd ul li div.title{font-size: 18px;font-weight: 400;text-align: center;margin: 20px 0 10px;color: #546579;}
+.invest_wrapper dl.why dd ul li b{color:#2ba9e1;}
+#count{	width: 140px;	height: 50px;	margin: 0 auto;		display: inline-block;	color: #fff;	font-size: 22px;	text-align: center;	line-height: 50px;	cursor: pointer;	-moz-border-radius: 10px;	-webkit-border-radius: 10px;	border-radius: 10px;background-color: #aa780d;}
+.how-much li {	width: 364px;	float: left;	font-size: 18px;	color: #546579;	font-size: 16px}
+.reg-wrap {	width: 960px;	height: 300px}
+.how-much .line {	float: left;	width: 380px;	padding: 0 0 10px 10px}
+.how-much .how-choice div {	height: 46px;	margin: 30px 0;}
+.how-much .how-choice {	position: relative}
+.how-much .how-choice .unit {	    position: absolute;    left: 332px;    top: 39px;    color: #73808f;    font-size: 14px;}
+.how-much .how-choice label {	margin-right: 7px;	display: inline-block;}
+.how-much .how-choice input {	height: 30px;	width: 283px;	border: solid 1px #aa780d;	padding: 2px;	color: #c4d0de;	font-size: 14px;	background-color: #e9eefb;text-align: center;}
+.how-much .how-choice input.err {	border: solid 1px red}
+.how-much .how-choice .placeholder {	position: absolute;	color: #c4d0de;	font-size: 14px;	left: 140px;	top: 42px}
+.how-much .how-choice span {	height: 35px;	width: 49px;	border: dashed 1px #c4d0de;	-moz-border-radius: 5px;	-webkit-border-radius: 5px;	border-radius: 5px;	text-align: center;	margin-right: 6px;	color: #c4d0de;	font-size: 14px;	cursor: pointer;	display: inline-block;	line-height: 35px}
+.how-much .how-choice span.selected {	color: #976e46;			width: 60px;	height: 35px;border-color: #976e46;}
+.how-much .how-result {	padding: 30px 0 10px 20px;	width: 460px;	position: relative}
+.how-much .ti {	float: left;	line-height: 46px}
+.how-much .line li {	height: 53px;	border-top: dashed 1px #c4d0de;width: 294px;}
+.how-much .line li.last {	height: 53px;	border-bottom: dashed 1px #c4d0de}
+.how-much .line .mm {	margin: 11px 0 11px -20px}
+.how-much .line ul {	height: 163px}
+.how-much .line span {	color: #89939d}
+.how-much .line p {	color: #c4d0de;	font-size: 14px;	margin-left: 30px}
+.how-much .column {	position: absolute;	left: 20px}
+.how-much .column li {	position: absolute}
+.how-much .column .huoqi {	float: left;	height: 18px;	width: 45px;	background: #bccefc;	bottom: -163px;	left: 107px;}
+.how-much .column .baobao {	float: left;	height: 46px;	width: 45px;	background: #bccefc;	left: 202px;	bottom: -163px}
+.how-much .column .rrd {	float: left;	height: 144px;	width: 45px;	left: 298px;	bottom: -163px;	background: #ffc739;}
+.how-much .column label {	position: absolute;	text-align: center;	height: 30px;	line-height: 30px;	top: -40px;	-moz-border-radius: 5px;	-webkit-border-radius: 5px;	border-radius: 5px;	font-size: 14px;	white-space: nowrap;	padding: 0 5px;	background-color: #fff}
+.how-much .column .huoqi label, .how-much .column .baobao label {	border: solid 1px #d0b795;	color: #aa780d;	left: -7px}
+.how-much .column .baobao label {	left: -11px}
+.how-much .column .rrd label {	background-color: #fff0cb;	color: #f39800;	left: -15.5px}
+.how-much .column label:after, .how-much .column label:before {	position: absolute;	content: '';	left: 50%;	margin-left: -4px;	width: 0;	height: 0}
+.how-much .column label:before {	bottom: -8px;	border-left: 5px solid transparent;	border-right: 5px solid transparent;	border-top: 8px solid #fff0cb;}
+.how-much .column label:after {	bottom: -7px;	border-left: 5px solid transparent;	border-right: 5px solid transparent;	border-top: 10px solid #fff0cb;color: #fff0cb;}
+.how-much .column .huoqi label:before, .how-much .column .baobao label:before	{	border-top: 8px solid #cfa972;}
+.how-much .column .rrd label:before {	border-top: 8px solid #fff0cb;}
+.how-much .line p span {	margin: 0;	color: #2ea7e0}
+.invest_wrapper dl.calc dd{padding-top: 70px;}
+.invest_wrapper dl.flow dd{padding-top: 70px;border-bottom:none;}
+/*融资*/
+.borrow_wrapper{ width:810px; margin:0 auto; margin-top: 40px;}
+.borrow_wrapper>ul{}
+.borrow_wrapper>ul>li{margin-bottom: 60px;}
+.borrow_wrapper>ul>li>div{}
+.borrow_wrapper .header{height:80px;width:100%;}
+.borrow_wrapper .inner{background: url(../images/xszy/bg_line.png) repeat-y 21px 0;padding-left: 44px;padding-top: 30px;}
+.borrow_wrapper .inner .title{background: url(../images/util/brown_star.png) no-repeat 0px 7px;font-size:24px;color:#686868;padding-left:21px;margin-bottom: 15px;margin-top: 15px;line-height: 32px;}
+.borrow_wrapper .inner .content{color:#575757;line-height: 28px;padding-left: 24px;}
+.four_step ul li{ line-height:28px;}
+.borrow_wrapper .footer{background:url(../images/xszy/bg_line_end.png) no-repeat 21px 0;height:63px;width:100%;position: relative;text-align: right;}
+.borrow_wrapper li.what .header{background:url(../images/xszy/bg_title_what.png) no-repeat 0 0;}
+.borrow_wrapper li.why .header{background:url(../images/xszy/bg_title_why.png) no-repeat 0 0;}
+.borrow_wrapper li.results .header{background: url(../images/xszy/bg_title_results.png) no-repeat 0 0;}
+.borrow_wrapper li.loan .header{background:url(../images/xszy/bg_title_loan.png) no-repeat 0 0;}
+.borrow_wrapper li.product .header{background:url(../images/xszy/bg_title_product.png) no-repeat 0 0;}
+.borrow_wrapper .inner ul{width:315px;}
+.borrow_wrapper .content b{font-size:24px;}
+.borrow_wrapper .what .content{margin-top: 55px;}
+.borrow_wrapper .why .line1 img{margin-top: 82px;}
+.borrow_wrapper .why .line2 img{margin-top: 90px;}
+.borrow_wrapper .product img{margin-top: 37px;}
+/*安全保障*/
+.safe_wrapper{ width:810px; margin:0 auto; margin-top: 40px;}
+.safe_wrapper>ul{}
+.safe_wrapper>ul>li{margin-bottom: 60px;}
+.safe_wrapper>ul>li>div{}
+.safe_wrapper .header{height:80px;width:100%;}
+.safe_wrapper .inner{background: url(../images/xszy/bg_line.png) repeat-y 21px 0;padding-left: 44px;padding-top: 30px;}
+.safe_wrapper .inner .title{background: url(../images/util/brown_star.png) no-repeat 0px 0px;font-size:24px;color:#686868;padding-left:21px;margin-bottom: 15px;margin-top: 15px;}
+.safe_wrapper .inner .content{color:#575757;line-height: 28px;padding-left: 24px;}
+.safe_wrapper .footer{background:url(../images/xszy/bg_line_end.png) no-repeat 21px 0;height:63px;width:100%;position: relative;text-align: right;}
+.safe_wrapper .footer a{margin-top: 10px;display: inline-block;color: #139fe0;text-decoration: underline;}
+.safe_wrapper li.capital{}
+.safe_wrapper li.capital .header{background:url(../images/xszy/bg_title_capital.png) no-repeat 0 0;}
+.safe_wrapper li.account .header{background:url(../images/xszy/bg_title_account.png) no-repeat 0 0;}
+.safe_wrapper li.leagle .header{background:url(../images/xszy/bg_title_leagle.png) no-repeat 0 0;}
+.safe_wrapper li.lend .header{background:url(../images/xszy/bg_title_lend.png) no-repeat 0 0;}
+.safe_wrapper li.self .header{background:url(../images/xszy/bg_title_self.png) no-repeat 0 0;}
+/*新手任务*/
+.novice_task{ margin:20px 20px 20px 20px;}
+.novice_task .container{ padding:20px 0;}
+.novice_task .xszy_img_01{ width:940px; height:378px; background:url(../images/xszy/xszy_img_01.jpg) no-repeat 0 24px; background-size: 100% auto;}
+.novice_task .xszy_img_02{ width:940px; height:388px; background:url(../images/xszy/xszy_img_02.jpg) no-repeat 0 24px; background-size: 100% auto;}
+.novice_task .xszy_img_02 a{ margin:260px 20px 0 417px; width:269px; height:53px; line-height:53px; text-align:center; background:url(../images/xszy/xszy_btn.png) no-repeat; display:block; font-size:24px; color:#fff;}
+.novice_task .xszy_img_03{ width:940px; height:388px; background:url(../images/xszy/xszy_img_03.jpg) no-repeat 0 24px; background-size: 100% auto;}
+.novice_task .xszy_img_04{ width:940px; height:388px; background:url(../images/xszy/xszy_img_04.jpg) no-repeat 0 24px; background-size: 100% auto;}
+.novice_task .xszy_img_04 a{ margin:210px 20px 0 630px; width:269px; height:53px; line-height:53px; text-align:center; background:url(../images/xszy/xszy_btn.png) no-repeat; display:block; font-size:24px; color:#fff;}
+.novice_task .nt_description{ background-color:#f4f4f4;}
+.novice_task .nt_description dl{ padding:0 50px;}
+.novice_task .nt_description dl dt{ font-size:20px; font-weight:normal; margin-bottom:10px; color:#333;}
+.novice_task .nt_description dl dd{ font-size:16px; line-height: 34px;}

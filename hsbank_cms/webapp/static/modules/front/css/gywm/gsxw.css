@@ -1,0 +1,7 @@
+.about_right_content{ width:auto; min-height:500px; overflow:hidden;padding:30px 30px 30px 30px;}
+.about_right_content .title{ padding-bottom: 10px; margin-bottom: 10px; height:40px;line-height:40px;font-weight:bold;font-size:18px; border-bottom: 1px solid #c7c7c7;}
+.about_right_content>h2{font-size:14px;color:#875d00;font-weight:normal;margin: 0 35px;}
+.news_list{}
+.news{ height:55px; line-height:55px; color:#767676; border-bottom:1px dashed #c7c7c7;}
+.news>*{ display:inline-block;}
+.news>.date{ float:right;}

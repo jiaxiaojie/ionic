@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.marketing.dao.MarketingMoneyAwardRecordDao">
+    
+	<sql id="marketingMoneyAwardRecordColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.amount AS "amount",
+		a.parameters AS "parameters",
+		a.status AS "status",
+		a.create_dt AS "createDt",
+		a.finish_dt AS "finishDt"
+	</sql>
+	
+	<sql id="marketingMoneyAwardRecordJoins">
+	</sql>
+    
+	<select id="get" resultType="MarketingMoneyAwardRecord">
+		SELECT 
+			<include refid="marketingMoneyAwardRecordColumns"/>
+		FROM marketing_money_award_record a
+		<include refid="marketingMoneyAwardRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MarketingMoneyAwardRecord">
+		SELECT 
+			<include refid="marketingMoneyAwardRecordColumns"/>
+		FROM marketing_money_award_record a
+		<include refid="marketingMoneyAwardRecordJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="beginAmount != null and endAmount != null and beginAmount != '' and endAmount != ''">
+				AND a.amount BETWEEN #{beginAmount} AND #{endAmount}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="createDt != null and createDt != ''">
+				AND a.create_dt = #{createDt}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MarketingMoneyAwardRecord">
+		SELECT 
+			<include refid="marketingMoneyAwardRecordColumns"/>
+		FROM marketing_money_award_record a
+		<include refid="marketingMoneyAwardRecordJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO marketing_money_award_record(
+			account_id,
+			amount,
+			parameters,
+			status,
+			create_dt,
+			finish_dt
+		) VALUES (
+			#{accountId},
+			#{amount},
+			#{parameters},
+			#{status},
+			#{createDt},
+			#{finishDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE marketing_money_award_record SET 	
+			account_id = #{accountId},
+			amount = #{amount},
+			parameters = #{parameters},
+			status = #{status},
+			create_dt = #{createDt},
+			finish_dt = #{finishDt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM marketing_money_award_record
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findListByStatus" resultType="MarketingMoneyAwardRecord">
+		select * from marketing_money_award_record where status = #{status}
+	</select>
+	
+	<update id="updateStatus">
+		update marketing_money_award_record set
+			status = #{status}
+			<if test="finishDt != null">
+			,finish_dt = #{finishDt}
+			</if>
+		where id = #{id}
+	</update>
+</mapper>

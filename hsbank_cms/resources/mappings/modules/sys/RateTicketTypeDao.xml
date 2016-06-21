@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.sys.dao.RateTicketTypeDao">
+    
+	<sql id="rateTicketTypeColumns">
+		a.id AS "id",
+		a.ticket_type_name AS "ticketTypeName",
+		a.rate AS "rate",
+		a.rate_duration AS "rateDuration",
+		a.max_amount AS "maxAmount",
+		a.term_of_validity AS "termOfValidity",
+		a.status AS "status",
+		a.use_description AS "useDescription",
+		a.create_user AS "createUser",
+		a.create_dt AS "createDt",
+		a.last_modify_user AS "lastModifyUser",
+		a.last_modify_dt AS "lastModifyDt"
+	</sql>
+	
+	<sql id="rateTicketTypeJoins">
+	</sql>
+    
+	<select id="get" resultType="RateTicketType">
+		SELECT 
+			<include refid="rateTicketTypeColumns"/>
+		FROM rate_ticket_type a
+		<include refid="rateTicketTypeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="RateTicketType">
+		SELECT 
+			<include refid="rateTicketTypeColumns"/>
+		FROM rate_ticket_type a
+		<include refid="rateTicketTypeJoins"/>
+		<where>
+			
+			<if test="ticketTypeName != null and ticketTypeName != ''">
+				AND a.ticket_type_name = #{ticketTypeName}
+			</if>
+			<if test="rate != null and rate != ''">
+				AND a.rate = #{rate}
+			</if>
+			<if test="rateDuration != null and rateDuration != ''">
+				AND a.rate_duration = #{rateDuration}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="RateTicketType">
+		SELECT 
+			<include refid="rateTicketTypeColumns"/>
+		FROM rate_ticket_type a
+		<include refid="rateTicketTypeJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO rate_ticket_type(
+			ticket_type_name,
+			rate,
+			rate_duration,
+			max_amount,
+			term_of_validity,
+			status,
+			use_description,
+			create_user,
+			create_dt,
+			last_modify_user,
+			last_modify_dt
+		) VALUES (
+			#{ticketTypeName},
+			#{rate},
+			#{rateDuration},
+			#{maxAmount},
+			#{termOfValidity},
+			#{status},
+			#{useDescription},
+			#{createUser},
+			#{createDt},
+			#{lastModifyUser},
+			#{lastModifyDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE rate_ticket_type SET 	
+			ticket_type_name = #{ticketTypeName},
+			rate = #{rate},
+			rate_duration = #{rateDuration},
+			max_amount = #{maxAmount},
+			term_of_validity = #{termOfValidity},
+			status = #{status},
+			use_description = #{useDescription},
+			last_modify_user = #{lastModifyUser},
+			last_modify_dt = #{lastModifyDt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM rate_ticket_type
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

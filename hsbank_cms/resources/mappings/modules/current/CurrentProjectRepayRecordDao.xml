@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.current.dao.CurrentProjectRepayRecordDao">
+    
+	<sql id="currentProjectRepayRecordColumns">
+		a.id AS "id",
+		a.project_id AS "projectId",
+		a.principal AS "principal",
+		a.interest AS "interest",
+		a.repay_dt AS "repayDt"
+	</sql>
+	
+	<sql id="currentProjectRepayRecordJoins">
+	</sql>
+    
+	<select id="get" resultType="CurrentProjectRepayRecord">
+		SELECT 
+			<include refid="currentProjectRepayRecordColumns"/>
+		FROM current_project_repay_record a
+		<include refid="currentProjectRepayRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CurrentProjectRepayRecord">
+		SELECT 
+			<include refid="currentProjectRepayRecordColumns"/>
+		FROM current_project_repay_record a
+		<include refid="currentProjectRepayRecordJoins"/>
+		<where>
+			
+			<if test="projectId != null and projectId != ''">
+				AND a.project_id = #{projectId}
+			</if>
+			<if test="principal != null and principal != ''">
+				AND a.principal = #{principal}
+			</if>
+			<if test="interest != null and interest != ''">
+				AND a.interest = #{interest}
+			</if>
+			<if test="beginRepayDt != null  and beginRepayDt != ''">				AND a.repay_dt >= #{beginRepayDt}			</if>			<if test="endRepayDt != null and endRepayDt != ''">				AND #{endRepayDt} >= a.repay_dt			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CurrentProjectRepayRecord">
+		SELECT 
+			<include refid="currentProjectRepayRecordColumns"/>
+		FROM current_project_repay_record a
+		<include refid="currentProjectRepayRecordJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO current_project_repay_record(
+			project_id,
+			principal,
+			interest,
+			repay_dt
+		) VALUES (
+			#{projectId},
+			#{principal},
+			#{interest},
+			#{repayDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE current_project_repay_record SET 	
+			project_id = #{projectId},
+			principal = #{principal},
+			interest = #{interest},
+			repay_dt = #{repayDt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM current_project_repay_record
+		WHERE id = #{id}
+	</update>
+</mapper>

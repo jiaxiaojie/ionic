@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.project.dao.ProjectReviewRecordDao">
+    
+	<sql id="projectReviewRecordColumns">
+		a.id AS "id",
+		a.project_id AS "projectId",
+		a.review_user_id AS "reviewUserId",
+		a.review_result AS "reviewResult",
+		a.review_dt AS "reviewDt",
+		a.review_remark AS "reviewRemark",
+		su.name AS "user.name"
+	</sql>
+	
+	<sql id="projectReviewRecordJoins">
+		LEFT JOIN sys_user su ON su.id=a.review_user_id
+	</sql>
+    
+	<select id="get" resultType="ProjectReviewRecord">
+		SELECT 
+			<include refid="projectReviewRecordColumns"/>
+		FROM project_review_record a
+		<include refid="projectReviewRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ProjectReviewRecord">
+		SELECT 
+			<include refid="projectReviewRecordColumns"/>
+		FROM project_review_record a
+		<include refid="projectReviewRecordJoins"/>
+		<where>
+			
+			<if test="queryProjectId != null and queryProjectId != ''">
+				AND a.project_id = #{queryProjectId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ProjectReviewRecord">
+		SELECT 
+			<include refid="projectReviewRecordColumns"/>
+		FROM project_review_record a
+		<include refid="projectReviewRecordJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO project_review_record(
+			project_id,
+			review_user_id,
+			review_result,
+			review_dt,
+			review_remark
+		) VALUES (
+			#{projectId},
+			#{reviewUserId},
+			#{reviewResult},
+			#{reviewDt},
+			#{reviewRemark}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE project_review_record SET 	
+			project_id = #{projectId},
+			review_user_id = #{reviewUserId},
+			review_result = #{reviewResult},
+			review_dt = #{reviewDt},
+			review_remark=#{reviewRemark}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM project_review_record
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

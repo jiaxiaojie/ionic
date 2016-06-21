@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerBalanceDao">
+    
+	<sql id="customerBalanceColumns">
+		a.account_id AS "accountId",
+		a.gold_balance AS "goldBalance",
+		a.platform_amount AS "platformAmount",
+		a.congeal_val AS "congealVal",
+		a.will_loan AS "willLoan",
+		a.sum_loan AS "sumLoan",
+		a.repayment_money AS "repaymentMoney",
+		a.repayment_principal AS "repaymentPrincipal",
+		a.repayment_late_money AS "repaymentLateMoney",
+		a.repayment_pre_money AS "repaymentPreMoney",
+		a.repayment_30d_will AS "repayment30dWill",
+		a.will_profit AS "willProfit",
+		a.will_principal AS "willPrincipal",
+		a.sum_profit AS "sumProfit",
+		a.sum_investment AS "sumInvestment",
+		a.receive_money AS "receiveMoney",
+		a.receive_principal AS "receivePrincipal",
+		a.receive_late_money AS "receiveLateMoney",
+		a.receive_pre_money AS "receivePreMoney",
+		a.receive_transfer_money AS "receiveTransferMoney",
+		a.net_assets AS "netAssets",
+		a.financial_assets AS "financialAssets",
+		a.sum_recharge AS "sumRecharge",
+		a.sum_withdraw AS "sumWithdraw",
+		a.recharge_count AS "rechargeCount",
+		a.withdraw_count AS "withdrawCount",
+		a.investment_count AS "investmentCount",
+		a.cancel_count AS "cancelCount",
+		a.transfer_count AS "transferCount",
+		a.accept_count AS "acceptCount",
+		a.first_get_dt AS "firstGetDt",
+		a.last_change_dt AS "lastChangeDt",
+		a.free_withdraw_count AS "freeWithdrawCount",
+		b.account_name AS "accountName",
+		b.avatar_image AS "avatarImage",
+		b.has_open_third_account AS "hasOpenThirdAccount",
+		c.customer_name AS "customerName",
+		d.integral_balance AS "customerIntegralSnapshot.integralBalance",
+		d.outtime_val AS "customerIntegralSnapshot.outtimeVal",
+		e.gold_balance AS "customerGoldCoinSnapshot.goldBalance",
+		e.outtime_val AS "customerGoldCoinSnapshot.outtimeVal"
+	</sql>
+	
+	<sql id="customerBalanceJoins">
+		LEFT JOIN customer_account b ON b.account_id=a.account_id
+		LEFT JOIN customer_base c ON c.account_id=a.account_id
+		LEFT JOIN customer_integral_snapshot d ON d.account_id=a.account_id
+		LEFT JOIN customer_gold_coin_snapshot e ON e.account_id=a.account_id
+	</sql>
+    
+	<select id="get" resultType="CustomerBalance">
+		SELECT 
+			<include refid="customerBalanceColumns"/>
+		FROM customer_balance a
+		<include refid="customerBalanceJoins"/>
+		WHERE a.account_id = #{id}
+	</select>
+	
+	<select id="getByExtendNo" resultType="CustomerBalance">
+		SELECT 
+			<include refid="customerBalanceColumns"/>
+		FROM customer_balance a
+		<include refid="customerBalanceJoins"/>
+		WHERE b.outer_id = #{extendNo}
+	</select>
+	
+	<select id="findList" resultType="CustomerBalance">
+		SELECT 
+			<include refid="customerBalanceColumns"/>
+		FROM customer_balance a
+		<include refid="customerBalanceJoins"/>
+		<where>
+		
+			<if test="accountName != null and accountName != ''">
+				AND b.account_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{accountName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{accountName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{accountName},'%')</if>
+			</if>
+			<if test="customerName != null and customerName != ''">
+				AND c.customer_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{customerName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{customerName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{customerName},'%')</if>
+			</if>
+			<if test="beginGoldBalance != null  and beginGoldBalance != ''">				AND a.gold_balance >= #{beginGoldBalance}			</if>			<if test="endGoldBalance != null and endGoldBalance != ''">				AND #{endGoldBalance} >= a.gold_balance			</if>
+			<if test="customerIntegralSnapshot != null ">				<if test="customerIntegralSnapshot.beginIntegralBalance != null  and customerIntegralSnapshot.beginIntegralBalance != ''">					AND d.integral_balance >= #{customerIntegralSnapshot.beginIntegralBalance}				</if>				<if test="customerIntegralSnapshot.endIntegralBalance != null and customerIntegralSnapshot.endIntegralBalance != ''">					AND #{customerIntegralSnapshot.endIntegralBalance} >= d.integral_balance				</if>			</if>
+			<if test="customerGoldCoinSnapshot != null ">				<if test="customerGoldCoinSnapshot.beginGoldBalance != null  and customerGoldCoinSnapshot.beginGoldBalance != ''">					AND e.gold_balance >= #{customerGoldCoinSnapshot.beginGoldBalance}				</if>				<if test="customerGoldCoinSnapshot.endGoldBalance != null and customerGoldCoinSnapshot.endGoldBalance != ''">					AND #{customerGoldCoinSnapshot.endGoldBalance} >= e.gold_balance				</if>			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerBalance">
+		SELECT 
+			<include refid="customerBalanceColumns"/>
+		FROM customer_balance a
+		<include refid="customerBalanceJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_balance(
+			account_id,
+			gold_balance,
+			platform_amount,
+			congeal_val,
+			will_loan,
+			sum_loan,
+			repayment_money,
+			repayment_principal,
+			repayment_late_money,
+			repayment_pre_money,
+			repayment_30d_will,
+			will_profit,
+			will_principal,
+			sum_profit,
+			sum_investment,
+			receive_money,
+			receive_principal,
+			receive_late_money,
+			receive_pre_money,
+			receive_transfer_money,
+			net_assets,
+			financial_assets,
+			sum_recharge,
+			sum_withdraw,
+			recharge_count,
+			withdraw_count,
+			investment_count,
+			cancel_count,
+			transfer_count,
+			accept_count,
+			free_withdraw_count,
+			first_get_dt,
+			last_change_dt
+		) VALUES (
+			#{accountId},
+			#{goldBalance},
+			#{platformAmount},
+			#{congealVal},
+			#{willLoan},
+			#{sumLoan},
+			#{repaymentMoney},
+			#{repaymentPrincipal},
+			#{repaymentLateMoney},
+			#{repaymentPreMoney},
+			#{repayment30dWill},
+			#{willProfit},
+			#{willPrincipal},
+			#{sumProfit},
+			#{sumInvestment},
+			#{receiveMoney},
+			#{receivePrincipal},
+			#{receiveLateMoney},
+			#{receivePreMoney},
+			#{receiveTransferMoney},
+			#{netAssets},
+			#{financialAssets},
+			#{sumRecharge},
+			#{sumWithdraw},
+			#{rechargeCount},
+			#{withdrawCount},
+			#{investmentCount},
+			#{cancelCount},
+			#{transferCount},
+			#{acceptCount},
+			#{freeWithdrawCount},
+			#{firstGetDt},
+			#{lastChangeDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_balance SET 	
+			gold_balance = #{goldBalance},
+			platform_amount = #{platformAmount},
+			congeal_val = #{congealVal},
+			will_loan = #{willLoan},
+			sum_loan = #{sumLoan},
+			repayment_money = #{repaymentMoney},
+			repayment_principal = #{repaymentPrincipal},
+			repayment_late_money = #{repaymentLateMoney},
+			repayment_pre_money = #{repaymentPreMoney},
+			repayment_30d_will = #{repayment30dWill},
+			will_profit = #{willProfit},
+			will_principal = #{willPrincipal},
+			sum_profit = #{sumProfit},
+			sum_investment = #{sumInvestment},
+			receive_money = #{receiveMoney},
+			receive_principal = #{receivePrincipal},
+			receive_late_money = #{receiveLateMoney},
+			receive_pre_money = #{receivePreMoney},
+			receive_transfer_money = #{receiveTransferMoney},
+			net_assets = #{netAssets},
+			financial_assets = #{financialAssets},
+			sum_recharge = #{sumRecharge},
+			sum_withdraw = #{sumWithdraw},
+			recharge_count = #{rechargeCount},
+			withdraw_count = #{withdrawCount},
+			investment_count = #{investmentCount},
+			cancel_count = #{cancelCount},
+			transfer_count = #{transferCount},
+			accept_count = #{acceptCount},
+			free_withdraw_count = #{freeWithdrawCount},
+			first_get_dt = #{firstGetDt},
+			last_change_dt = #{lastChangeDt}
+		WHERE account_id = #{accountId}
+	</update>
+	
+	
+	<update id="delete">
+		DELETE FROM customer_balance
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateInvestorBalance">
+		UPDATE SET
+			gold_balance = gold_balance - #{money - ticketMoney},
+			congeal_val = congeal_val + #{money - ticketMoney},
+			net_assets = net_assets + #{ticketMoney},
+			financial_assets = financial_assets + #{money},
+			investment_count = investment_count + 1
+		WHERE account_id = #{accountId}
+	</update>
+	
+	<update id="updatePlatformAmount">
+        UPDATE customer_balance
+        <set>
+            <if test="platformAmount != null">
+                platform_amount = platform_amount - #{platformAmount}
+            </if>
+        </set>
+        <where>
+            account_id = #{accountId}
+        </where>
+    </update>
+    
+    <update id="updateGoldBalance">
+        UPDATE customer_balance
+        <set>
+            <if test="actualAmount != null">
+                gold_balance = gold_balance - #{actualAmount},
+                last_change_dt = now()
+            </if>
+        </set>
+        <where>
+            account_id = #{accountId}
+        </where>
+    </update>
+    
+    <update id="updateGoldBalanceByAlignment">
+        UPDATE customer_balance
+        <set>
+            <if test="amount != null">
+                gold_balance = #{amount},
+                last_change_dt = now()
+            </if>
+        </set>
+        <where>
+            account_id = #{accountId}
+        </where>
+    </update>
+    
+    <update id="updateCongealVal">
+        UPDATE customer_balance
+        <set>
+            <if test="actualAmount != null">
+                congeal_val = congeal_val + #{actualAmount}
+            </if>
+        </set>
+        <where>
+            account_id = #{accountId}
+        </where>
+    </update>
+    
+    <update id="updateGoldBalanceAndPlatformAmount">
+        UPDATE customer_balance
+        <set>
+            <if test="actualAmount != null">
+                gold_balance = gold_balance + #{actualAmount},
+            </if>
+            <if test="platformAmount != null">
+                platform_amount = platform_amount + #{platformAmount}
+            </if>
+        </set>
+        <where>
+            account_id = #{accountId}
+        </where>
+    </update>
+    
+    <update id="updateReciveMoney">
+    	 UPDATE customer_balance
+    	 set 
+    	 	gold_balance=gold_balance+#{money},
+    	 	will_profit=will_profit-#{interest},
+    	 	will_principal=will_principal-#{principal},
+    	 	sum_profit=sum_profit+#{interest}+#{prePenaltyMoney}+#{latePenaltyMoney},
+    	 	receive_money=receive_money+#{money},
+    	 	receive_principal=receive_principal+#{principal}+#{interest},
+    	 	receive_late_money=receive_late_money+#{latePenaltyMoney},
+    	 	receive_pre_money=receive_pre_money+#{prePenaltyMoney},
+    	 	net_assets=net_assets+#{money},
+    	 	financial_assets=financial_assets-#{principal},
+    	 	last_change_dt=now()
+    	 where account_id = #{accountId}
+    </update>
+
+    <update id="updateRepayMoney">
+    	 UPDATE customer_balance
+    	 set 
+    	 	gold_balance=gold_balance-#{sumMoney},
+    	 	net_assets=net_assets-#{sumMoney},
+    	 	will_loan=will_loan-#{oldMoney},
+    	 	repayment_money=repayment_money+#{sumMoney},
+    	 	repayment_principal=repayment_principal+#{sumMoney}-#{prePenaltyMoney}-#{latePenaltyMoney},
+    	 	repayment_late_money=repayment_late_money + #{latePenaltyMoney},
+    	 	repayment_pre_money=repayment_pre_money + #{prePenaltyMoney},
+    	 	repayment_30d_will=repayment_30d_will-#{oldMoney},
+    	 	last_change_dt=now()
+    	 where account_id = #{accountId}
+    </update>
+    
+    <update id="update30DayWillRepayMoney">
+    	 UPDATE customer_balance
+    	 set 
+    	 	repayment_30d_will=repayment_30d_will+#{planMoney},
+    	 	last_change_dt=now()
+    	 where account_id = #{accountId}
+    </update>
+    <select id="getByPlatformUserNo" resultType="CustomerBalance">
+    	select * from customer_balance a left join customer_account b on b.account_id=a.account_id where b.platform_user_no=#{platformUserNo}
+    </select>
+    
+    <update id="updateLoanInformationSelective">
+		UPDATE customer_balance 
+		SET
+           gold_balance = gold_balance - #{actualAmount},
+           congeal_val = congeal_val - #{frozenAmount},
+           will_profit = will_profit + #{willProfit},
+           will_principal = will_principal + #{willPrincipal},
+           financial_assets = financial_assets + #{amount},
+           sum_investment = sum_investment + #{amount},
+           investment_count = investment_count + 1
+		WHERE
+		  account_id = #{accountId}
+	</update>
+	
+	<update id="updateCurrentInvestSelective">
+		UPDATE customer_balance 
+		SET
+           gold_balance = gold_balance - #{actualAmount},
+           congeal_val = congeal_val - #{frozenAmount}
+		WHERE
+		  account_id = #{accountId}
+	</update>
+	
+	<update id="updateCurrentReceiveSelective">
+		UPDATE customer_balance 
+		SET
+           gold_balance = gold_balance + #{amount}
+		WHERE
+		  account_id = #{accountId}
+	</update>
+	
+	<update id="updateAssignInformationSelective">
+		UPDATE customer_balance 
+		SET
+           gold_balance = gold_balance - #{actualAmount},
+           congeal_val = congeal_val - #{frozenAmount},
+           will_profit = will_profit + #{willProfit},
+           financial_assets = financial_assets + #{financialAssets},
+           investment_count = investment_count + 1,
+           accept_count = accept_count + 1
+		WHERE
+		  account_id = #{accountId}
+	</update>
+	
+	<update id="updateBalanceForTransferor">
+		UPDATE customer_balance 
+		SET
+           gold_balance = gold_balance + #{goldBalance},
+           will_profit = will_profit + #{willProfit},
+           receive_money = receive_money + #{receiveMoney},
+           receive_principal = receive_principal + #{receivePrincipal},
+           financial_assets = financial_assets - #{financialAssets}
+		WHERE
+		  account_id = #{accountId}
+	</update>
+	
+	<update id="updateByRecharge">
+		update customer_balance
+			set gold_balance = gold_balance + #{amount},
+			first_get_dt = #{firstGetDt},
+			sum_recharge = sum_recharge + #{amount},
+			recharge_count = recharge_count + 1,
+			net_assets = net_assets + #{amount},
+			last_change_dt = now()
+		where account_id = #{accountId}
+	</update>
+	
+	<update id="updateByWithdraw">
+		update customer_balance
+		set
+			gold_balance = gold_balance - #{amount},
+			net_assets = net_assets - #{amount},
+			sum_withdraw = sum_withdraw + #{amount},
+			withdraw_count = withdraw_count + 1,
+			free_withdraw_count = free_withdraw_count + #{freeWithdrawCountChangeValue},
+			last_change_dt = now()
+		where account_id = #{accountId}
+	</update>
+	
+	<update id="updateFreeWithdrawCount">
+		update customer_balance
+		set
+			free_withdraw_count = free_withdraw_count + #{freeWithdrawCountChangeValue}
+		where account_id = #{accountId}
+	</update>
+	
+	<update id="updateBalance">
+		update customer_balance
+		set
+			gold_balance = gold_balance + #{amount},
+			net_assets = net_assets + #{amount},
+			last_change_dt = now()
+		where account_id = #{accountId}
+	</update>
+</mapper>

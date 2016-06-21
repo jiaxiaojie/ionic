@@ -1,0 +1,33 @@
+/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+	body {
+		margin: 40px 10px;
+		padding: 0;
+		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+		font-size: 14px;
+	}
+	#top{
+	width=1500px;
+	 height=800px;
+	}
+    #intruduce{
+    width:200px;
+    height:200px;
+    }
+    #int1{
+    width:100px;
+    height:60px;
+    background-color: #FFF68F;
+    }
+     #int2{
+      width:100px;
+    height:60px;
+    background-color: #FF9F89;
+    }
+	#calendar {
+		max-width: 900px;
+		margin: 0 auto;
+	}

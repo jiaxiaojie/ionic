@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerInvestmentMoneyHisDao">
+    
+	<sql id="customerInvestmentMoneyHisColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.change_val AS "changeVal",
+		a.change_type_code AS "changeTypeCode",
+		a.get_dt AS "getDt",
+		a.record_id AS "recordId",
+		a.use_dt AS "useDt"
+	</sql>
+	
+	<sql id="customerInvestmentMoneyHisJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomerInvestmentMoneyHis">
+		SELECT 
+			<include refid="customerInvestmentMoneyHisColumns"/>
+		FROM customer_investment_money_his a
+		<include refid="customerInvestmentMoneyHisJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerInvestmentMoneyHis">
+		SELECT 
+			<include refid="customerInvestmentMoneyHisColumns"/>
+		FROM customer_investment_money_his a
+		<include refid="customerInvestmentMoneyHisJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerInvestmentMoneyHis">
+		SELECT 
+			<include refid="customerInvestmentMoneyHisColumns"/>
+		FROM customer_investment_money_his a
+		<include refid="customerInvestmentMoneyHisJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_investment_money_his(
+			id,
+			account_id,
+			change_val,
+			change_type_code,
+			get_dt,
+			record_id,
+			use_dt
+		) VALUES (
+			#{id},
+			#{accountId},
+			#{changeVal},
+			#{changeTypeCode},
+			#{getDt},
+			#{recordId},
+			#{useDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_investment_money_his SET 	
+			account_id = #{accountId},
+			change_val = #{changeVal},
+			change_type_code = #{changeTypeCode},
+			get_dt = #{getDt},
+			record_id = #{recordId},
+			use_dt = #{useDt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_investment_money_his
+		WHERE id = #{id}
+	</update>
+	
+	<update id="deleteByRecordIdAndAccountId">
+		DELETE FROM customer_investment_money_his
+		WHERE 
+		account_id = #{accountId}
+		AND record_id = #{recordId}
+	</update>
+	
+</mapper>

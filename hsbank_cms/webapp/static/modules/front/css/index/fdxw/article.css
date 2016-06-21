@@ -1,0 +1,4 @@
+#content_area{overflow:hidden;}
+#content_area .detail{ overflow: hidden; width: 938px; padding: 0 20px; margin: 0 auto 50px auto; background-color: #fff; border: 1px solid #BD9E7A;}
+#content_area .bottom_info{ border-top:1px solid #ddd;padding:10px;margin:25px 0;}
+#content_area .detail_title{ color:#555555;font-size:20px;text-align:center;border-bottom:1px solid #ddd;padding-bottom:15px;margin:25px 0;}

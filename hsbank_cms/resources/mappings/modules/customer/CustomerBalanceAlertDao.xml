@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerBalanceAlertDao">
+    
+	<sql id="customerBalanceAlertColumns">
+		a.id AS "id",
+		a.platform_user_no AS "platformUserNo",
+		a.title AS "title",
+		a.content AS "content",
+		a.mobile AS "mobile",
+		a.amount AS "amount",
+		a.create_dt AS "createDt",
+		a.status AS "status"
+	</sql>
+	
+	<sql id="customerBalanceAlertJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomerBalanceAlert">
+		SELECT 
+			<include refid="customerBalanceAlertColumns"/>
+		FROM customer_balance_alert a
+		<include refid="customerBalanceAlertJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerBalanceAlert">
+		SELECT 
+			<include refid="customerBalanceAlertColumns"/>
+		FROM customer_balance_alert a
+		<include refid="customerBalanceAlertJoins"/>
+		<where>
+			
+			<if test="platformUserNo != null and platformUserNo != ''">
+				AND a.platform_user_no = #{platformUserNo}
+			</if>
+			<if test="createDt != null and createDt != ''">
+				AND date(a.create_dt) = date(#{createDt})
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	 <!--  查询出账户余额提醒相关的数据 -->
+	<select id="selectCustomerBalaneceAlertBytitle" resultType="CustomerBalanceAlert">
+	select  * from customer_balance_alert where title=#{title}
+	</select>
+	
+	<select id="findAllList" resultType="CustomerBalanceAlert">
+		SELECT 
+			<include refid="customerBalanceAlertColumns"/>
+		FROM customer_balance_alert a
+		<include refid="customerBalanceAlertJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_balance_alert(
+			<!-- id, -->
+			platform_user_no,
+			title,
+			content,
+			mobile,
+			amount,
+			create_dt,
+			status
+		) VALUES (
+			<!-- #{id}, -->
+			#{platformUserNo},
+			#{title},
+			#{content},
+			#{mobile},
+			#{amount},
+			#{createDt},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_balance_alert SET 	
+			platform_user_no = #{platformUserNo},
+			title = #{title},
+			content = #{content},
+			mobile = #{mobile},
+			amount = #{amount},
+			create_dt = #{createDt},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_balance_alert
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

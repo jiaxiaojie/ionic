@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerBlanceAlignmentDao">
+    
+	<sql id="customerBlanceAlignmentColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.customer_name AS "customerName",
+		a.task_gold_balance AS "taskGoldBalance",
+		a.task_yeepay_balance AS "taskYeepayBalance",
+		a.new_gold_balance AS "newGoldBalance",
+		a.new_yeepay_balance AS "newYeepayBalance",
+		a.status AS "status",
+		a.create_dt AS "createDt",
+		a.modify_dt AS "modifyDt"
+	</sql>
+	
+	<sql id="customerBlanceAlignmentJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomerBlanceAlignment">
+		SELECT 
+			<include refid="customerBlanceAlignmentColumns"/>
+		FROM customer_blance_alignment a
+		<include refid="customerBlanceAlignmentJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerBlanceAlignment">
+		SELECT 
+			<include refid="customerBlanceAlignmentColumns"/>
+		FROM customer_blance_alignment a
+		<include refid="customerBlanceAlignmentJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="customerName != null and customerName != ''">
+				AND a.customer_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{customerName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{customerName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{customerName},'%')</if>
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="beginCreateDt != null and beginCreateDt != ''">
+				AND a.create_dt &gt;= #{beginCreateDt}
+			</if>
+			<if test="endCreateDt != null and endCreateDt != ''">
+				AND a.create_dt &lt;= #{endCreateDt}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			    ORDER BY a.create_dt desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerBlanceAlignment">
+		SELECT 
+			<include refid="customerBlanceAlignmentColumns"/>
+		FROM customer_blance_alignment a
+		<include refid="customerBlanceAlignmentJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_blance_alignment(
+			account_id,
+			customer_name,
+			task_gold_balance,
+			task_yeepay_balance,
+			new_gold_balance,
+			new_yeepay_balance,
+			status,
+			create_dt,
+			modify_dt
+		) VALUES (
+			#{accountId},
+			#{customerName},
+			#{taskGoldBalance},
+			#{taskYeepayBalance},
+			#{newGoldBalance},
+			#{newYeepayBalance},
+			#{status},
+			#{createDt},
+			#{modifyDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_blance_alignment SET 	
+			account_id = #{accountId},
+			customer_name = #{customerName},
+			task_gold_balance = #{taskGoldBalance},
+			task_yeepay_balance = #{taskYeepayBalance},
+			new_gold_balance = #{newGoldBalance},
+			new_yeepay_balance = #{newYeepayBalance},
+			status = #{status},
+			create_dt = #{createDt},
+			modify_dt = #{modifyDt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateSelected">
+		UPDATE customer_blance_alignment SET 	
+			new_gold_balance = #{newGoldBalance},
+			new_yeepay_balance = #{newYeepayBalance},
+			status = #{status},
+			modify_dt = #{modifyDt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_blance_alignment
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="deleteSomeDaysAgoData">
+		delete from customer_blance_alignment where create_dt &lt; date_add(now(),interval -#{days} day);
+	</delete>
+</mapper>

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.integral.dao.IntegralMallProductDao">
+    
+	<sql id="integralMallProductColumns">
+		a.product_id AS "productId",
+		a.product_name AS "productName",
+		a.product_type_id AS "productTypeId",
+		a.product_logo_min AS "productLogoMin",
+		a.product_logo_normal AS "productLogoNormal",
+		a.product_logo_max AS "productLogoMax",
+		a.product_introduction AS "productIntroduction",
+		a.is_recommend AS "isRecommend",
+		a.price AS "price",
+		a.up_dt AS "upDt",
+		a.dow_dt AS "dowDt",
+		a.product_count AS "productCount",
+		a.product_surplus AS "productSurplus",
+		a.create_dt AS "createDt",
+		a.create_user_id AS "createUserId",
+		a.review_dt AS "reviewDt",
+		a.review_user_id AS "reviewUserId",
+		a.review_remark AS "reviewRemark",
+		a.status AS "status",
+		a.rel_ticket_id AS "relTicketId",
+		a.product_par_value AS "productParValue"
+	</sql>
+	
+	<sql id="integralMallProductJoins">
+	    
+	</sql>
+    
+	<select id="get" resultType="IntegralMallProduct">
+		SELECT 
+			<include refid="integralMallProductColumns"/>
+		FROM integral_mall_product a
+		<include refid="integralMallProductJoins"/>
+		WHERE a.product_id = #{id}
+	</select>
+	
+	<select id="findList" resultType="IntegralMallProduct">
+		SELECT 
+			<include refid="integralMallProductColumns"/>
+		FROM integral_mall_product a
+		<include refid="integralMallProductJoins"/>
+		<where>
+			
+			<if test="productName != null and productName != ''">
+				AND a.product_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{productName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{productName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{productName},'%')</if>
+			</if>
+			<if test="productTypeId != null and productTypeId != ''">
+				AND a.product_type_id = #{productTypeId}
+			</if>
+			<if test="isRecommend != null and isRecommend != ''">
+				AND a.is_recommend = #{isRecommend}
+			</if>
+			<if test="beginUpDt != null  and beginUpDt != ''">
+				AND a.up_dt >= #{beginUpDt}
+			</if>
+			<if test="endUpDt != null and endUpDt != ''">
+				AND #{endUpDt} >= a.up_dt
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="queryList" resultType="IntegralMallProduct">
+		SELECT
+		<include refid="integralMallProductColumns"/>
+		FROM integral_mall_product a
+		<include refid="integralMallProductJoins"/>
+		<where>
+			a.product_surplus > 0 and status=1 and a.dow_dt <![CDATA[ >= #{theDay} ]]> and a.up_dt <![CDATA[ <= #{theDay} ]]>
+			<if test="type != null">
+				<if test="type == 1">
+					AND a.product_type_id != 1
+				</if>
+				<if test="type == 2">
+					AND a.product_type_id = 1
+				</if>
+			</if>
+		</where>
+		ORDER BY a.price ASC, a.up_dt DESC
+		<if test="beginLimit != null and endLimit != null">
+			limit #{beginLimit},#{endLimit}
+		</if>
+	</select>
+
+	
+	
+	<select id="searchPageList" resultType="IntegralMallProduct">
+		SELECT 
+			<include refid="integralMallProductColumns"/>
+		FROM integral_mall_product a
+		<include refid="integralMallProductJoins"/>
+		<where>
+		    a.product_surplus > 0  
+		     and a.dow_dt <![CDATA[ >= #{theDay} ]]> and a.up_dt <![CDATA[ <= #{theDay} ]]> 
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			ORDER BY a.price asc,a.up_dt desc   
+		    limit #{startNumber},#{endNumber}
+		</where>
+	</select>
+	
+	<select id="findAllList" resultType="IntegralMallProduct">
+		SELECT 
+			<include refid="integralMallProductColumns"/>
+		FROM integral_mall_product a
+		<include refid="integralMallProductJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO integral_mall_product(
+			product_name,
+			product_type_id,
+			product_logo_min,
+			product_logo_normal,
+			product_logo_max,
+			product_introduction,
+			is_recommend,
+			price,
+			up_dt,
+			dow_dt,
+			product_count,
+			product_surplus,
+			create_dt,
+			create_user_id,
+			review_dt,
+			review_user_id,
+			review_remark,
+			status,
+			rel_ticket_id,
+			product_par_value
+		) VALUES (
+			#{productName},
+			#{productTypeId},
+			#{productLogoMin},
+			#{productLogoNormal},
+			#{productLogoMax},
+			#{productIntroduction},
+			#{isRecommend},
+			#{price},
+			#{upDt},
+			#{dowDt},
+			#{productCount},
+			#{productSurplus},
+			#{createDt},
+			#{createUserId},
+			#{reviewDt},
+			#{reviewUserId},
+			#{reviewRemark},
+			#{status},
+			#{relTicketId},
+			#{productParValue}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE integral_mall_product SET 	
+			product_name = #{productName},
+			product_type_id = #{productTypeId},
+			product_logo_min = #{productLogoMin},
+			product_logo_normal = #{productLogoNormal},
+			product_logo_max = #{productLogoMax},
+			product_introduction = #{productIntroduction},
+			is_recommend = #{isRecommend},
+			price = #{price},
+			up_dt = #{upDt},
+			dow_dt = #{dowDt},
+			product_count = #{productCount},
+			product_surplus = #{productSurplus},
+			review_dt = #{reviewDt},
+			review_user_id = #{reviewUserId},
+			review_remark = #{reviewRemark},
+			status = #{status},
+			rel_ticket_id = #{relTicketId},
+			product_par_value=#{productParValue}
+		WHERE product_id = #{productId}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM integral_mall_product
+		WHERE product_id = #{id}
+	</update>
+	<select id="searchList" resultType="IntegralMallProduct">
+		select product_id AS "productId",product_name AS "productName",product_logo_normal AS "productLogoNormal",price AS "price" 
+		from integral_mall_product 
+		where product_surplus > 0 and status=1 and dow_dt <![CDATA[ >= #{theDay} ]]> and up_dt <![CDATA[ <= #{theDay} ]]>
+		<choose>
+				<when test="searchType == 'integralRang'.toString()">
+					<choose>
+						<when test="integralRange == 'integralRange0'.toString()">
+							AND price &gt;= 0
+						</when>
+						<when test="integralRange == 'integralRange1'.toString()">
+							AND price &lt;= 100000
+						</when>
+						<when test="integralRange == 'integralRange2'.toString()">
+							AND price &gt; 100001 and price &lt;= 500000
+						</when>
+						<when test="integralRange == 'integralRange3'.toString()">
+							AND price &gt; 500001 and price &lt;= 1000000
+						</when>
+						<when test="integralRange == 'integralRange4'.toString()">
+							AND price &gt; 1000001 and price &lt;= 50000000
+						</when>
+						<when test="integralRange == 'integralRange5'.toString()">
+							AND price &gt; 50000001
+						</when>
+					</choose>
+				</when>
+				<otherwise>
+					<if test="keywords != null and keywords != ''">
+						AND (product_name LIKE concat('%',#{keywords},'%')  OR 
+							 product_introduction LIKE concat('%',#{keywords},'%'))
+					</if>
+				</otherwise>
+		</choose>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+</mapper>

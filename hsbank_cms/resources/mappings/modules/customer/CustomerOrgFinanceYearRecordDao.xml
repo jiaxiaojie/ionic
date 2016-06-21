@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerOrgFinanceYearRecordDao">
+    
+	<sql id="customerOrgFinanceYearRecordColumns">
+		a.id AS "id",
+		a.customer_id AS "customerId",
+		a.year_id AS "yearId",
+		a.main_revenue AS "mainRevenue",
+		a.gross_profit AS "grossProfit",
+		a.net_profit AS "netProfit",
+		a.total_assets AS "totalAssets",
+		a.net_assets AS "netAssets",
+		c.account_name AS "accountName",
+		b.customer_name AS "customerName",
+		a.remark AS "remark"
+	</sql>
+	
+	<sql id="customerOrgFinanceYearRecordJoins">
+		LEFT JOIN customer_base b ON b.customer_id=a.customer_id
+		LEFT JOIN customer_account c ON b.account_id=c.account_id
+	</sql>
+    
+	<select id="get" resultType="CustomerOrgFinanceYearRecord">
+		SELECT 
+			<include refid="customerOrgFinanceYearRecordColumns"/>
+		FROM customer_org_finance_year_record a
+		<include refid="customerOrgFinanceYearRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerOrgFinanceYearRecord">
+		SELECT 
+			<include refid="customerOrgFinanceYearRecordColumns"/>
+		FROM customer_org_finance_year_record a
+		<include refid="customerOrgFinanceYearRecordJoins"/>
+		<where>
+			<choose>
+				<when test="customerId != null and customerId != ''">
+					AND a.customer_id=#{customerId}
+				</when>
+				<otherwise>
+					AND false
+				</otherwise>
+			</choose>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerOrgFinanceYearRecord">
+		SELECT 
+			<include refid="customerOrgFinanceYearRecordColumns"/>
+		FROM customer_org_finance_year_record a
+		<include refid="customerOrgFinanceYearRecordJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_org_finance_year_record(
+			customer_id,
+			year_id,
+			main_revenue,
+			gross_profit,
+			net_profit,
+			total_assets,
+			net_assets,
+			remark
+		) VALUES (
+			#{customerId},
+			#{yearId},
+			#{mainRevenue},
+			#{grossProfit},
+			#{netProfit},
+			#{totalAssets},
+			#{netAssets},
+			#{remark}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_org_finance_year_record SET 	
+			year_id = #{yearId},
+			main_revenue = #{mainRevenue},
+			gross_profit = #{grossProfit},
+			net_profit = #{netProfit},
+			total_assets = #{totalAssets},
+			net_assets = #{netAssets},
+			remark = #{remark}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_org_finance_year_record
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

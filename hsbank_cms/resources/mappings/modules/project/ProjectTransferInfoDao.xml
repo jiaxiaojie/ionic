@@ -1,0 +1,806 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.thinkgem.jeesite.modules.project.dao.ProjectTransferInfoDao">
+
+	<sql id="projectTransferInfoColumns">
+		a.transfer_project_id AS "transferProjectId",
+		a.project_id
+		AS "projectId",
+		a.parent_transfer_project_id AS
+		"parentTransferProjectId",
+		a.investment_record_id AS
+		"investmentRecordId",
+		a.project_end_date AS "projectEndDate",
+		a.next_repayment_date AS "nextRepaymentDate",
+		a.transferor AS "transferor",
+		ca.account_name AS "transferAccount.accountName",
+		cb.customer_name AS "transferCustomer.customerName",
+		a.transfer_price AS "transferPrice",
+		a.fair_price AS
+		"fairPrice",
+		a.transaction_costs AS "transactionCosts",
+		a.discount_date
+		AS "discountDate",
+		a.service_charge_type AS "serviceChargeType",
+		a.create_date AS "createDate",
+		a.close_date AS "closeDate",
+		a.remainder_creditor AS
+		"remainderCreditor",
+		a.status AS "status"
+	</sql>
+
+	<sql id="projectTransferInfoJoins">
+		JOIN customer_account ca ON ca.account_id=a.transferor
+		JOIN customer_base cb ON cb.account_id=ca.account_id
+	</sql>
+
+	<select id="get" resultType="ProjectTransferInfo">
+		SELECT
+		<include refid="projectTransferInfoColumns" />
+		FROM project_transfer_info a
+		<include refid="projectTransferInfoJoins" />
+		WHERE a.transfer_project_id = #{transferProjectId}
+	</select>
+
+	<select id="findList" resultType="ProjectTransferInfo">
+		SELECT
+		<include refid="projectTransferInfoColumns" />
+		FROM project_transfer_info a
+		<include refid="projectTransferInfoJoins" />
+		<where>
+
+			<if test="queryProjectId != null and queryProjectId != ''">
+				AND a.project_id = #{queryProjectId}
+			</if>
+			<if test="transferName != null and transferName != ''">
+				AND cb.customer_name Like
+				<if test="dbName == 'oracle'">'%'||#{transferName}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{transferName}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{transferName},'%')</if>
+			</if>
+			<if test="beginCreateDate != null  and beginCreateDate != ''">
+				AND a.create_date >= #{beginCreateDate}
+			</if>
+			<if test="endCreateDate != null and endCreateDate != ''">
+				AND #{endCreateDate} >= a.create_date
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="searchList" resultType="ProjectTransferInfo">
+		SELECT
+		<include refid="projectTransferInfoColumns" />
+		,
+		cb1.customer_name as "projectBaseInfo.aUser.customerName",
+		pb1.repayment_mode as "projectBaseInfo.repaymentMode",
+		pb1.project_type_code as "projectBaseInfo.projectTypeCode",
+		pb1.project_code as "projectBaseInfo.projectCode",
+		pb1.annualized_rate as "projectBaseInfo.annualizedRate",
+		pb1.project_introduce as "projectBaseInfo.projectIntroduce",
+		pb1.project_name as "projectBaseInfo.projectName",
+		pb1.last_repayment_date as "projectBaseInfo.lastRepaymentDate",
+		pes1.remaining_time as "projectBaseInfo.pes.remainingTime",
+		pes2.end_finance_money as "projectExecuteSnapshot.endFinanceMoney"
+		FROM project_transfer_info
+		a
+		<include refid="projectTransferInfoJoins" />
+		left join project_base pb1 on pb1.project_id=a.project_id
+		left join customer_base cb1 on cb1.account_id=pb1.agent_user
+		left join project_execute_snapshot pes1 on pes1.project_id=pb1.project_id
+		and pes1.transfer_project_id=0
+		left join project_execute_snapshot pes2 on pes2.project_id=pb1.project_id
+		and pes2.transfer_project_id=a.transfer_project_id
+		<where>
+
+			<if test="minAmount != null">
+				and a.remainder_creditor &gt;= #{minAmount}
+			</if>
+			<if test="maxAmount != null">
+				and a.remainder_creditor &lt;= #{maxAmount}
+			</if>
+			<if test="minAmount == null and maxAmount == null">
+				<choose>
+					<when test="remainAmount == '1'.toString()">
+						and a.remainder_creditor &lt;= 10000
+					</when>
+					<when test="remainAmount == '2'.toString()">
+						and a.remainder_creditor &gt; 10000 and a.remainder_creditor &lt;= 50000
+					</when>
+					<when test="remainAmount == '3'.toString()">
+						and a.remainder_creditor &gt; 50000 and a.remainder_creditor &lt;= 200000
+					</when>
+					<when test="remainAmount == '4'.toString()">
+						and a.remainder_creditor &gt; 200000
+					</when>
+				</choose>
+			</if>
+			<choose>
+				<when test="rate == '1'.toString()">
+					and pb1.annualized_rate &lt;= 0.09
+				</when>
+				<when test="rate == '2'.toString()">
+					and pb1.annualized_rate &gt; 0.09 and pb1.annualized_rate &lt;= 0.1
+				</when>
+				<when test="rate == '3'.toString()">
+					and pb1.annualized_rate &gt; 0.1 and pb1.annualized_rate &lt;= 0.11
+				</when>
+				<when test="rate == '4'.toString()">
+					and pb1.annualized_rate &gt; 0.11 and pb1.annualized_rate &lt;= 0.12
+				</when>
+				<when test="rate == '5'.toString()">
+					and pb1.annualized_rate &gt; 0.12 and pb1.annualized_rate &lt;= 0.13
+				</when>
+				<when test="rate == '6'.toString()">
+					and pb1.annualized_rate &gt; 0.13 and pb1.annualized_rate &lt;= 0.14
+				</when>
+				<when test="rate == '7'.toString()">
+					and pb1.annualized_rate &gt; 0.14
+				</when>
+			</choose>
+			<choose>
+				<when test="remainDuration == '1'.toString()">
+					and pes1.remaining_time &lt;= 6
+				</when>
+				<when test="remainDuration == '2'.toString()">
+					and pes1.remaining_time &gt; 6 and pes1.remaining_time &lt;= 12
+				</when>
+				<when test="remainDuration == '3'.toString()">
+					and pes1.remaining_time &gt; 12
+				</when>
+			</choose>
+			<choose>
+				<when test="repaymentMode == '1'.toString()">
+					and pb1.repayment_mode='1'
+				</when>
+				<when test="repaymentMode == '2'.toString()">
+					and pb1.repayment_mode='2'
+				</when>
+				<when test="repaymentMode == '3'.toString()">
+					and pb1.repayment_mode='3'
+				</when>
+			</choose>
+			and a.status = '0'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY field(a.status,'0') desc,a.create_date desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="searchPageList" resultType="ProjectTransferInfo">
+		SELECT
+		<include refid="projectTransferInfoColumns" />
+		,
+		cb1.customer_name as "projectBaseInfo.aUser.customerName",
+		pb1.repayment_mode as "projectBaseInfo.repaymentMode",
+		pb1.project_type_code as "projectBaseInfo.projectTypeCode",
+		pb1.project_code as "projectBaseInfo.projectCode",
+		pb1.annualized_rate as "projectBaseInfo.annualizedRate",
+		pb1.project_introduce as "projectBaseInfo.projectIntroduce",
+		pb1.project_name as "projectBaseInfo.projectName",
+		pb1.safeguard_mode as "projectBaseInfo.safeguardMode",
+		pb1.is_recommend as "projectBaseInfo.isRecommend",
+		pb1.is_new_user as "projectBaseInfo.isNewUser",
+		pes1.remaining_time as "projectBaseInfo.pes.remainingTime",
+		pes2.end_finance_money as "projectExecuteSnapshot.endFinanceMoney",
+		pes2.remaining_time as "projectExecuteSnapshot.remainingTime"
+		FROM project_transfer_info
+		a
+		<include refid="projectTransferInfoJoins" />
+		left join project_base pb1 on pb1.project_id=a.project_id
+		left join customer_base cb1 on cb1.account_id=pb1.agent_user
+		left join project_execute_snapshot pes1 on pes1.project_id=pb1.project_id
+		and pes1.transfer_project_id=0
+		left join project_execute_snapshot pes2 on pes2.project_id=pb1.project_id
+		and pes2.transfer_project_id=a.transfer_project_id
+		<where>
+
+			<if test="minAmount != null">
+				and a.remainder_creditor &gt;= #{minAmount}
+			</if>
+			<if test="maxAmount != null">
+				and a.remainder_creditor &lt;= #{maxAmount}
+			</if>
+			<if test="minAmount == null and maxAmount == null">
+				<choose>
+					<when test="remainAmount == '1'.toString()">
+						and a.remainder_creditor &lt;= 10000
+					</when>
+					<when test="remainAmount == '2'.toString()">
+						and a.remainder_creditor &gt; 10000 and a.remainder_creditor &lt;= 50000
+					</when>
+					<when test="remainAmount == '3'.toString()">
+						and a.remainder_creditor &gt; 50000 and a.remainder_creditor &lt;= 200000
+					</when>
+					<when test="remainAmount == '4'.toString()">
+						and a.remainder_creditor &gt; 200000
+					</when>
+				</choose>
+			</if>
+			<choose>
+				<when test="rate == '1'.toString()">
+					and pb1.annualized_rate &lt;= 0.09
+				</when>
+				<when test="rate == '2'.toString()">
+					and pb1.annualized_rate &gt; 0.09 and pb1.annualized_rate &lt;= 0.1
+				</when>
+				<when test="rate == '3'.toString()">
+					and pb1.annualized_rate &gt; 0.1 and pb1.annualized_rate &lt;= 0.11
+				</when>
+				<when test="rate == '4'.toString()">
+					and pb1.annualized_rate &gt; 0.11 and pb1.annualized_rate &lt;= 0.12
+				</when>
+				<when test="rate == '5'.toString()">
+					and pb1.annualized_rate &gt; 0.12 and pb1.annualized_rate &lt;= 0.13
+				</when>
+				<when test="rate == '6'.toString()">
+					and pb1.annualized_rate &gt; 0.13 and pb1.annualized_rate &lt;= 0.14
+				</when>
+				<when test="rate == '7'.toString()">
+					and pb1.annualized_rate &gt; 0.14
+				</when>
+			</choose>
+			<choose>
+				<when test="remainDuration == '1'.toString()">
+					and pes1.remaining_time &lt;= 6
+				</when>
+				<when test="remainDuration == '2'.toString()">
+					and pes1.remaining_time &gt; 6 and pes1.remaining_time &lt;= 12
+				</when>
+				<when test="remainDuration == '3'.toString()">
+					and pes1.remaining_time &gt; 12
+				</when>
+			</choose>
+			<choose>
+				<when test="repaymentMode == '1'.toString()">
+					and pb1.repayment_mode='1'
+				</when>
+				<when test="repaymentMode == '2'.toString()">
+					and pb1.repayment_mode='2'
+				</when>
+				<when test="repaymentMode == '3'.toString()">
+					and pb1.repayment_mode='3'
+				</when>
+			</choose>
+			and a.status = '0' 
+		</where>
+		 ORDER BY field(a.status,'0') desc,a.create_date desc  
+		 limit #{startNumber},#{endNumber}
+	</select>
+
+	<select id="findCreditPageList" resultType="ProjectTransferInfo">
+		SELECT
+		<include refid="projectTransferInfoColumns" />
+		,
+		cb1.customer_name as "projectBaseInfo.aUser.customerName",
+		pb1.repayment_mode as "projectBaseInfo.repaymentMode",
+		pb1.project_type_code as "projectBaseInfo.projectTypeCode",
+		pb1.project_code as "projectBaseInfo.projectCode",
+		pb1.annualized_rate as "projectBaseInfo.annualizedRate",
+		pb1.project_introduce as "projectBaseInfo.projectIntroduce",
+		pb1.project_name as "projectBaseInfo.projectName",
+		pb1.safeguard_mode as "projectBaseInfo.safeguardMode",
+		pb1.is_recommend as "projectBaseInfo.isRecommend",
+		pb1.is_new_user as "projectBaseInfo.isNewUser",
+		pes1.remaining_time as "projectBaseInfo.pes.remainingTime",
+		pes2.end_finance_money as "projectExecuteSnapshot.endFinanceMoney",
+		pes2.remaining_time as "projectExecuteSnapshot.remainingTime"
+		FROM project_transfer_info
+		a
+		<include refid="projectTransferInfoJoins" />
+		left join project_base pb1 on pb1.project_id=a.project_id
+		left join customer_base cb1 on cb1.account_id=pb1.agent_user
+		left join project_execute_snapshot pes1 on pes1.project_id=pb1.project_id
+		and pes1.transfer_project_id=0
+		left join project_execute_snapshot pes2 on pes2.project_id=pb1.project_id
+		and pes2.transfer_project_id=a.transfer_project_id
+		<where>
+
+			<if test="status != null and status != ''">
+				and a.status = #{status}
+			</if>
+			<choose>
+				<when test="rate == '1'.toString()">
+					and pb1.annualized_rate &lt;= 0.09
+				</when>
+				<when test="rate == '2'.toString()">
+					and pb1.annualized_rate &gt; 0.09 and pb1.annualized_rate &lt;= 0.1
+				</when>
+				<when test="rate == '3'.toString()">
+					and pb1.annualized_rate &gt; 0.1 and pb1.annualized_rate &lt;= 0.11
+				</when>
+				<when test="rate == '4'.toString()">
+					and pb1.annualized_rate &gt; 0.11 and pb1.annualized_rate &lt;= 0.12
+				</when>
+				<when test="rate == '5'.toString()">
+					and pb1.annualized_rate &gt; 0.12
+				</when>
+			</choose>
+			<choose>
+				<when test="duration == '1'.toString()">
+					and   pes1.remaining_time &gt; 0 and pes1.remaining_time  &lt;= 3
+				</when>
+				<when test="duration == '2'.toString()">
+					and pes1.remaining_time &gt;= 4 and pes1.remaining_time &lt;= 6
+				</when>
+				<when test="duration == '3'.toString()">
+					pes1.remaining_time &gt;= 7 and pes1.remaining_time  &lt;= 12
+				</when>
+				<when test="duration == '4'.toString()">
+					and  and pes1.remaining_time &gt; 12
+				</when>
+			</choose>
+			<choose>
+				<when test="repaymentMode == '1'.toString()">
+					and pb1.repayment_mode='1'
+				</when>
+				<when test="repaymentMode == '2'.toString()">
+					and pb1.repayment_mode='2'
+				</when>
+				<when test="repaymentMode == '3'.toString()">
+					and pb1.repayment_mode='3'
+				</when>
+			</choose>
+			<choose>
+				<when test="type == '1'.toString()">
+					and pb1.project_type_code='1'
+				</when>
+				<when test="type == '2'.toString()">
+					and pb1.project_type_code='2'
+				</when>
+				<when test="type == '3'.toString()">
+					and pb1.project_type_code='3'
+				</when>
+				<when test="type == '4'.toString()">
+					and pb1.project_type_code='4'
+				</when>
+				<when test="type == '5'.toString()">
+					and pb1.project_type_code='5'
+				</when>
+				<when test="type == '6'.toString()">
+					and pb1.project_type_code='6'
+				</when>
+				<when test="type == '7'.toString()">
+					and pb1.project_type_code='7'
+				</when>
+			</choose>
+		</where>
+		ORDER BY a.create_date desc
+		limit #{startNumber},#{endNumber}
+	</select>
+
+
+	<select id="getRecommendList" resultType="ProjectTransferInfo">
+		SELECT
+		<include refid="projectTransferInfoColumns" />
+		,
+		cb1.customer_name as "projectBaseInfo.aUser.customerName",
+		pb1.repayment_mode as "projectBaseInfo.repaymentMode",
+		pb1.project_type_code as "projectBaseInfo.projectTypeCode",
+		pb1.project_code as "projectBaseInfo.projectCode",
+		pb1.annualized_rate as "projectBaseInfo.annualizedRate",
+		pb1.project_introduce as "projectBaseInfo.projectIntroduce",
+		pb1.project_name as "projectBaseInfo.projectName",
+		pes1.remaining_time as "projectBaseInfo.pes.remainingTime",
+		pes2.end_finance_money as "projectExecuteSnapshot.endFinanceMoney"
+		FROM project_transfer_info
+		a
+		<include refid="projectTransferInfoJoins" />
+		left join project_base pb1 on pb1.project_id=a.project_id
+		left join customer_base cb1 on cb1.account_id=pb1.agent_user
+		left join project_execute_snapshot pes1 on pes1.project_id=pb1.project_id
+		and pes1.transfer_project_id=0
+		left join project_execute_snapshot pes2 on pes2.project_id=pb1.project_id
+		and pes2.transfer_project_id=a.transfer_project_id
+		<where>
+			<!-- a.is_recommend = 1 and  -->a.status='0' order by pb1.project_status,a.create_date desc
+			limit #{limit}
+		</where>
+	</select>
+
+
+	<select id="getProjectCount" resultType="Integer">
+		SELECT
+		 count(*)
+		FROM project_transfer_info
+		a
+		<include refid="projectTransferInfoJoins" />
+		left join project_base pb1 on pb1.project_id=a.project_id
+		left join customer_base cb1 on cb1.account_id=pb1.agent_user
+		left join project_execute_snapshot pes1 on pes1.project_id=pb1.project_id
+		and pes1.transfer_project_id=0
+		left join project_execute_snapshot pes2 on pes2.project_id=pb1.project_id
+		and pes2.transfer_project_id=a.transfer_project_id
+		<where>
+			<if test="accountId !=null">
+				AND a.transferor=#{accountId}
+			</if>
+
+		</where>
+	</select>
+
+
+
+
+	<select id="getCreditCount" resultType="Integer">
+		SELECT
+		count(*)
+		FROM project_transfer_info 	a
+		left join project_base pb1 on pb1.project_id=a.project_id
+		left join customer_base cb1 on cb1.account_id=pb1.agent_user
+		left join project_execute_snapshot pes1 on pes1.project_id=pb1.project_id
+		and pes1.transfer_project_id=0
+		left join project_execute_snapshot pes2 on pes2.project_id=pb1.project_id
+		and pes2.transfer_project_id=a.transfer_project_id
+		<where>
+
+			<if test="status != null and status != ''">
+				and a.status = #{status}
+			</if>
+		</where>
+			<choose>
+				<when test="rate == '1'.toString()">
+					and pb1.annualized_rate &lt;= 0.09
+				</when>
+				<when test="rate == '2'.toString()">
+					and pb1.annualized_rate &gt; 0.09 and pb1.annualized_rate &lt;= 0.1
+				</when>
+				<when test="rate == '3'.toString()">
+					and pb1.annualized_rate &gt; 0.1 and pb1.annualized_rate &lt;= 0.11
+				</when>
+				<when test="rate == '4'.toString()">
+					and pb1.annualized_rate &gt; 0.11 and pb1.annualized_rate &lt;= 0.12
+				</when>
+				<when test="rate == '5'.toString()">
+					and pb1.annualized_rate &gt; 0.12
+				</when>
+			</choose>
+			<choose>
+				<when test="duration == '1'.toString()">
+					and   pes1.remaining_time &gt; 0 and pes1.remaining_time  &lt;= 3
+				</when>
+				<when test="duration == '2'.toString()">
+					and pes1.remaining_time &gt;= 4 and pes1.remaining_time &lt;= 6
+				</when>
+				<when test="duration == '3'.toString()">
+					pes1.remaining_time &gt;= 7 and pes1.remaining_time  &lt;= 12
+				</when>
+				<when test="duration == '4'.toString()">
+					and  and pes1.remaining_time &gt; 12
+				</when>
+			</choose>
+			<choose>
+				<when test="repaymentMode == '1'.toString()">
+					and pb1.repayment_mode='1'
+				</when>
+				<when test="repaymentMode == '2'.toString()">
+					and pb1.repayment_mode='2'
+				</when>
+				<when test="repaymentMode == '3'.toString()">
+					and pb1.repayment_mode='3'
+				</when>
+			</choose>
+			<choose>
+				<when test="type == '1'.toString()">
+					and pb1.project_type_code='1'
+				</when>
+				<when test="type == '2'.toString()">
+					and pb1.project_type_code='2'
+				</when>
+				<when test="type == '3'.toString()">
+					and pb1.project_type_code='3'
+				</when>
+				<when test="type == '4'.toString()">
+					and pb1.project_type_code='4'
+				</when>
+				<when test="type == '5'.toString()">
+					and pb1.project_type_code='5'
+				</when>
+				<when test="type == '6'.toString()">
+					and pb1.project_type_code='6'
+				</when>
+				<when test="type == '7'.toString()">
+					and pb1.project_type_code='7'
+				</when>
+			</choose>
+
+	</select>
+
+	<select id="findAllList" resultType="ProjectTransferInfo">
+		SELECT
+		<include refid="projectTransferInfoColumns" />
+		FROM project_transfer_info a
+		<include refid="projectTransferInfoJoins" />
+		<where>
+
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	<select id="getTransferingProjectCount" resultType="Integer"
+		parameterType="String">
+		select count(*) from project_transfer_info a
+		 <where>
+			 a.status=1
+		  <if test="accountId !=null">
+		 AND a.transferor=#{accountId}
+		  </if>
+		 </where>
+	</select>
+
+
+
+
+
+	<select id="getTransferEndProjectCount" resultType="Integer"
+		parameterType="String">
+		select count(*) from project_transfer_info
+		a,project_base b
+		<where> a.project_id=b.project_id and (b.project_status='6' or b.project_status='7') and (a.status=2 or a.status=3)
+			<if test="accountId !=null">
+				AND  a.transferor=#{accountId}
+			</if>
+		</where>
+	</select>
+	<insert id="insert" useGeneratedKeys="true" keyProperty="transferProjectId">
+		INSERT
+		INTO project_transfer_info(
+		project_id,
+		is_recommend,
+		parent_transfer_project_id,
+		investment_record_id,
+		project_end_date,
+		next_repayment_date,
+		transferor,
+		transfer_price,
+		fair_price,
+		transaction_costs,
+		discount_date,
+		service_charge_type,
+		create_date,
+		close_date,
+		remainder_creditor,
+		status
+		) VALUES (
+		#{projectId},
+		#{isRecommend},
+		#{parentTransferProjectId},
+		#{investmentRecordId},
+		#{projectEndDate},
+		#{nextRepaymentDate},
+		#{transferor},
+		#{transferPrice},
+		#{fairPrice},
+		#{transactionCosts},
+		#{discountDate},
+		#{serviceChargeType},
+		#{createDate},
+		#{closeDate},
+		#{remainderCreditor},
+		#{status}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE project_transfer_info SET
+		project_id = #{projectId},
+		parent_transfer_project_id = #{parentTransferProjectId},
+		investment_record_id = #{investmentRecordId},
+		project_end_date = #{projectEndDate},
+		next_repayment_date = #{nextRepaymentDate},
+		transferor = #{transferor},
+		transfer_price = #{transferPrice},
+		fair_price = #{fairPrice},
+		close_date=#{closeDate},
+		transaction_costs=#{transactionCosts},
+		discount_date = #{discountDate},
+		service_charge_type = #{serviceChargeType},
+		remainder_creditor = #{remainderCreditor},
+		status = #{status}
+		WHERE transfer_project_id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM project_transfer_info
+		WHERE
+		transfer_project_id = #{id}
+	</update>
+
+	<update id="setRecommend">
+		UPDATE project_transfer_info SET is_recommend=#{flag}
+		WHERE id = #{transferId}
+	</update>
+
+	<update id="updateRemainderCreditor">
+		UPDATE project_transfer_info SET
+		remainder_creditor=remainder_creditor + #{changeValue}
+		WHERE transfer_project_id = #{transferProjectId}
+	</update>
+
+	<update id="letDownTransfer">
+		UPDATE project_transfer_info set status='4' where
+		project_id=#{projectId} and status='0'
+	</update>
+
+	<update id="updateStatus">
+		UPDATE project_transfer_info set status=${status}
+		where transfer_project_id=#{transferProjectId}
+	</update>
+
+	<select id="getRuningTransferList" resultType="ProjectTransferInfo">
+		SELECT
+		<include refid="projectTransferInfoColumns" />
+		FROM project_transfer_info a
+		<include refid="projectTransferInfoJoins" />
+		WHERE discount_date  <![CDATA[ <= #{theDay} ]]>
+		and status='0'
+	</select>
+	<select id="findTransferingProjectListByAccountId_old"
+		resultType="ProjectTransferInfo">
+		select a.transfer_project_id AS
+		"transferProjectId",d.project_name AS
+		"projectBaseInfo.projectName",d.annualized_rate AS
+		"projectBaseInfo.annualizedRate",c.amount AS
+		"pir.amount",b.end_finance_money AS
+		"projectExecuteSnapshot.endFinanceMoney",a.discount_date AS
+		"discountDate", sum(e.up_to_platform_money) AS "platformMoney"
+		from
+		project_transfer_info a,project_execute_snapshot
+		b,project_investment_record c,project_base d,project_investment_record
+		e
+		where c.investment_user_id=#{accountId} and c.status='0' and
+		a.status='0' and e.status='0' and a.investment_record_id=c.id and
+		b.project_id=a.project_id and
+		a.transfer_project_id=b.transfer_project_id and
+		a.project_id=d.project_id and e.project_id=a.project_id and
+		e.transfer_project_id=a.transfer_project_id
+		group by a.transfer_project_id
+		,d.project_name,d.annualized_rate,c.amount,b.end_finance_money,a.discount_date
+	</select>
+	<select id="findTransferingProjectListByAccountId" resultType="ProjectTransferInfo">
+		SELECT
+		a.transfer_project_id AS "transferProjectId",
+		d.project_name AS "projectBaseInfo.projectName",
+		d.annualized_rate AS "projectBaseInfo.annualizedRate",
+		c.amount AS "pir.amount",
+		b.end_finance_money AS "projectExecuteSnapshot.endFinanceMoney",
+		a.discount_date AS "discountDate",
+		b.sum_service_charge AS "platformMoney"
+		FROM
+		project_transfer_info a,
+		project_execute_snapshot b,
+		project_investment_record c,
+		project_base d
+		WHERE
+		c.investment_user_id =#{accountId}
+		AND c. STATUS = '0'
+		AND a. STATUS = '0'
+		AND a.investment_record_id = c.id
+		AND b.project_id = a.project_id
+		AND a.transfer_project_id = b.transfer_project_id
+		AND a.project_id = d.project_id
+
+	</select>
+	<select id="findTransferEndProjectListByAccountId" resultType="ProjectTransferInfo">
+		select a.transfer_project_id AS "transferProjectId",d.project_name AS
+		"projectBaseInfo.projectName",d.annualized_rate AS
+		"projectBaseInfo.annualizedRate",c.amount AS
+		"pir.amount",b.end_finance_money AS
+		"projectExecuteSnapshot.endFinanceMoney",a.discount_date AS
+		"discountDate", c.transfer_project_id AS
+		"pir.transferProjectId",b.sum_service_charge AS "platformMoney",
+		c.op_dt AS "pir.opDt"
+		from project_transfer_info a,project_execute_snapshot
+		b,project_investment_record c,project_base d
+		where c.investment_user_id=#{accountId} and c.status='1' and
+		(a.status='1' or a.status='2' or a.status='3' or a.status='4' or
+		a.status='5') and a.investment_record_id=c.id and
+		b.project_id=a.project_id and
+		a.transfer_project_id=b.transfer_project_id and
+		a.project_id=d.project_id 
+	</select>
+	<select id="getTransferingCountByInvestmentId" resultType="java.lang.Integer">
+		select count(1) from project_transfer_info where status='0' and investment_record_id=#{investmentId}
+	</select>
+	<select id="findTransferingProjectList" resultType="ProjectTransferInfo">
+		select * from
+		project_transfer_info where status='0'
+	</select>
+
+	<select id="getCountByStatus" resultType="java.lang.Integer">
+		select count(1) from project_transfer_info where status = #{status}
+	</select>
+
+	<select id="findTransferProjectList" resultType="java.util.Map">
+		select a.project_id as "projectId",a.project_name as "projectName",a.project_type_code as "projectType",
+		a.repayment_mode as "repaymentMode",a.starting_amount as "startingAmount",a.finance_money as "financeMoney",
+		b.end_finance_money as "endFinanceMoney",a.project_status as "status",a.annualized_rate as "annualizedRate",
+		a.is_increase_interest as "isIncreaseInterest",a.increase_interest_rate as "increaseInterestRate",
+		a.duration_type as "durationUnit",a.project_duration as "projectDuration",a.safeguard_mode as "safeguardMode",
+		a.is_new_user as "isNewUser",a.is_recommend as "isRecommend",a.transfer_code as "transferCode"
+		from project_transfer_info a
+		left join project_execute_snapshot b on a.project_id = b.project_id and a.transfer_project_id = b.transfer_project_id
+		left join project_base c on a.project_id and c.project_id
+		<where>
+			a.status = '0'
+			<if test="statuses != null">
+				and c.project_status in
+				<foreach item="status" index="index" collection="statuses" open="(" separator="," close=")">
+					#{status}
+				</foreach>
+			</if>
+			<if test="minRate != null">
+				and c.annualized_rate &gt;= #{minRate}
+			</if>
+			<if test="maxRate != null">
+				and c.annualized_rate &lt;= #{maxRate}
+			</if>
+			<if test="repaymentMode != null">
+				and c.repayment_mode = #{repaymentMode}
+			</if>
+			<if test="type != null">
+				and c.project_type_code = #{type}
+			</if>
+			<if test="projectSearch != null and projectSearch.durationUnit != null">
+				and c.duration_type = #{projectSearch.durationUnit}
+			</if>
+			<if test="projectSearch != null and projectSearch.projectDuration != null">
+				and c.project_duration = #{projectSearch.projectDuration}
+			</if>
+		</where>
+		order by a.sort_in_list limit #{index},#{limit}
+	</select>
+
+	<select id="getCount" resultType="java.lang.Integer">
+		select count(1)
+		from project_transfer_info a
+		left join project_base c on a.project_id and c.project_id
+		<where>
+			a.status = '0'
+			<if test="statuses != null">
+				and c.project_status in
+				<foreach item="status" index="index" collection="statuses" open="(" separator="," close=")">
+					#{status}
+				</foreach>
+			</if>
+			<if test="minRate != null">
+				and c.annualized_rate &gt;= #{minRate}
+			</if>
+			<if test="maxRate != null">
+				and c.annualized_rate &lt;= #{maxRate}
+			</if>
+			<if test="repaymentMode != null">
+				and c.repayment_mode = #{repaymentMode}
+			</if>
+			<if test="type != null">
+				and c.project_type_code = #{type}
+			</if>
+			<if test="projectSearch != null and projectSearch.durationUnit != null">
+				and c.duration_type = #{projectSearch.durationUnit}
+			</if>
+			<if test="projectSearch != null and projectSearch.projectDuration != null">
+				and c.project_duration = #{projectSearch.projectDuration}
+			</if>
+		</where>
+	</select>
+</mapper>

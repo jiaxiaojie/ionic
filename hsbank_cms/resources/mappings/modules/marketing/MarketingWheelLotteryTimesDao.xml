@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.marketing.dao.MarketingWheelLotteryTimesDao">
+    
+	<sql id="marketingWheelLotteryTimesColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.total_times AS "totalTimes",
+		a.used_times AS "usedTimes",
+		a.activity_id as "activityId"
+	</sql>
+	
+	<sql id="marketingWheelLotteryTimesJoins">
+	</sql>
+    
+	<select id="get" resultType="MarketingWheelLotteryTimes">
+		SELECT 
+			<include refid="marketingWheelLotteryTimesColumns"/>
+		FROM marketing_wheel_lottery_times a
+		<include refid="marketingWheelLotteryTimesJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MarketingWheelLotteryTimes">
+		SELECT 
+			<include refid="marketingWheelLotteryTimesColumns"/>
+		FROM marketing_wheel_lottery_times a
+		<include refid="marketingWheelLotteryTimesJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="totalTimes != null and totalTimes != ''">
+				AND a.total_times = #{totalTimes}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MarketingWheelLotteryTimes">
+		SELECT 
+			<include refid="marketingWheelLotteryTimesColumns"/>
+		FROM marketing_wheel_lottery_times a
+		<include refid="marketingWheelLotteryTimesJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO marketing_wheel_lottery_times(
+			account_id,
+			total_times,
+			used_times,
+			activity_id
+		) VALUES (
+			#{accountId},
+			#{totalTimes},
+			#{usedTimes},
+			#{activityId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE marketing_wheel_lottery_times SET 	
+			account_id = #{accountId},
+			total_times = #{totalTimes},
+			used_times = #{usedTimes},
+			activity_id = #{activityId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM marketing_wheel_lottery_times
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getByAccountIdAndActivityId" resultType="MarketingWheelLotteryTimes">
+		select * from marketing_wheel_lottery_times where account_id = #{accountId} and activity_id = #{activityId} limit 1
+	</select>
+	
+	<update id="updateTotalTimesByAccountIdAndActivityId">
+		update marketing_wheel_lottery_times
+		set total_times = total_times + #{totalTimes}
+		where account_id = #{accountId} and activity_id = #{activityId}
+	</update>
+	
+	<update id="updateUsedTimesByAccountIdAndActivityId">
+		update marketing_wheel_lottery_times
+		set used_times = used_times + #{usedTimes}
+		where account_id = #{accountId} and activity_id = #{activityId}
+	</update>
+	
+	<update id="updateLotteryTimesByActivityId">
+		update marketing_wheel_lottery_times
+		set total_times = #{totalTimes},used_times = #{usedTimes}
+		where activity_id = #{activityId}
+	</update>
+</mapper>

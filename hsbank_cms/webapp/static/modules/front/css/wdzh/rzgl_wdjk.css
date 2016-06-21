@@ -1,0 +1,42 @@
+#content_top {overflow:hidden;}
+#content_top .left{float:left;width:150px;height:80px;margin:60px 30px;}
+#content_top .left .title{width:150px;height:30px;margin-top:10px;margin-left:auto;margin-right:auto;text-align:right;color:black;font-size:20px;}
+#content_top .left .content{width:150px;height:30px;margin:10px auto;text-align:center;}
+#content_top .left .spanText{float:right;width: -moz-fit-content;width:-webkit-fit-content;width:fit-content;margin:auto;color:#dc525f;font-size:20px;;text-align:center;}
+#content_top .left .spanUnit{float:right;color:black;font-size:12px;width:20px;margin-left:0;}
+#content_top .right{float:left;width:480px;height:80px;margin-top:70px;margin-left:20px;}
+#content_top .right .row{width:480px;height:30px;}
+#content_top .right .column_1{float:left;width:33%;}
+#content_top .right .column_2{float:left;width:34%;}
+#content_top .right .column_3{float:left;width:33%;}
+#content_top .vline{float:left;width:1px;height:80px;background:#c1a576;margin:60px 30px 0 20px;}
+#content_center{overflow:hidden;width:769px; margin:0 auto;padding:10px 10px 10px 10px;}
+#content_center .line_01{width:100%;height:40px;line-height:40px;}
+#content_center .line_01 .span_text_1{float:left;font-size:12px;}
+#content_center .line_01 .span_text_2{float:left;font-size:12px;margin-left:10px;}
+#content_center .line_01 .select{float:left;font-size:12px;width:150px;margin-top:6px;margin-left:10px;}
+#content_center .line_01 .input{float:left;font-size:12px;width:68px;margin-top:6px;margin-left:10px;}
+#content_center .line_01 a{cursor:pointer;float:right;margin-left:10px;color:#68a7e4;text-decoration:underline;}
+#content_center .line_02{height:30px;line-height:30px;font-size:12px;margin-left:10px;margin-right:20px;}
+#content_center .line_02 .span_text{width:90px;font-size:12px;margin-left:10px;}
+#content_center .line_03{height:30px;line-height:30px;font-size:12px;margin-right:0;}
+#content_center .line_03 a{cursor:pointer;float:right;margin-left:10px;color:#68a7e4;text-decoration:underline;}
+#content_center hr{border-top:1px solid #f2f2f2;border-bottom:0 none white;margin-left:150px;width:100%;}
+#content_center .hr_dashed{border-top:1px dashed #c7c7c7;border-bottom:0 none white;margin-left:10px;margin-right:10px;}
+#content_center .bottom{margin-left:auto;margin-right:auto;margin-top:30px;width:789px;height:44px;background:url('../../images/wdzh/right_bg_bottom.png') no-repeat center;}
+
+#content_bottom{overflow:hidden;width:789px;}
+#content_bottom .line_01{height:40px;line-height:40px;font-size:12px;margin-left:20px;margin-right:20px;}
+#content_bottom .line_01 .span_text_1{font-size:16px;margin-left:20px;color:#9a6a34;}
+#content_bottom .hr_dashed{margin:0;border-top:1px dashed #c7c7c7;margin-left:30px;margin-right:30px;}
+#content_bottom .line_02{height:30px;line-height:30px;font-size:12px;margin-left:20px;margin-right:20px;}
+#content_bottom .line_02 .span_text{width:100px;font-size:12px;margin-left:20px;}
+
+
+/*开通易宝支付资金托管账号 信息确认*/
+.content980{ margin:0 auto; width:980px; min-height:500px; border:1px solid #bc9c78; background-color:#fff;}
+.content980 .zjgl_xxqr{}
+.content980 .zjgl_xxqr .xxqr_title{ margin:0 auto; width:736px; height:100px; line-height:100px; font-size:24px; color:#333; text-align:center; border-bottom:1px solid #b38e64;}
+
+
+

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerFinanceDao">
+    
+	<sql id="customerFinanceColumns">
+		a.customer_id AS "id",
+		a.month_income AS "monthIncome",
+		a.income_remark AS "incomeRemark",
+		a.month_spend AS "monthSpend",
+		a.spend_remark AS "spendRemark",
+		a.housing_conditions AS "housingConditions",
+		a.housing_val AS "housingVal",
+		a.has_car AS "hasCar",
+		a.car_val AS "carVal",
+		a.car_remark AS "carRemark",
+		a.shareholder_ent AS "shareholderEnt",
+		a.shareholder_val AS "shareholderVal",
+		a.other_remark AS "otherRemark",
+		b.customer_id AS "customerId",
+		b.account_id as "accountId",
+		c.account_type AS "accountType",
+		a.has_housing_loan AS "hasHousingLoan",
+		a.has_car_loan AS "hasCarLoan"
+	</sql>
+	
+	<sql id="customerFinanceJoins">
+		RIGHT JOIN customer_base b ON b.customer_id=a.customer_id
+		LEFT JOIN customer_account c ON c.account_id=b.account_id
+	</sql>
+    
+	<select id="get" resultType="CustomerFinance">
+		SELECT 
+			<include refid="customerFinanceColumns"/>
+		FROM customer_finance a
+		<include refid="customerFinanceJoins"/>
+		WHERE a.customer_id = #{id}
+	</select>
+	
+	<select id="getByCustomerId" resultType="CustomerFinance">
+		SELECT 
+			<include refid="customerFinanceColumns"/>
+		FROM customer_finance a
+		<include refid="customerFinanceJoins"/>
+		WHERE b.customer_id = #{customerId}
+	</select>
+	
+	<select id="findList" resultType="CustomerFinance">
+		SELECT 
+			<include refid="customerFinanceColumns"/>
+		FROM customer_finance a
+		<include refid="customerFinanceJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerFinance">
+		SELECT 
+			<include refid="customerFinanceColumns"/>
+		FROM customer_finance a
+		<include refid="customerFinanceJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_finance(
+			customer_id,
+			month_income,
+			income_remark,
+			month_spend,
+			spend_remark,
+			housing_conditions,
+			housing_val,
+			has_car,
+			car_val,
+			car_remark,
+			shareholder_ent,
+			shareholder_val,
+			other_remark,
+			has_housing_loan,
+			has_car_loan
+		) VALUES (
+			#{customerId},
+			#{monthIncome},
+			#{incomeRemark},
+			#{monthSpend},
+			#{spendRemark},
+			#{housingConditions},
+			#{housingVal},
+			#{hasCar},
+			#{carVal},
+			#{carRemark},
+			#{shareholderEnt},
+			#{shareholderVal},
+			#{otherRemark},
+			#{hasHousingLoan},
+			#{hasCarLoan}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_finance SET 	
+			month_income = #{monthIncome},
+			income_remark = #{incomeRemark},
+			month_spend = #{monthSpend},
+			spend_remark = #{spendRemark},
+			housing_conditions = #{housingConditions},
+			housing_val = #{housingVal},
+			has_car = #{hasCar},
+			car_val = #{carVal},
+			car_remark = #{carRemark},
+			shareholder_ent = #{shareholderEnt},
+			shareholder_val = #{shareholderVal},
+			other_remark = #{otherRemark},
+			has_housing_loan = #{hasHousingLoan},
+			has_car_loan = #{hasCarLoan}
+		WHERE customer_id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_finance
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

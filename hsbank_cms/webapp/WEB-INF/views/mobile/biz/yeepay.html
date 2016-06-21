@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html ng-app="hsWechat" ui-prevent-touchmove-defaults>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimal-ui" />
+    <base href="/" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="yes" />
+    <title></title>
+</head>
+<body>
+
+    <!-- App Body -->
+    <div class="app-body">
+        <div class="app-content">
+
+                <!--模版1 不用时去掉此注释-->
+                <div class="yp-main" style="display: block;">
+                    <div class="yp-body">
+                        <ul class="list-group menu hs-margin-top-10">
+                            <li class="list-group-item">
+                                <span>项目名称</span>
+                                <span class="menu-text-right pull-right">花生金服-典当</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span>年利率</span>
+                                <span class="menu-text-right pull-right">10.8%</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span>项目周期</span>
+                                <span class="menu-text-right pull-right">3个月</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span>投资金额(元)</span>
+                                <span class="menu-text-right pull-right">100.00</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span>应付金额(元)</span>
+                                <span class="menu-text-right pull-right text-success">99.82</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="yp-btn">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <a class="btn btn-danger btn-block btn-md">立即支付</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!--模版2 不用时去掉此注释-->
+                <div class="yp-main" style="display: none;">
+                    <div class="yp-body">
+                        <ul class="list-group menu hs-margin-top-10">
+                            <li class="list-group-item">
+                                <span>充值金额(元)</span>
+                                <span class="menu-text-right pull-right text-success">100.00</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-12 font-size-12 text-success">充值金额按充值金额的0.18%由第三方支付平台收取。目前充值该手续费由花生金服承担。</div>
+                        </div>
+                    </div>
+                    <div class="yp-btn">
+                        <div class="container hs-margin-top-10">
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <a class="btn btn-default btn-block btn-md">返回修改</a>
+                                </div>
+                                <div class="col-xs-6">
+                                    <a class="btn btn-danger btn-block btn-md">确认</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!--投资成功 不用时去掉此注释-->
+                <div class="yp-main" style="display: none;">
+                    <div class="container">
+                        <div class="row hs-margin-top-10">
+                            <div class="col-xs-12 text-center">
+                                <span class="icon-img-md">
+                                    <img src="images/icon/icon_registered_success.png" />
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="yp-body">
+                        <ul class="list-group menu hs-margin-top-10">
+                            <li class="list-group-item">
+                                <span>真实姓名</span>
+                                <span class="menu-text-right pull-right">*某某</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span>身份证号</span>
+                                <span class="menu-text-right pull-right">21**** **** **** ****</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span>投资项目</span>
+                                <span class="menu-text-right pull-right">某某某某某某某某某某项目</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span>投资金额(元)</span>
+                                <span class="menu-text-right pull-right">100.00 使用了50元投资券</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span>年化利率</span>
+                                <span class="menu-text-right pull-right text-success">12%</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span>还款方式</span>
+                                <span class="menu-text-right pull-right text-success">等额本息</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span>还款日期</span>
+                                <span class="menu-text-right pull-right text-success">2015-12-12</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="yp-btn">
+                        <div class="container hs-margin-top-10">
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <a class="btn btn-default btn-block btn-md">返回账户</a>
+                                </div>
+                                <div class="col-xs-6">
+                                    <a class="btn btn-danger btn-block btn-md">下载合同</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!--投资失败 不用时去掉此注释-->
+                <div class="yp-main" style="display: none;">
+                    <div class="container">
+                        <div class="row hs-margin-top-10">
+                            <div class="col-xs-12 text-center">
+                                <span class="icon-img-md">
+                                    <img src="images/icon/registration_failure.png" />
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="yp-body">
+                        <ul class="list-group menu hs-margin-top-10">
+                            <li class="list-group-item">
+                                <span>真实姓名</span>
+                                <span class="menu-text-right pull-right">*某某</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span>身份证号</span>
+                                <span class="menu-text-right pull-right">21**** **** **** ****</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span>投资项目</span>
+                                <span class="menu-text-right pull-right">某某某某某某某某某某项目</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span>投资金额(元)</span>
+                                <span class="menu-text-right pull-right">100.00 使用了50元投资券</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span>年化利率</span>
+                                <span class="menu-text-right pull-right text-success">12%</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span>还款方式</span>
+                                <span class="menu-text-right pull-right text-success">等额本息</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span>还款日期</span>
+                                <span class="menu-text-right pull-right text-success">2015-12-12</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="yp-btn">
+                        <div class="container hs-margin-top-10">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <a class="btn btn-danger btn-block btn-md">返回项目详情页</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+        </div>
+    </div>
+
+<!-- ~ .app -->
+
+<!--bower js-->
+<!--bower js end-->
+<!--bower css-->
+<!--bower css end-->
+
+<!--node js-->
+<!--node js end-->
+<!--app js-->
+<!--app js end-->
+<!--css-->
+<link crossorigin="anonymous" href="css/app-base.css" media="all" rel="stylesheet" />
+<!--css end-->
+</body>
+</html>

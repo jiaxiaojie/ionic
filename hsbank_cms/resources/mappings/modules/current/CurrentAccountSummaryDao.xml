@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.current.dao.CurrentAccountSummaryDao">
+    
+	<sql id="currentAccountSummaryColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.total_investment_money AS "totalInvestmentMoney",
+		a.total_get_interest AS "totalGetInterest",
+		a.total_redeem_principal AS "totalRedeemPrincipal",
+		a.total_redeem_interest AS "totalRedeemInterest",
+		a.current_principal AS "currentPrincipal",
+		a.create_dt AS "createDt",
+		a.modify_dt AS "modifyDt"
+	</sql>
+	
+	<sql id="currentAccountSummaryJoins">
+	</sql>
+    
+	<select id="get" resultType="CurrentAccountSummary">
+		SELECT 
+			<include refid="currentAccountSummaryColumns"/>
+		FROM current_account_summary a
+		<include refid="currentAccountSummaryJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getStatCurrentPrincipalAndInterestMoney" resultType="java.util.Map">
+		select sum(t.current_principal) AS
+		currentPrincipal,sum(t.total_get_interest) AS interestMoney from
+		current_account_summary t
+	</select>
+	
+	<select id="getStatCurrentPrincipalListByAccountId" resultType="java.util.Map">
+		select sum(t.current_principal) AS currentPrincipal,account_id AS
+		accountId from current_account_summary t group by t.account_id
+	</select>
+	
+	<select id="findList" resultType="CurrentAccountSummary">
+		SELECT 
+			<include refid="currentAccountSummaryColumns"/>
+		FROM current_account_summary a
+		<include refid="currentAccountSummaryJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="beginTotalInvestmentMoney != null  and beginTotalInvestmentMoney != ''">				AND a.total_investment_money >= #{beginTotalInvestmentMoney}			</if>			<if test="endTotalInvestmentMoney != null and endTotalInvestmentMoney != ''">				AND #{endTotalInvestmentMoney} >= a.total_investment_money			</if>
+			<if test="beginCurrentPrincipal != null  and beginCurrentPrincipal != ''">				AND a.current_principal >= #{beginCurrentPrincipal}			</if>			<if test="endCurrentPrincipal != null and endCurrentPrincipal != ''">				AND #{endCurrentPrincipal} >= a.current_principal			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CurrentAccountSummary">
+		SELECT 
+			<include refid="currentAccountSummaryColumns"/>
+		FROM current_account_summary a
+		<include refid="currentAccountSummaryJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO current_account_summary(
+			account_id,
+			total_investment_money,
+			total_get_interest,
+			total_redeem_principal,
+			total_redeem_interest,
+			current_principal,
+			create_dt,
+			modify_dt
+		) VALUES (
+			#{accountId},
+			#{totalInvestmentMoney},
+			#{totalGetInterest},
+			#{totalRedeemPrincipal},
+			#{totalRedeemInterest},
+			#{currentPrincipal},
+			#{createDt},
+			#{modifyDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE current_account_summary SET 	
+			account_id = #{accountId},
+			total_investment_money = #{totalInvestmentMoney},
+			total_get_interest = #{totalGetInterest},
+			total_redeem_principal = #{totalRedeemPrincipal},
+			total_redeem_interest = #{totalRedeemInterest},
+			current_principal = #{currentPrincipal},
+			create_dt = #{createDt},
+			modify_dt = #{modifyDt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM current_account_summary
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateByRepay">
+		update current_account_summary set total_get_interest = total_get_interest + #{getInterest} where account_id = #{accountId}
+	</update>
+	
+	<update id="updateByPayRedeem">
+		update current_account_summary set total_redeem_principal = total_redeem_principal + #{redeemPrincipal}, current_principal = current_principal - #{redeemPrincipal} where account_id = #{accountId}
+	</update>
+	
+	<update id="updateByPollInterest">
+		update current_account_summary set total_redeem_interest = total_redeem_interest + #{pollInterest} where account_id = #{accountId}
+	</update>
+	
+	<update id="updateByWindingUp">
+		update current_account_summary set
+			total_redeem_principal = total_redeem_principal + #{principal},
+			total_redeem_interest = total_redeem_interest + #{interest},
+			current_principal = current_principal - #{principal}
+		where account_id = #{accountId}
+	</update>
+	
+	<update id="updateByInvestment">
+		update current_account_summary 
+			set total_investment_money = total_investment_money + #{amount},
+		    current_principal = current_principal + #{amount}
+	    where account_id = #{accountId}
+	</update>
+	
+	<select id="getByAccountId" resultType="CurrentAccountSummary">
+		select * from current_account_summary where account_id = #{accountId} limit 1
+	</select>
+</mapper>

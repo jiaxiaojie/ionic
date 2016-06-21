@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.message.dao.AppMessagePushRecordDao">
+    
+	<sql id="appMessagePushRecordColumns">
+		a.id AS "id",
+		a.message_instance_id AS "messageInstanceId",
+		a.push_dt AS "pushDt",
+		a.result_data AS "resultData"
+	</sql>
+	
+	<sql id="appMessagePushRecordJoins">
+	</sql>
+    
+	<select id="get" resultType="AppMessagePushRecord">
+		SELECT 
+			<include refid="appMessagePushRecordColumns"/>
+		FROM app_message_push_record a
+		<include refid="appMessagePushRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="AppMessagePushRecord">
+		SELECT 
+			<include refid="appMessagePushRecordColumns"/>
+		FROM app_message_push_record a
+		<include refid="appMessagePushRecordJoins"/>
+		<where>
+			
+			<if test="messageInstanceId != null and messageInstanceId != ''">
+				AND a.message_instance_id = #{messageInstanceId}
+			</if>
+			<if test="pushDt != null and pushDt != ''">
+				AND a.push_dt = #{pushDt}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="AppMessagePushRecord">
+		SELECT 
+			<include refid="appMessagePushRecordColumns"/>
+		FROM app_message_push_record a
+		<include refid="appMessagePushRecordJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO app_message_push_record(
+			message_instance_id,
+			push_dt,
+			result_data
+		) VALUES (
+			#{messageInstanceId},
+			#{pushDt},
+			#{resultData}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE app_message_push_record SET 	
+			message_instance_id = #{messageInstanceId},
+			push_dt = #{pushDt},
+			result_data = #{resultData}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM app_message_push_record
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

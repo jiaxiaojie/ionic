@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.current.dao.DemandRedemptionInformationRecordDao">
+    
+	<sql id="demandRedemptionInformationRecordColumns">
+		a.id AS "id",
+		a.redemption_id AS "redemptionId",
+		a.reedmption_date AS "reedmptionDate",
+		a.info_reason AS "infoReason",
+		a.account_amount AS "accountAmount",
+		a.redeem_principal AS "redeemPrincipal",
+		a.status AS "status"
+	</sql>
+	
+	<sql id="demandRedemptionInformationRecordJoins">
+	</sql>
+    
+	<select id="get" resultType="DemandRedemptionInformationRecord">
+		SELECT 
+			<include refid="demandRedemptionInformationRecordColumns"/>
+		FROM demand_redemption_information_record a
+		<include refid="demandRedemptionInformationRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="DemandRedemptionInformationRecord">
+		SELECT 
+			<include refid="demandRedemptionInformationRecordColumns"/>
+		FROM demand_redemption_information_record a
+		<include refid="demandRedemptionInformationRecordJoins"/>
+		<where>
+			
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="redemptionId != null and redemptionId != ''">
+				AND a.redemption_id = #{redemptionId}
+			</if>
+			<if test="reedmptionDate != null and reedmptionDate != ''">
+				AND date(a.reedmption_date) = date(#{reedmptionDate})
+			</if>
+			<if test="infoReason != null and infoReason != ''">
+				AND a.info_reason = #{infoReason}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+		order by a.reedmption_date desc
+	</select>
+	
+	<select id="findAllList" resultType="DemandRedemptionInformationRecord">
+		SELECT 
+			<include refid="demandRedemptionInformationRecordColumns"/>
+		FROM demand_redemption_information_record a
+		<include refid="demandRedemptionInformationRecordJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO demand_redemption_information_record(
+			redemption_id,
+			reedmption_date,
+			info_reason,
+			account_amount,
+			redeem_principal,
+			status
+		) VALUES (
+			#{redemptionId},
+			#{reedmptionDate},
+			#{infoReason},
+			#{accountAmount},
+			#{redeemPrincipal},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE demand_redemption_information_record SET 	
+			redemption_id = #{redemptionId},
+			reedmption_date = #{reedmptionDate},
+			info_reason = #{infoReason},
+			account_amount = #{accountAmount},
+			redeem_principal = #{redeemPrincipal},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM demand_redemption_information_record
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

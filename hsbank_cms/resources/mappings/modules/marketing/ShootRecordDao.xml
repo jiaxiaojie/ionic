@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.marketing.dao.ShootRecordDao">
+    
+	<sql id="shootRecordColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.activity_id AS "activityId",
+		a.op_dt AS "opDt",
+		a.op_term AS "opTerm",
+		a.is_goal AS "isGoal",
+		a.status AS "status"
+	</sql>
+	
+	<sql id="shootRecordJoins">
+	</sql>
+    
+	<select id="get" resultType="ShootRecord">
+		SELECT 
+			<include refid="shootRecordColumns"/>
+		FROM shoot_record a
+		<include refid="shootRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ShootRecord">
+		SELECT 
+			<include refid="shootRecordColumns"/>
+		FROM shoot_record a
+		<include refid="shootRecordJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="isGoal != null and isGoal != ''">
+				AND a.is_goal = #{isGoal}
+			</if>
+
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+
+			<if test="opDt != null">
+				AND date_format(a.op_dt,'%y-%m-%d') = date_format(#{opDt},'%y-%m-%d')
+			</if>
+		</where>
+		<if test="page ==null or page.orderBy == null or page.orderBy == ''">
+			ORDER BY a.op_dt asc
+		</if>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findLastTimesList" resultType="ShootRecord">
+		SELECT
+		<include refid="shootRecordColumns"/>
+		FROM shoot_record a
+		<include refid="shootRecordJoins"/>
+		<where>
+
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="isGoal != null and isGoal != ''">
+				AND a.is_goal = #{isGoal}
+			</if>
+
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+
+			<if test="opDt != null">
+				AND date_format(a.op_dt,'%y-%m-%d') = date_format(#{opDt},'%y-%m-%d')
+			</if>
+		</where>
+		<if test="page ==null or page.orderBy == null or page.orderBy == ''">
+			ORDER BY a.op_dt desc,a.id asc
+		</if>
+		limit 3
+
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ShootRecord">
+		SELECT 
+			<include refid="shootRecordColumns"/>
+		FROM shoot_record a
+		<include refid="shootRecordJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO shoot_record(
+			account_id,
+			activity_id,
+			op_dt,
+			op_term,
+			is_goal,
+			status
+		) VALUES (
+			#{accountId},
+			#{activityId},
+			#{opDt},
+			#{opTerm},
+			#{isGoal},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE shoot_record SET 	
+			account_id = #{accountId},
+			activity_id = #{activityId},
+			op_dt = #{opDt},
+			op_term = #{opTerm},
+			is_goal = #{isGoal},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM shoot_record
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

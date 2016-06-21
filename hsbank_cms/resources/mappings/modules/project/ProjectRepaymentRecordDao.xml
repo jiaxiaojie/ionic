@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.project.dao.ProjectRepaymentRecordDao">
+	<sql id="projectRepaymentRecordColumns">
+		a.record_id AS "recordId",
+		a.project_id AS "projectId",
+		a.plan_id AS "planId",
+		a.repayment_date AS "repaymentDate",
+		a.repayment_channel_id AS "repaymentChannelId",
+		a.sum_money AS "sumMoney",
+		a.third_party_order AS "thirdPartyOrder",
+		a.repay_type AS "repayType",
+		a.status AS "status",
+		a.split_balance AS "splitBalance",
+		a.principal AS "principal",
+		a.interest AS "interest",
+		a.rate_ticket_interest AS "rateTicketInterest",
+		a.pre_penalty_money AS "prePenaltyMoney",
+		a.late_penalty_money AS "latePenaltyMoney",
+		a.old_money AS "oldMoney"
+	</sql>
+	
+	<sql id="projectRepaymentRecordJoins">
+	</sql>
+    
+	<select id="get" resultType="ProjectRepaymentRecord">
+		SELECT 
+			<include refid="projectRepaymentRecordColumns"/>
+		FROM project_repayment_record a
+		<include refid="projectRepaymentRecordJoins"/>
+		WHERE a.record_id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ProjectRepaymentRecord">
+		SELECT 
+			<include refid="projectRepaymentRecordColumns"/>
+		FROM project_repayment_record a
+		<include refid="projectRepaymentRecordJoins"/>
+		<where>
+			<if test="queryProjectId != null and queryProjectId != ''">
+				AND a.project_id = #{queryProjectId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ProjectRepaymentRecord">
+		SELECT 
+			<include refid="projectRepaymentRecordColumns"/>
+		FROM project_repayment_record a
+		<include refid="projectRepaymentRecordJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="recordId">
+		INSERT INTO project_repayment_record(
+			project_id,
+			plan_id,
+			third_party_order,
+			repay_type ,
+			repayment_date,
+			repayment_channel_id,
+			sum_money,
+			status,
+			principal,
+			interest,
+			rate_ticket_interest,
+			pre_penalty_money,
+			late_penalty_money,
+			old_money,
+			split_balance
+		) VALUES (
+			#{projectId},
+			#{planId},
+			#{thirdPartyOrder},
+			#{repayType},
+			#{repaymentDate},
+			#{repaymentChannelId},
+			#{sumMoney},
+			#{status},
+			#{principal},
+			#{interest},
+			#{rateTicketInterest},
+			#{prePenaltyMoney},
+			#{latePenaltyMoney},
+			#{oldMoney},
+			#{splitBalance}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE project_repayment_record SET 	
+			project_id=#{projectId},
+			plan_id=#{planId},
+			third_party_order=#{thirdPartyOrder},
+			repay_type=#{repayType} ,
+			repayment_date=#{repaymentDate},
+			repayment_channel_id=#{repaymentChannelId},
+			sum_money=#{sumMoney},
+			status=#{status},
+			principal=#{principal},
+			interest=#{interest},
+			rate_ticket_interest=#{rateTicketInterest},
+			pre_penalty_money=#{prePenaltyMoney},
+			late_penalty_money=#{latePenaltyMoney},
+			old_money=#{oldMoney},
+			split_balance=#{splitBalance}
+		WHERE record_id = #{recordId}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM project_repayment_record
+		WHERE id = #{id}
+	</update>
+	<select id="getProjectRepaymentRecordByThirdPartyCode" resultType="ProjectRepaymentRecord">
+		select a.record_id AS "recordId",
+		a.project_id AS "projectId",
+		a.plan_id AS "planId",
+		a.repayment_date AS "repaymentDate",
+		a.repayment_channel_id AS "repaymentChannelId",
+		a.sum_money AS "sumMoney",
+		a.third_party_order AS "thirdPartyOrder",
+		a.repay_type AS "repayType",
+		a.status AS "status",
+		a.split_balance AS "splitBalance",
+		a.principal AS "principal",
+		a.interest AS "interest",
+		a.rate_ticket_interest AS "rateTicketInterest",
+		a.pre_penalty_money AS "prePenaltyMoney",
+		a.late_penalty_money AS "latePenaltyMoney",
+		a.old_money AS "oldMoney"
+		from project_repayment_record a where a.third_party_order=#{thirdPartyCode}
+	</select>
+	
+	<select id="getOverTimeRepaymentRecord" resultType="ProjectRepaymentRecord">
+		select * from project_repayment_record where status=#{status} and repayment_date <![CDATA[ <= #{theDate} ]]> 
+	</select>
+</mapper>

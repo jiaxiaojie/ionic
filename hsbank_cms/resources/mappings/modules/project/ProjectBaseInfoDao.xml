@@ -1,0 +1,1940 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.project.dao.ProjectBaseInfoDao">
+    
+	<sql id="projectBaseInfoColumns">
+		a.project_id AS "projectId",
+		a.project_code AS "projectCode",
+		a.is_new_user AS "isNewUser",
+		a.is_recommend AS "isRecommend",
+		a.can_use_rate_ticket AS "canUseRateTicket",
+		a.project_type_code AS "projectTypeCode",
+		a.project_name AS "projectName",
+		a.project_tips AS "projectTips",
+		a.project_introduce AS "projectIntroduce",
+		a.repayment_mode AS "repaymentMode",
+		a.borrowers_user AS "borrowersUser",
+		a.agent_user AS "agentUser",
+		a.area_id AS "area.id",
+		a.service_charge AS "serviceCharge",
+		a.service_charge_type_code AS "serviceChargeTypeCode",
+		a.duration_type AS "durationType",
+		a.project_duration AS "projectDuration",
+		a.annualized_rate AS "annualizedRate",
+		a.is_increase_interest AS "isIncreaseInterest",
+		a.increase_interest_rate AS "increaseInterestRate",
+		a.use_method AS "useMethod",
+		a.finance_money AS "financeMoney",
+		a.repayment_money AS "repaymentMoney",		
+		a.starting_amount AS "startingAmount",
+		a.max_amount AS "maxAmount",
+		a.about_files AS "aboutFiles",
+		a.safeguard_mode AS "safeguardMode",
+		a.month_repay_money AS "monthRepayMoney",
+		a.early_repayment_rate AS "earlyRepaymentRate",
+		a.credit_extension_money AS "creditExtensionMoney",
+		a.planned_repayment_date AS "plannedRepaymentDate",
+		a.actual_repayment_date AS "actualRepaymentDate",
+		a.last_repayment_date AS "lastRepaymentDate",
+		a.bidding_deadline AS "biddingDeadline",
+		a.transfer_code AS "transferCode",
+		a.create_dt AS "createDt",
+		a.create_user_id AS "createUserId",
+		a.review_dt AS "reviewDt",
+		a.review_user_id AS "reviewUserId",
+		a.publish_dt AS "publishDt",
+		a.close_dt AS "closeDt",
+		a.close_user_id AS "closeUserId",
+		a.project_status AS "projectStatus",
+		a.review_remark AS "reviewRemark",
+		a.is_del AS "isDel",
+		a.risk_info AS "riskInfo",
+		a.is_auto_repay AS "isAutoRepay",
+		a.auto_repay_code AS "autoRepayCode",
+		a.apply_src_id AS "applySrcId",
+		a.is_loan AS "isLoan",
+		a.loan_dt AS "loanDt",
+		a.sort_in_list AS "sortInList",
+		a.sort_in_index AS "sortInIndex",
+		a10.name AS "area.name",
+		b.customer_name AS "bUser.customerName",
+		b.customer_id AS "bUser.customerId",
+		b.account_id AS "bUser.accountId",
+		c.name AS "cUser.name",
+		cl.name AS "clUser.name",
+		ag.customer_name AS "aUser.customerName",
+		ag.customer_id AS "aUser.customerId",
+		ag.account_id AS "aUser.accountId",
+		pfcf.car_model AS "pfcf.carModel",
+		pfcf.degrees_depreciation AS "pfcf.degreesDepreciation",
+		pfcf.car_price AS "pfcf.carPrice",
+		a.credit_id As "creditId"
+		
+	</sql>
+	
+	<sql id="projectBaseInfoJoins">
+		LEFT JOIN sys_area a10 ON a10.id =  a.area_id
+		LEFT JOIN customer_account ca1 ON  ca1.account_id=a.borrowers_user
+		LEFT JOIN customer_base b ON b.account_id=ca1.account_id
+		
+		LEFT JOIN customer_account ca2 ON  ca2.account_id=a.agent_user
+		LEFT JOIN customer_base ag ON ag.account_id=ca2.account_id
+		
+		LEFT JOIN sys_user c ON c.id=a.create_user_id
+		LEFT JOIN sys_user cl ON cl.id=a.close_user_id
+		
+		LEFT JOIN project_factor_car_flow pfcf ON pfcf.project_id=a.project_id
+		
+	</sql>
+    
+	<select id="get" resultType="ProjectBaseInfo">
+		SELECT 
+		<include refid="projectBaseInfoColumns"/>
+		FROM project_base a
+		<include refid="projectBaseInfoJoins"/>
+		WHERE a.project_id = #{id}
+	</select>
+
+
+	
+	<select id="raisingCount" resultType="java.lang.Integer">
+		SELECT 
+		count(1)
+		FROM project_base a
+		WHERE a.credit_id = #{creditId} AND a.project_status in ('2','3','4')
+	</select>
+
+	<select id="getAboutFiles" resultType="map">
+		select a.business_license as "1", a.trading_contract as "2",a.loan_contract as "3",a.central_bank_registration_information as "4",a.field_trip_photos as "5",a.invoice as "6",a.logistics_sign_receipts as "7",a.public_document as "8" from
+				credit_base_info a JOIN project_base pb ON a.id=pb.credit_id where pb.project_id=#{projectId}
+	</select>
+
+	
+	
+	<select id="findProjectOperationList"  resultType="map">
+		select a.project_id as projectId,a.project_name as projectName,a.publish_dt AS publishDt,a.bidding_deadline AS biddingDeadline,a.finance_money AS financeMoney,a.project_status as projectStatus,
+			ifnull(b.end_finance_money,0) as hasFinancedMoney,ifnull(sum(c.principal),0) as hasRepaiedPrincipal,ifnull(sum(c.interest),0) as hasRepaiedInterest
+			from project_base a
+			left join (select project_id,end_finance_money from project_execute_snapshot where transfer_project_id = 0) b on b.project_id = a.project_id
+			left join (select project_id,principal,interest from project_repayment_split_record where `status` = '1') c on c.project_id = a.project_id
+			where (a.project_status = '4' or a.project_status = '5' or a.project_status = '6')
+		<if test="projectName != null and projectName != ''">
+					AND a.project_name like concat('%',#{projectName},'%')
+		</if>
+		<if test="beginDt != null  and beginDt != ''">
+					AND a.bidding_deadline >= #{beginDt}
+		</if>
+		<if test="endDt != null and endDt != ''">
+					AND  #{endDt}>= a.bidding_deadline
+		</if>
+			group by a.project_id
+	</select>
+	
+	<select id="findList" resultType="ProjectBaseInfo">
+		SELECT 
+		<include refid="projectBaseInfoColumns"/>
+		FROM project_base a
+		<include refid="projectBaseInfoJoins"/>
+		<where>
+			
+			<if test="isNewUser != null and isNewUser != ''">
+				AND a.is_new_user = #{isNewUser}
+			</if>
+			<if test="isRecommend != null and isRecommend != ''">
+				AND a.is_recommend = #{isRecommend}
+			</if>
+			<if test="canUseRateTicket != null and canUseRateTicket != ''">
+				AND a.can_use_rate_ticket = #{canUseRateTicket}
+			</if>
+			<if test="projectTypeCode != null and projectTypeCode != ''">
+				AND a.project_type_code = #{projectTypeCode}
+			</if>
+			<if test="durationType != null and durationType != ''">
+				AND a.duration_type = #{durationType}
+			</if>
+			<if test="projectName != null and projectName != ''">
+				AND a.project_name LIKE 
+				<if test="dbName == 'oracle'">'%'||#{projectName}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{projectName}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{projectName},'%')</if>
+			</if>
+			<if test="repaymentMode != null and repaymentMode != ''">
+				AND a.repayment_mode = #{repaymentMode}
+			</if>
+			<if test="beginPlannedRepaymentDate != null  and beginPlannedRepaymentDate != ''">
+				AND a.planned_repayment_date >= #{beginPlannedRepaymentDate}
+			</if>
+			<if test="endPlannedRepaymentDate != null and endPlannedRepaymentDate != ''">
+				AND #{endPlannedRepaymentDate} >= a.planned_repayment_date
+			</if>
+			<if test="beginPublishDt != null  and beginPublishDt != ''">
+				AND a.publish_dt >= #{beginPublishDt}
+			</if>
+			<if test="endPublishDt != null and endPublishDt != ''">
+				AND #{endPublishDt} >= a.publish_dt
+			</if>
+			<if test="projectStatus != null and projectStatus != ''">
+				AND a.project_status = #{projectStatus}
+			</if>
+			<if test="projectStatus != null and projectStatus != ''">
+				AND a.project_status = #{projectStatus}
+			</if>
+			<if test="borrowersUserId != null and borrowersUserId != ''">
+				AND ( a.agent_user= #{borrowersUserId}
+					OR 
+					 a.borrowers_user= #{borrowersUserId}
+					)	
+			</if>
+			<if test="creditId != null and creditId != ''">
+				AND a.credit_id = #{creditId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			    ORDER BY a.create_dt desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findSortedList" resultType="ProjectBaseInfo">
+		SELECT 
+		<include refid="projectBaseInfoColumns"/>
+		FROM project_base a
+		<include refid="projectBaseInfoJoins"/>
+		<where>
+			
+			<if test="isNewUser != null and isNewUser != ''">
+				AND a.is_new_user = #{isNewUser}
+			</if>
+			<if test="isRecommend != null and isRecommend != ''">
+				AND a.is_recommend = #{isRecommend}
+			</if>
+			<if test="canUseRateTicket != null and canUseRateTicket != ''">
+				AND a.can_use_rate_ticket = #{canUseRateTicket}
+			</if>
+			<if test="projectTypeCode != null and projectTypeCode != ''">
+				AND a.project_type_code = #{projectTypeCode}
+			</if>
+			<if test="durationType != null and durationType != ''">
+				AND a.duration_type = #{durationType}
+			</if>
+			<if test="projectName != null and projectName != ''">
+				AND a.project_name LIKE 
+				<if test="dbName == 'oracle'">'%'||#{projectName}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{projectName}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{projectName},'%')</if>
+			</if>
+			<if test="repaymentMode != null and repaymentMode != ''">
+				AND a.repayment_mode = #{repaymentMode}
+			</if>
+			<if test="beginPlannedRepaymentDate != null  and beginPlannedRepaymentDate != ''">
+				AND a.planned_repayment_date >= #{beginPlannedRepaymentDate}
+			</if>
+			<if test="endPlannedRepaymentDate != null and endPlannedRepaymentDate != ''">
+				AND #{endPlannedRepaymentDate} >= a.planned_repayment_date
+			</if>
+			<if test="projectStatus != null and projectStatus != ''">
+				AND a.project_status = #{projectStatus}
+			</if>
+			<if test="projectStatus != null and projectStatus != ''">
+				AND a.project_status = #{projectStatus}
+			</if>
+			<if test="borrowersUserId != null and borrowersUserId != ''">
+				AND ( a.agent_user= #{borrowersUserId}
+					OR 
+					 a.borrowers_user= #{borrowersUserId}
+					)	
+			</if>
+			and (a.project_status='2' or a.project_status='3')
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.sort_in_list,a.project_id desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<select id="findAlreadyLoanList" resultType="map">
+		SELECT 
+		<include refid="projectBaseInfoColumns"/>,count(pir.id) as touzirenshu,ifnull(pes.end_finance_money,0) as endFinanceMoney
+		FROM project_base a
+		<include refid="projectBaseInfoJoins"/>
+		LEFT JOIN project_investment_record pir ON  pir.project_id=a.project_id
+		LEFT JOIN project_execute_snapshot pes ON  pes.project_id=a.project_id
+		<where>
+			<if test="pbi != null">
+				<if test="pbi.isNewUser != null and pbi.isNewUser != ''">
+					AND a.is_new_user = #{pbi.isNewUser}
+				</if>
+				<if test="pbi.isRecommend != null and pbi.isRecommend != ''">
+					AND a.is_recommend = #{pbi.isRecommend}
+				</if>
+				<if test="pbi.canUseRateTicket != null and pbi.canUseRateTicket != ''">
+					AND a.can_use_rate_ticket = #{pbi.canUseRateTicket}
+				</if>
+				<if test="pbi.projectTypeCode != null and pbi.projectTypeCode != ''">
+					AND a.project_type_code = #{pbi.projectTypeCode}
+				</if>
+				<if test="durationType != null and durationType != ''">
+					AND a.duration_type = #{durationType}
+				</if>
+				<if test="pbi.projectName != null and pbi.projectName != ''">
+					AND a.project_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{pbi.projectName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{pbi.projectName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{pbi.projectName},'%')</if>
+				</if>
+				<if test="pbi.repaymentMode != null and pbi.repaymentMode != ''">
+					AND a.repayment_mode = #{pbi.repaymentMode}
+				</if>
+				<if test="pbi.beginPlannedRepaymentDate != null  and pbi.beginPlannedRepaymentDate != ''">
+					AND a.planned_repayment_date >= #{pbi.beginPlannedRepaymentDate}
+				</if>
+				<if test="pbi.endPlannedRepaymentDate != null and pbi.endPlannedRepaymentDate != ''">
+					AND #{pbi.endPlannedRepaymentDate} >= a.planned_repayment_date
+				</if>
+				<if test="pbi.beginPublishDt != null  and pbi.beginPublishDt != ''">
+					AND a.publish_dt >= #{pbi.beginPublishDt}
+				</if>
+				<if test="pbi.endPublishDt != null and pbi.endPublishDt != ''">
+					AND #{pbi.endPublishDt} >= a.publish_dt
+				</if>
+				
+					AND a.project_status in (5,6,7)
+				
+				<if test="pbi.borrowersUserId != null and pbi.borrowersUserId != ''">
+					AND ( a.agent_user= #{pbi.borrowersUserId}
+						OR 
+						 a.borrowers_user= #{pbi.borrowersUserId}
+						)	
+				</if>
+				
+				
+				<if test="pbi.creditId != null  and pbi.creditId != ''">
+					AND a.credit_id = #{pbi.creditId}
+				</if>
+				
+				group by a.project_id
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			    ORDER BY a.create_dt desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<select id="getRecommendList" resultType="ProjectBaseInfo">
+        SELECT 
+		<include refid="projectBaseInfoColumns"/>
+            ,pes.finance_money as "pes.financeMoney"
+            ,pes.end_finance_money as "pes.endFinanceMoney"
+        FROM project_base a
+		<include refid="projectBaseInfoJoins"/>
+        left join project_execute_snapshot pes on pes.project_id = a.project_id and pes.transfer_project_id = 0
+		<where>
+            a.is_recommend = 1 and (a.project_status='3' or a.project_status='4' or a.project_status='5' or a.project_status='6')
+            order by a.sort_in_index limit #{limit}
+		</where>
+	</select>
+    
+	<select id="getApiRecommendList" resultType="ProjectBaseInfo">
+        SELECT 
+		<include refid="projectBaseInfoColumns"/>
+            ,pes.finance_money as "pes.financeMoney"
+            ,pes.end_finance_money as "pes.endFinanceMoney"
+        FROM project_base a
+		<include refid="projectBaseInfoJoins"/>
+        left join project_execute_snapshot pes on pes.project_id = a.project_id and pes.transfer_project_id = 0
+		<where>
+            a.is_recommend = 1 and a.project_status='3'
+			order by a.sort_in_index limit #{limit}
+		</where>
+	</select>
+	
+	<select id="findRecommendProjectList" resultType="ProjectBaseInfo">
+		SELECT 
+		<include refid="projectBaseInfoColumns"/>
+		FROM project_base a
+		<include refid="projectBaseInfoJoins"/>
+		<where>
+			a.is_recommend = 1 AND (a.project_status='3' or a.project_status='4' or a.project_status='5') order by a.publish_dt desc limit 6
+		</where>
+	</select>
+	
+	<select id="searchList" resultType="ProjectBaseInfo">
+		SELECT 
+		<include refid="projectBaseInfoColumns"/>
+			,d.finance_money AS "pes.financeMoney"
+			,d.end_finance_money AS "pes.endFinanceMoney"
+		FROM project_base a
+		<include refid="projectBaseInfoJoins"/>
+		LEFT JOIN project_execute_snapshot d ON d.project_id=a.project_id and d.transfer_project_id=0
+		<where>
+			<choose>
+				<when test="status == '1'.toString()">
+					AND a.project_status='3'
+				</when>
+				<when test="status == '2'.toString()">
+					AND a.project_status='4'
+				</when>
+				<when test="status == '3'.toString()">
+					AND a.project_status='5'
+				</when>
+				<when test="status == '4'.toString()">
+					AND (a.project_status='6' or a.project_status='7') 
+				</when>
+				<otherwise>
+					AND (a.project_status='3' or a.project_status='4' or a.project_status='5' or a.project_status='6' or a.project_status='7')
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="duration == '1'.toString()">
+					AND a.project_duration &lt;= 3
+				</when>
+				<when test="duration == '2'.toString()">
+					AND a.project_duration &gt; 3 and a.project_duration &lt;= 6
+				</when>
+				<when test="duration == '3'.toString()">
+					AND a.project_duration &gt; 6 and a.project_duration &lt;= 9
+				</when>
+				<when test="duration == '4'.toString()">
+					AND a.project_duration &gt; 9 and a.project_duration &lt;= 12
+				</when>
+				<when test="duration == '5'.toString()">
+					AND a.project_duration &gt; 12 and a.project_duration &lt;= 15
+				</when>
+				<when test="duration == '6'.toString()">
+					AND a.project_duration &gt; 15
+				</when>
+			</choose>
+			<choose>
+				<when test="rate == '1'.toString()">
+					AND a.annualized_rate &lt;= 0.09
+				</when>
+				<when test="rate == '2'.toString()">
+					AND a.annualized_rate &gt; 0.09 AND a.annualized_rate &lt;= 0.1
+				</when>
+				<when test="rate == '3'.toString()">
+					AND a.annualized_rate &gt; 0.1 AND a.annualized_rate &lt;= 0.11
+				</when>
+				<when test="rate == '4'.toString()">
+					AND a.annualized_rate &gt; 0.11 AND a.annualized_rate &lt;= 0.12
+				</when>
+				<when test="rate == '5'.toString()">
+					AND a.annualized_rate &gt; 0.12
+				</when>
+			</choose>
+			<choose>
+				<when test="repaymentMode == '1'.toString()">
+					AND a.repayment_mode='1'
+				</when>
+				<when test="repaymentMode == '2'.toString()">
+					AND a.repayment_mode='2'
+				</when>
+				<when test="repaymentMode == '3'.toString()">
+					AND a.repayment_mode='3'
+				</when>
+			</choose>
+			<choose>
+				<when test="projectType == '1'.toString()">
+					AND a.project_type_code='3'
+				</when>
+				<when test="projectType == '2'.toString()">
+					AND a.project_type_code='1'
+				</when>
+				<when test="projectType == '3'.toString()">
+					AND a.project_type_code='2'
+				</when>
+				<when test="projectType == '4'.toString()">
+					AND a.project_type_code='4'
+				</when>
+				<when test="projectType == '5'.toString()">
+					AND a.project_type_code='5'
+				</when>
+				<when test="projectType == '6'.toString()">
+					AND a.project_type_code='6'
+				</when>
+			</choose>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.sort_in_list,a.project_id desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<select id="searchPageList" resultType="ProjectBaseInfo">
+		SELECT 
+		<include refid="projectBaseInfoColumns"/>
+			,d.finance_money AS "pes.financeMoney"
+			,d.end_finance_money AS "pes.endFinanceMoney"
+		FROM project_base a
+		<include refid="projectBaseInfoJoins"/>
+		LEFT JOIN project_execute_snapshot d ON d.project_id=a.project_id and d.transfer_project_id=0
+		<where>
+			<choose>
+				<when test="status == '1'.toString()">
+					AND a.project_status='3'
+				</when>
+				<when test="status == '2'.toString()">
+					AND a.project_status='4'
+				</when>
+				<when test="status == '3'.toString()">
+					AND a.project_status='5'
+				</when>
+				<when test="status == '4'.toString()">
+					AND (a.project_status='6' or a.project_status='7')
+				</when>
+				<otherwise>
+					AND (a.project_status='3' or a.project_status='4' or a.project_status='5' or a.project_status='6' or a.project_status='7')
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="duration == '1'.toString()">
+					AND a.project_duration &lt;= 3
+				</when>
+				<when test="duration == '2'.toString()">
+					AND a.project_duration &gt; 3 and a.project_duration &lt;= 6
+				</when>
+				<when test="duration == '3'.toString()">
+					AND a.project_duration &gt; 6 and a.project_duration &lt;= 9
+				</when>
+				<when test="duration == '4'.toString()">
+					AND a.project_duration &gt; 9 and a.project_duration &lt;= 12
+				</when>
+				<when test="duration == '5'.toString()">
+					AND a.project_duration &gt; 12 and a.project_duration &lt;= 15
+				</when>
+				<when test="duration == '6'.toString()">
+					AND a.project_duration &gt; 15
+				</when>
+			</choose>
+			<choose>
+				<when test="rate == '1'.toString()">
+					AND a.annualized_rate &lt;= 0.09
+				</when>
+				<when test="rate == '2'.toString()">
+					AND a.annualized_rate &gt; 0.09 AND a.annualized_rate &lt;= 0.1
+				</when>
+				<when test="rate == '3'.toString()">
+					AND a.annualized_rate &gt; 0.1 AND a.annualized_rate &lt;= 0.11
+				</when>
+				<when test="rate == '4'.toString()">
+					AND a.annualized_rate &gt; 0.11 AND a.annualized_rate &lt;= 0.12
+				</when>
+				<when test="rate == '5'.toString()">
+					AND a.annualized_rate &gt; 0.12
+				</when>
+			</choose>
+			<choose>
+				<when test="repaymentMode == '1'.toString()">
+					AND a.repayment_mode='1'
+				</when>
+				<when test="repaymentMode == '2'.toString()">
+					AND a.repayment_mode='2'
+				</when>
+				<when test="repaymentMode == '3'.toString()">
+					AND a.repayment_mode='3'
+				</when>
+			</choose>
+			<choose>
+				<when test="projectType == '1'.toString()">
+					AND a.project_type_code='3'
+				</when>
+				<when test="projectType == '2'.toString()">
+					AND a.project_type_code='1'
+				</when>
+				<when test="projectType == '3'.toString()">
+					AND a.project_type_code='2'
+				</when>
+				<when test="projectType == '4'.toString()">
+					AND a.project_type_code='4'
+				</when>
+				<when test="projectType == '5'.toString()">
+					AND a.project_type_code='5'
+				</when>
+				<when test="projectType == '6'.toString()">
+					AND a.project_type_code='6'
+				</when>
+			</choose>
+		</where>
+		ORDER BY a.sort_in_list,a.project_id desc
+		limit #{startNumber},#{endNumber}
+	</select>
+	
+	<select id="findCreateList" resultType="ProjectBaseInfo">
+		SELECT 
+		<include refid="projectBaseInfoColumns"/>
+		FROM project_base a
+		<include refid="projectBaseInfoJoins"/>
+		<where>
+			
+			<if test="isNewUser != null and isNewUser != ''">
+				AND a.is_new_user = #{isNewUser}
+			</if>
+			<if test="isRecommend != null and isRecommend != ''">
+				AND a.is_recommend = #{isRecommend}
+			</if>
+			<if test="canUseRateTicket != null and canUseRateTicket != ''">
+				AND a.can_use_rate_ticket = #{canUseRateTicket}
+			</if>
+			<if test="projectTypeCode != null and projectTypeCode != ''">
+				AND a.project_type_code = #{projectTypeCode}
+			</if>
+			<if test="durationType != null and durationType != ''">
+				AND a.duration_type = #{durationType}
+			</if>
+			<if test="projectName != null and projectName != ''">
+				AND a.project_name LIKE 
+				<if test="dbName == 'oracle'">'%'||#{projectName}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{projectName}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{projectName},'%')</if>
+			</if>
+			<if test="repaymentMode != null and repaymentMode != ''">
+				AND a.repayment_mode = #{repaymentMode}
+			</if>
+			<if test="beginPlannedRepaymentDate != null  and beginPlannedRepaymentDate != ''">
+				AND a.planned_repayment_date >= #{beginPlannedRepaymentDate}
+			</if>
+			<if test="endPlannedRepaymentDate != null and endPlannedRepaymentDate != ''">
+				AND #{endPlannedRepaymentDate} >= a.planned_repayment_date
+			</if>
+			<if test="projectStatus != null and projectStatus != ''">
+				AND a.project_status = #{projectStatus}
+			</if>
+			<if test="projectStatus != null and projectStatus != ''">
+				AND a.project_status = #{projectStatus}
+			</if>
+			<if test="createUserId != null and createUserId != ''">
+				AND a.create_user_id= #{createUserId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			  ORDER BY a.create_dt desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ProjectBaseInfo">
+		SELECT 
+		<include refid="projectBaseInfoColumns"/>
+		FROM project_base a
+		<include refid="projectBaseInfoJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findIsNewUserList" resultType="ProjectBaseInfo">
+		SELECT 
+		<include refid="projectBaseInfoColumns"/>
+			,d.finance_money AS "pes.financeMoney"
+			,d.end_finance_money AS "pes.endFinanceMoney"
+		FROM project_base a
+		<include refid="projectBaseInfoJoins"/>
+		LEFT JOIN project_execute_snapshot d ON d.project_id=a.project_id and d.transfer_project_id=0
+		<where>
+			a.is_new_user = #{isNewUser} and (a.project_status='3' or a.project_status='4' or a.project_status='5' or a.project_status='6' or a.project_status='7') 
+			ORDER BY a.sort_in_list,a.project_id desc
+			limit 12
+		</where>
+	</select>
+	
+	<select id="checkDuplicate" resultType="java.lang.Integer">
+		SELECT 
+			count(1) 
+		FROM project_base a
+		<where>
+			<if test="projectId != null and projectId != ''">
+				AND  a.project_id!= #{projectId}
+			</if>
+			<if test="projectCode != null and projectCode != ''">
+				AND  a.project_code= #{projectCode}
+			</if>
+			<if test="projectName != null and projectName != ''">
+				AND  a.project_name= #{projectName}
+			</if>
+			
+		</where>		
+		
+	</select>
+	
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="projectId" >
+		INSERT INTO project_base(
+			project_code,
+			is_new_user,
+			is_recommend,
+			can_use_rate_ticket,
+			project_type_code,
+			project_name,
+			project_tips,
+			project_introduce,
+			repayment_mode,
+			borrowers_user,
+			agent_user,
+			area_id,
+			annualized_rate,
+			is_increase_interest,
+			increase_interest_rate,
+			duration_type,
+			project_duration,
+			service_charge,
+			service_charge_type_code,
+			starting_amount,
+			max_amount,
+			about_files,
+			safeguard_mode,
+			month_repay_money,
+			early_repayment_rate,
+			use_method,
+			finance_money,
+			repayment_money,
+			credit_extension_money,
+			planned_repayment_date,
+			actual_repayment_date,
+			last_repayment_date,
+			bidding_deadline,
+			transfer_code,
+			create_dt,
+			create_user_id,
+			review_dt,
+			review_user_id,
+			publish_dt,
+			close_dt,
+			close_user_id,
+			project_status,
+			is_del,
+			risk_info,
+			is_auto_repay,
+			auto_repay_code,
+			apply_src_id,
+			is_loan,
+			loan_dt,
+			credit_id
+		) VALUES (
+			#{projectCode},
+			#{isNewUser},
+			#{isRecommend},
+			#{canUseRateTicket},
+			#{projectTypeCode},
+			#{projectName},
+			#{projectTips},
+			#{projectIntroduce},
+			#{repaymentMode},
+			#{borrowersUser},
+			#{agentUser},
+			#{area.id},
+			#{annualizedRate},
+			#{isIncreaseInterest},
+			#{increaseInterestRate},
+			#{durationType},
+			#{projectDuration},
+			#{serviceCharge},
+			#{serviceChargeTypeCode},
+			#{startingAmount},
+			#{maxAmount},
+			#{aboutFiles},
+			#{safeguardMode},
+			#{monthRepayMoney},
+			#{earlyRepaymentRate},
+			#{useMethod},
+			#{financeMoney},
+			#{repaymentMoney},
+			#{creditExtensionMoney},
+			#{plannedRepaymentDate},
+			#{actualRepaymentDate},
+			#{lastRepaymentDate},
+			#{biddingDeadline},
+			#{transferCode},
+			#{createDt},
+			#{createUserId},
+			#{reviewDt},
+			#{reviewUserId},
+			#{publishDt},
+			#{closeDt},
+			#{closeUserId},
+			#{projectStatus},
+			#{isDel},
+			#{riskInfo},
+			#{isAutoRepay},
+			#{autoRepayCode},
+			#{applySrcId},
+			#{isLoan},
+			#{loanDt},
+			#{creditId}
+		)
+	</insert>
+	
+	<update id="copy" useGeneratedKeys="true" keyProperty="projectId">
+		INSERT INTO project_base(
+			project_code,
+			is_new_user,
+			is_recommend,
+			can_use_rate_ticket,
+			project_type_code,
+			project_name,
+			project_tips,
+			project_introduce,
+			repayment_mode,
+			borrowers_user,
+			agent_user,
+			area_id,
+			annualized_rate,
+			is_increase_interest,
+			increase_interest_rate,
+			duration_type,
+			project_duration,
+			service_charge,
+			service_charge_type_code,
+			starting_amount,
+			max_amount,
+			about_files,
+			safeguard_mode,
+			month_repay_money,
+			early_repayment_rate,
+			use_method,
+			finance_money,
+			repayment_money,
+			credit_extension_money,
+			actual_repayment_date,
+			last_repayment_date,
+			transfer_code,
+			create_dt,
+			create_user_id,
+			publish_dt,
+			project_status,
+			risk_info,
+			apply_src_id,
+			is_loan
+		) SELECT 
+            project_code,
+			is_new_user,
+			is_recommend,
+			can_use_rate_ticket,
+			project_type_code,
+			#{projectName},
+			project_tips,
+			project_introduce,
+			repayment_mode,
+			borrowers_user,
+			agent_user,
+			area_id,
+			annualized_rate,
+			is_increase_interest,
+			increase_interest_rate,
+			duration_type,
+			project_duration,
+			service_charge,
+			service_charge_type_code,
+			starting_amount,
+			max_amount,
+			about_files,
+			safeguard_mode,
+			month_repay_money,
+			early_repayment_rate,
+			use_method,
+			finance_money,
+			repayment_money,
+			credit_extension_money,
+			actual_repayment_date,
+			last_repayment_date,
+			transfer_code,
+			#{createDt},
+			create_user_id,
+			#{publishDt},
+			#{projectStatus},
+			risk_info,
+			apply_src_id,
+			#{isLoan}
+		from project_base  
+		WHERE project_id = #{projectId}
+	</update>
+	
+	<update id="update">
+		UPDATE project_base SET 	
+			project_code = #{projectCode},
+			is_new_user = #{isNewUser},
+			is_recommend=#{isRecommend},
+			can_use_rate_ticket=#{canUseRateTicket},
+			project_type_code = #{projectTypeCode},
+			project_name = #{projectName},
+			project_tips = #{projectTips},
+			project_introduce = #{projectIntroduce},
+			repayment_mode = #{repaymentMode},
+			borrowers_user = #{borrowersUser},
+			agent_user = #{agentUser},
+			area_id = #{area.id},
+			annualized_rate = #{annualizedRate},
+			is_increase_interest = #{isIncreaseInterest},
+			increase_interest_rate = #{increaseInterestRate},
+			duration_type=#{durationType},
+			project_duration=#{projectDuration},
+			service_charge=#{serviceCharge},
+			service_charge_type_code=#{serviceChargeTypeCode},
+			starting_amount=#{startingAmount},
+			max_amount=#{maxAmount},
+			about_files=#{aboutFiles},
+			safeguard_mode=#{safeguardMode},
+			month_repay_money=#{monthRepayMoney},
+			early_repayment_rate=#{earlyRepaymentRate},
+			use_method = #{useMethod},
+			finance_money = #{financeMoney},
+			repayment_money=#{repaymentMoney},
+			credit_extension_money = #{creditExtensionMoney},
+			planned_repayment_date = #{plannedRepaymentDate},
+			actual_repayment_date = #{actualRepaymentDate},
+			last_repayment_date=#{lastRepaymentDate},
+			bidding_deadline = #{biddingDeadline},
+			transfer_code = #{transferCode},
+			create_dt = #{createDt},
+			create_user_id = #{createUserId},
+			review_dt = #{reviewDt},
+			review_user_id = #{reviewUserId},
+			publish_dt = #{publishDt},
+			close_dt = #{closeDt},
+			close_user_id = #{closeUserId},
+			project_status = #{projectStatus},
+			is_del = #{isDel},
+			review_remark=#{reviewRemark},
+			risk_info=#{riskInfo},
+			is_auto_repay=#{isAutoRepay},
+			auto_repay_code=#{autoRepayCode},
+			is_loan=#{isLoan},
+			loan_dt=#{loanDt},
+			sort_in_list = #{sortInList},
+			sort_in_index = #{sortInIndex},
+			credit_id = #{creditId}
+		WHERE project_id = #{projectId}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM project_base
+		WHERE project_id = #{id}
+	</update>
+	
+	<update id="submit">
+		update  project_base set project_status='2'
+		WHERE project_id = #{id}
+	</update>
+	
+	<sql id="projectMixBorrowerColumns">
+		a.project_id AS "projectId",
+		a.project_code AS "projectCode",
+		a.is_new_user AS "isNewUser",
+		a.is_recommend AS "isRecommend",
+		a.can_use_rate_ticket AS "canUseRateTicket",
+		a.repayment_mode AS "repaymentMode",
+		a.is_auto_repay AS "isAutoRepay",
+		a.service_charge AS "serviceCharge",
+		a.project_type_code AS "projectTypeCode",
+		a.project_name AS "projectName",
+		a.project_tips AS "projectTips",
+		a.duration_type AS "durationType",
+		a.project_duration AS "projectDuration",
+		a.borrowers_user AS "borrowersUser",
+		a.agent_user AS "agentUser",
+		a.starting_amount AS "startingAmount",
+		a.repayment_money AS "repaymentMoney",
+		a.about_files AS "aboutFiles",
+		a.max_amount AS "maxAmount",
+		a.safeguard_mode AS "safeguardMode",
+		a.month_repay_money AS "monthRepayMoney",
+		a.early_repayment_rate AS "earlyRepaymentRate",
+		a.annualized_rate AS "annualizedRate",
+		a.finance_money AS "financeMoney",
+		a.publish_dt AS "publishDt",
+		a.is_loan AS "isLoan",
+		a.loan_dt AS "loanDt",
+		a.project_status AS "projectStatus",
+		b.customer_name AS "bUser.customerName",
+		ag.customer_name AS "aUser.customerName",
+		pes.sum_service_charge AS "pes.sumServiceCharge",
+		pes.end_finance_money AS "pes.endFinanceMoney",
+		pes.end_repay_money AS "pes.endRepayMoney"
+	</sql>
+	<sql id="projectMixBorrowerJoins">
+		LEFT JOIN customer_account ca1 ON  ca1.account_id=a.borrowers_user
+		LEFT JOIN customer_base b ON b.account_id=ca1.account_id
+		
+		LEFT JOIN customer_account ca2 ON  ca2.account_id=a.agent_user
+		LEFT JOIN customer_base ag ON ag.account_id=ca2.account_id
+	
+		LEFT JOIN project_execute_snapshot pes ON pes.project_id=a.project_id and pes.transfer_project_id = 0
+	</sql>
+	<select id="findCustomerAsBorrowerProjectList" resultType="ProjectBaseInfo">
+		SELECT 
+		<include refid="projectMixBorrowerColumns"/>
+		FROM project_base a
+		<include refid="projectMixBorrowerJoins"/>
+		<where>
+			
+			<if test="isNewUser != null and isNewUser != ''">
+				AND a.is_new_user = #{isNewUser}
+			</if>
+			<if test="isRecommend != null and isRecommend != ''">
+				AND a.is_recommend = #{isRecommend}
+			</if>
+			<if test="canUseRateTicket != null and canUseRateTicket != ''">
+				AND a.can_use_rate_ticket = #{canUseRateTicket}
+			</if>
+			<if test="projectTypeCode != null and projectTypeCode != ''">
+				AND a.project_type_code = #{projectTypeCode}
+			</if>
+			<if test="durationType != null and durationType != ''">
+				AND a.duration_type = #{durationType}
+			</if>
+			<if test="projectName != null and projectName != ''">
+				AND a.project_name LIKE 
+				<if test="dbName == 'oracle'">'%'||#{projectName}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{projectName}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{projectName},'%')</if>
+			</if>
+			<if test="repaymentMode != null and repaymentMode != ''">
+				AND a.repayment_mode = #{repaymentMode}
+			</if>
+			<if test="beginPlannedRepaymentDate != null  and beginPlannedRepaymentDate != ''">
+				AND a.planned_repayment_date >= #{beginPlannedRepaymentDate}
+			</if>
+			<if test="endPlannedRepaymentDate != null and endPlannedRepaymentDate != ''">
+				AND #{endPlannedRepaymentDate} >= a.planned_repayment_date
+			</if>
+			<if test="projectStatus != null and projectStatus != ''">
+				AND a.project_status = #{projectStatus}
+			</if>
+			<if test="customerAccountId != null and customerAccountId != ''">
+				AND ( a.agent_user= #{customerAccountId}
+					OR 
+					 a.borrowers_user= #{customerAccountId}
+					)	
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.project_id desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findLoanList" resultType="ProjectBaseInfo">
+		SELECT 
+		<include refid="projectMixBorrowerColumns"/>
+		FROM project_base a
+		<include refid="projectMixBorrowerJoins"/>
+		<where>
+			<if test="isNewUser != null and isNewUser != ''">
+				AND a.is_new_user = #{isNewUser}
+			</if>
+			<if test="isRecommend != null and isRecommend != ''">
+				AND a.is_recommend = #{isRecommend}
+			</if>
+			<if test="canUseRateTicket != null and canUseRateTicket != ''">
+				AND a.can_use_rate_ticket = #{canUseRateTicket}
+			</if>
+			<if test="projectTypeCode != null and projectTypeCode != ''">
+				AND a.project_type_code = #{projectTypeCode}
+			</if>
+			<if test="durationType != null and durationType != ''">
+				AND a.duration_type = #{durationType}
+			</if>
+			<if test="projectName != null and projectName != ''">
+				AND a.project_name LIKE 
+				<if test="dbName == 'oracle'">'%'||#{projectName}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{projectName}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{projectName},'%')</if>
+			</if>
+			<if test="repaymentMode != null and repaymentMode != ''">
+				AND a.repayment_mode = #{repaymentMode}
+			</if>
+			<if test="beginPlannedRepaymentDate != null  and beginPlannedRepaymentDate != ''">
+				AND a.planned_repayment_date >= #{beginPlannedRepaymentDate}
+			</if>
+			<if test="endPlannedRepaymentDate != null and endPlannedRepaymentDate != ''">
+				AND #{endPlannedRepaymentDate} >= a.planned_repayment_date
+			</if>
+				AND a.project_status = 4
+			<if test="reviewUserId != null and reviewUserId != ''">
+				AND  a.review_user_id= #{reviewUserId}
+			</if>
+			<if test="isLoan != null and isLoan != ''">
+				AND  a.is_loan= #{isLoan}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			    ORDER BY a.is_loan,a.create_dt desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<sql id="projectMixInvestmentColumns">
+		a.project_id AS "projectId",
+		a.project_code AS "projectCode",
+		a.is_new_user AS "isNewUser",
+		a.is_recommend AS "isRecommend",
+		a.can_use_rate_ticket AS "canUseRateTicket",
+		a.duration_type AS "durationType",
+		a.project_duration AS "projectDuration",
+		a.project_type_code AS "projectTypeCode",
+		a.project_name AS "projectName",
+		a.project_tips AS "projectTips",
+		a.borrowers_user AS "borrowersUser",
+		a.starting_amount AS "startingAmount",
+		a.about_files AS "aboutFiles",
+		a.repayment_money AS "repaymentMoney",
+		a.safeguard_mode AS "safeguardMode",
+		a.max_amount AS "maxAmount",
+		a.month_repay_money AS "monthRepayMoney",
+		a.early_repayment_rate AS "earlyRepaymentRate",
+		a.agent_user AS "agentUser",
+		a.annualized_rate AS "annualizedRate",
+		a.finance_money AS "financeMoney",
+		a.publish_dt AS "publishDt",
+		a.project_status AS "projectStatus",
+		b.customer_name AS "bUser.customerName",
+		ag.customer_name AS "aUser.customerName",
+		pes.end_finance_money AS "pes.endFinanceMoney",
+		pes.end_repay_money AS "pes.endRepayMoney",
+		pir.amount AS "pir.amount",
+		pir.op_dt AS "pir.opDt"
+	</sql>
+	<sql id="projectMixInvestmentJoins">
+		LEFT JOIN customer_account ca1 ON  ca1.account_id=a.borrowers_user
+		LEFT JOIN customer_base b ON b.account_id=ca1.account_id
+		
+		LEFT JOIN customer_account ca2 ON  ca2.account_id=a.agent_user
+		LEFT JOIN customer_base ag ON ag.account_id=ca2.account_id
+	
+		LEFT JOIN project_execute_snapshot pes ON pes.project_id=a.project_id and pes.transfer_project_id = 0
+		
+		LEFT JOIN project_investment_record pir ON pir.project_id=a.project_id
+	</sql>
+	<select id="findCustomerAsInvestmentProjectList" resultType="ProjectBaseInfo">
+		SELECT 
+		<include refid="projectMixInvestmentColumns"/>
+		FROM project_base a
+		<include refid="projectMixInvestmentJoins"/>
+		<where>
+			
+			<if test="isNewUser != null and isNewUser != ''">
+				AND a.is_new_user = #{isNewUser}
+			</if>
+			<if test="isRecommend != null and isRecommend != ''">
+				AND a.is_recommend = #{isRecommend}
+			</if>
+			<if test="canUseRateTicket != null and canUseRateTicket != ''">
+				AND a.can_use_rate_ticket = #{canUseRateTicket}
+			</if>
+			<if test="projectTypeCode != null and projectTypeCode != ''">
+				AND a.project_type_code = #{projectTypeCode}
+			</if>
+			<if test="durationType != null and durationType != ''">
+				AND a.duration_type = #{durationType}
+			</if>
+			<if test="projectName != null and projectName != ''">
+				AND a.project_name LIKE 
+				<if test="dbName == 'oracle'">'%'||#{projectName}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{projectName}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{projectName},'%')</if>
+			</if>
+			<if test="repaymentMode != null and repaymentMode != ''">
+				AND a.repayment_mode = #{repaymentMode}
+			</if>
+			<if test="beginPlannedRepaymentDate != null  and beginPlannedRepaymentDate != ''">
+				AND a.planned_repayment_date >= #{beginPlannedRepaymentDate}
+			</if>
+			<if test="endPlannedRepaymentDate != null and endPlannedRepaymentDate != ''">
+				AND #{endPlannedRepaymentDate} >= a.planned_repayment_date
+			</if>
+			<if test="projectStatus != null and projectStatus != ''">
+				AND a.project_status = #{projectStatus}
+			</if>
+			<if test="customerAccountId != null and customerAccountId != ''">
+				AND pir.investment_user_id=#{customerAccountId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.project_id desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<sql id="projectMixTransferColumns">
+		a.project_id AS "projectId",
+		a.project_code AS "projectCode",
+		a.project_name AS "projectName",
+		a.project_tips AS "projectTips",
+		a.use_method AS "useMethod",
+		a.repayment_mode AS "repaymentMode",
+		a.borrowers_user AS "borrowersUser",
+		a.agent_user AS "agentUser",
+		a.can_use_rate_ticket AS "canUseRateTicket",
+		a.duration_type AS "durationType",
+		a.project_duration AS "projectDuration",
+		a.annualized_rate AS "annualizedRate",
+		a.finance_money AS "financeMoney",
+		a.repayment_money AS "repaymentMoney",
+		a.starting_amount AS "startingAmount",
+		a.about_files AS "aboutFiles",
+		a.max_amount AS "maxAmount",
+		a.safeguard_mode AS "safeguardMode",
+		a.month_repay_money AS "monthRepayMoney",
+		a.early_repayment_rate AS "earlyRepaymentRate",
+		a.planned_repayment_date AS "plannedRepaymentDate",
+		a.publish_dt AS "publishDt",
+		a.project_status AS "projectStatus",
+		b.customer_name AS "bUser.customerName",
+		ag.customer_name AS "aUser.customerName",
+		pes.end_finance_money AS "pes.endFinanceMoney",
+		pes.end_repay_money AS "pes.endRepayMoney",
+		pir.amount AS "pir.amount",
+		pir.op_dt AS "pir.opDt",
+		pti.transfer_project_id as "pti.transferProjectId",
+		pti.is_recommend as "pti.isRecommend",
+		pti.transfer_price AS "pti.tansferPrice",
+		pti.create_date AS "pti.createDate",
+		pti.status AS "pti.status",
+		trans.customer_name AS "pti.transferCustomer.customerName"
+	</sql>
+	<sql id="projectMixTransferJoins">
+		LEFT JOIN customer_account ca1 ON  ca1.account_id=a.borrowers_user
+		LEFT JOIN customer_base b ON b.account_id=ca1.account_id
+		
+		LEFT JOIN customer_account ca2 ON  ca2.account_id=a.agent_user
+		LEFT JOIN customer_base ag ON ag.account_id=ca2.account_id
+		
+		
+	
+		LEFT JOIN project_execute_snapshot pes ON pes.project_id=a.project_id and pes.transfer_project_id = 0
+		
+		LEFT JOIN project_investment_record pir ON pir.project_id=a.project_id
+		
+		LEFT JOIN project_transfer_info pti ON pti.project_id=a.project_id,
+		
+		customer_account ca3 ,
+		customer_base trans 
+	</sql>
+	<select id="findCustomerAsTransferProjectList" resultType="ProjectBaseInfo">
+		SELECT 
+		<include refid="projectMixTransferColumns"/>
+		FROM project_base a
+		<include refid="projectMixTransferJoins"/>
+		<where>
+			
+			<if test="isNewUser != null and isNewUser != ''">
+				AND a.is_new_user = #{isNewUser}
+			</if>
+			<if test="isRecommend != null and isRecommend != ''">
+				AND a.is_recommend = #{isRecommend}
+			</if>
+			<if test="canUseRateTicket != null and canUseRateTicket != ''">
+				AND a.can_use_rate_ticket = #{canUseRateTicket}
+			</if>
+			<if test="projectTypeCode != null and projectTypeCode != ''">
+				AND a.project_type_code = #{projectTypeCode}
+			</if>
+			<if test="durationType != null and durationType != ''">
+				AND a.duration_type = #{durationType}
+			</if>
+			<if test="projectName != null and projectName != ''">
+				AND a.project_name LIKE 
+				<if test="dbName == 'oracle'">'%'||#{projectName}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{projectName}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{projectName},'%')</if>
+			</if>
+			<if test="borrowersUserName != null and borrowersUserName != ''">
+				AND a.project_name LIKE 
+				<if test="dbName == 'oracle'">'%'||#{borrowersUserName}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{borrowersUserName}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{borrowersUserName},'%')</if>
+			</if>
+			
+			
+			<if test="repaymentMode != null and repaymentMode != ''">
+				AND a.repayment_mode = #{repaymentMode}
+			</if>
+			<if test="beginPlannedRepaymentDate != null  and beginPlannedRepaymentDate != ''">
+				AND a.planned_repayment_date >= #{beginPlannedRepaymentDate}
+			</if>
+			<if test="endPlannedRepaymentDate != null and endPlannedRepaymentDate != ''">
+				AND #{endPlannedRepaymentDate} >= a.planned_repayment_date
+			</if>
+			<if test="projectStatus != null and projectStatus != ''">
+				AND a.project_status = #{projectStatus}
+			</if>
+			<if test="customerAccountId != null and customerAccountId != ''">
+				AND pir.investment_user_id=#{customerAccountId}
+			</if>
+			<if test="transferName != null and transferName != ''">
+				AND trans.customer_name LIKE 
+				<if test="dbName == 'oracle'">'%'||#{transferName}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{transferName}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{transferName},'%')</if>
+			</if>
+			 AND ca3.account_id=pti.transferor
+			 AND trans.account_id=ca3.account_id
+			 AND pti.investment_record_id=pir.id
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.project_id desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findMyProjectList" resultType="ProjectBaseInfo">
+		SELECT 
+		<include refid="projectBaseInfoColumns"/>
+			,d.finance_money AS "pes.financeMoney"
+			,d.end_finance_money AS "pes.endFinanceMoney"
+			,d.status AS "pes.status"
+		FROM project_base a
+		<include refid="projectBaseInfoJoins"/>
+		LEFT JOIN project_execute_snapshot d ON d.project_id=a.project_id and d.transfer_project_id = 0
+		<where>
+			(a.borrowers_user=#{accountId} or a.agent_user=#{accountId})
+			<choose>
+				<when test="statusFlag == '0'.toString()">
+					AND (a.project_status='3' or a.project_status='4' or a.project_status='5')
+				</when>
+				<when test="statusFlag == '1'.toString()">
+					AND (a.project_status='6' or a.project_status='7')
+				</when>
+			</choose>
+		</where>
+	</select>
+	
+	<select id="findMyInvestmentList" resultType="ProjectBaseInfo">
+		SELECT  
+			a.project_id AS "projectId",
+			a.project_code AS "projectCode",
+			a.is_new_user AS "isNewUser",
+			a.is_recommend AS "isRecommend",
+			a.can_use_rate_ticket AS "canUseRateTicket",
+			a.project_type_code AS "projectTypeCode",
+			a.project_name AS "projectName",
+		    a.project_tips AS "projectTips",
+			a.project_introduce AS "projectIntroduce",
+			a.repayment_mode AS "repaymentMode",
+			a.borrowers_user AS "borrowersUser",
+			a.agent_user AS "agentUser",
+			a.area_id AS "area.id",
+			a.service_charge AS "serviceCharge",
+			a.service_charge_type_code AS "serviceChargeTypeCode",
+			a.duration_type AS "durationType",
+			a.project_duration AS "projectDuration",
+			a.annualized_rate AS "annualizedRate",
+			a.is_increase_interest AS "isIncreaseInterest",
+			a.increase_interest_rate AS "increaseInterestRate",
+			a.use_method AS "useMethod",
+			a.finance_money AS "financeMoney",
+			a.repayment_money AS "repaymentMoney",		
+			a.starting_amount AS "startingAmount",
+			a.max_amount AS "maxAmount",
+			a.about_files AS "aboutFiles",
+			a.safeguard_mode AS "safeguardMode",
+			a.month_repay_money AS "monthRepayMoney",
+			a.early_repayment_rate AS "earlyRepaymentRate",
+			a.credit_extension_money AS "creditExtensionMoney",
+			a.planned_repayment_date AS "plannedRepaymentDate",
+			a.actual_repayment_date AS "actualRepaymentDate",
+			a.last_repayment_date AS "lastRepaymentDate",
+			a.bidding_deadline AS "biddingDeadline",
+			a.transfer_code AS "transferCode",
+			a.create_dt AS "createDt",
+			a.create_user_id AS "createUserId",
+			a.review_dt AS "reviewDt",
+			a.review_user_id AS "reviewUserId",
+			a.publish_dt AS "publishDt",
+			a.close_dt AS "closeDt",
+			a.close_user_id AS "closeUserId",
+			a.project_status AS "projectStatus",
+			a.review_remark AS "reviewRemark",
+			a.is_del AS "isDel",
+			a.risk_info AS "riskInfo",
+			a.is_auto_repay AS "isAutoRepay",
+			a.auto_repay_code AS "autoRepayCode",
+			a.apply_src_id AS "applySrcId",
+	        b.amount AS "pir.amount",
+	        b.op_dt AS "pir.opDt",
+	        b.id AS "pir.id"
+		FROM project_base a,
+		project_investment_record b
+		<if test="flag == '4'.toString()">
+			,project_transfer_info ptic
+		</if>
+		<where>
+			a.project_id=b.project_id
+
+            and b.investment_user_id=#{accountId}
+            and (b.status='0' or b.status='3')
+
+			<choose>
+				<when test="flag == '1'.toString()">
+            		AND (a.project_status='3' or a.project_status='4')
+				</when>
+				<when test="flag == '2'.toString()">
+            		AND a.project_status='5'
+				</when>
+				<when test="flag == '3'.toString()">
+            		AND (a.project_status='6' or a.project_status='7')
+				</when>
+				<when test="flag == '4'.toString()">
+					and ptic.project_id = b.project_id
+					AND ptic.status = '0'
+					and b.status='0'
+				</when>
+			</choose>
+            order by b.op_dt desc
+		</where>
+	</select>
+
+	<select id="findInvestmentList" resultType="ProjectBaseInfo">
+		SELECT
+		a.project_id AS "projectId",
+		a.project_code AS "projectCode",
+		a.is_new_user AS "isNewUser",
+		a.is_recommend AS "isRecommend",
+		a.can_use_rate_ticket AS "canUseRateTicket",
+		a.project_type_code AS "projectTypeCode",
+		a.project_name AS "projectName",
+		a.project_tips AS "projectTips",
+		a.project_introduce AS "projectIntroduce",
+		a.repayment_mode AS "repaymentMode",
+		a.borrowers_user AS "borrowersUser",
+		a.agent_user AS "agentUser",
+		a.area_id AS "area.id",
+		a.service_charge AS "serviceCharge",
+		a.service_charge_type_code AS "serviceChargeTypeCode",
+		a.duration_type AS "durationType",
+		a.project_duration AS "projectDuration",
+		a.annualized_rate AS "annualizedRate",
+		a.is_increase_interest AS "isIncreaseInterest",
+		a.increase_interest_rate AS "increaseInterestRate",
+		a.use_method AS "useMethod",
+		a.finance_money AS "financeMoney",
+		a.repayment_money AS "repaymentMoney",
+		a.starting_amount AS "startingAmount",
+		a.max_amount AS "maxAmount",
+		a.about_files AS "aboutFiles",
+		a.safeguard_mode AS "safeguardMode",
+		a.month_repay_money AS "monthRepayMoney",
+		a.early_repayment_rate AS "earlyRepaymentRate",
+		a.credit_extension_money AS "creditExtensionMoney",
+		a.planned_repayment_date AS "plannedRepaymentDate",
+		a.actual_repayment_date AS "actualRepaymentDate",
+		a.last_repayment_date AS "lastRepaymentDate",
+		a.bidding_deadline AS "biddingDeadline",
+		a.transfer_code AS "transferCode",
+		a.create_dt AS "createDt",
+		a.create_user_id AS "createUserId",
+		a.review_dt AS "reviewDt",
+		a.review_user_id AS "reviewUserId",
+		a.publish_dt AS "publishDt",
+		a.close_dt AS "closeDt",
+		a.close_user_id AS "closeUserId",
+		a.project_status AS "projectStatus",
+		a.review_remark AS "reviewRemark",
+		a.is_del AS "isDel",
+		a.risk_info AS "riskInfo",
+		a.is_auto_repay AS "isAutoRepay",
+		a.auto_repay_code AS "autoRepayCode",
+		a.apply_src_id AS "applySrcId",
+		b.amount AS "pir.amount",
+		b.op_dt AS "pir.opDt",
+		b.id AS "pir.id",
+		b.will_profit AS "pir.willProfit"
+		FROM project_base a,
+		project_investment_record b
+		<if test="flag == '4'.toString()">
+			,project_transfer_info ptic
+		</if>
+		<where>
+			a.project_id=b.project_id
+
+			and b.investment_user_id=#{accountId}
+			and (b.status='0' or b.status='3')
+			<if test="projectTypeCode != null and projectTypeCode != ''">
+				and a.project_type_code=#{projectTypeCode}
+			</if>
+			<choose>
+				<when test="flag == '1'.toString()">
+					AND (a.project_status='3' or a.project_status='4')
+				</when>
+				<when test="flag == '2'.toString()">
+					AND a.project_status='5'
+				</when>
+				<when test="flag == '3'.toString()">
+					AND (a.project_status='6' or a.project_status='7')
+				</when>
+				<when test="flag == '4'.toString()">
+					and ptic.project_id = b.project_id
+					AND ptic.status = '0'
+					and b.status='0'
+				</when>
+			</choose>
+			order by b.op_dt desc
+		</where>
+	</select>
+	
+	<select id="findMyInvestmentByExtendNoList" resultType="ProjectBaseInfo">
+		SELECT  
+			a.project_id AS "projectId",
+			a.project_code AS "projectCode",
+			a.is_new_user AS "isNewUser",
+			a.is_recommend AS "isRecommend",
+			a.can_use_rate_ticket AS "canUseRateTicket",
+			a.project_type_code AS "projectTypeCode",
+			a.project_name AS "projectName",
+		    a.project_tips AS "projectTips",
+			a.project_introduce AS "projectIntroduce",
+			a.duration_type AS "durationType",
+			a.repayment_mode AS "repaymentMode",
+			a.borrowers_user AS "borrowersUser",
+			a.agent_user AS "agentUser",
+			a.area_id AS "area.id",
+			a.service_charge AS "serviceCharge",
+			a.service_charge_type_code AS "serviceChargeTypeCode",
+			a.project_duration AS "projectDuration",
+			a.annualized_rate AS "annualizedRate",
+			a.is_increase_interest AS "isIncreaseInterest",
+			a.increase_interest_rate AS "increaseInterestRate",
+			a.use_method AS "useMethod",
+			a.finance_money AS "financeMoney",
+			a.repayment_money AS "repaymentMoney",		
+			a.starting_amount AS "startingAmount",
+			a.max_amount AS "maxAmount",
+			a.about_files AS "aboutFiles",
+			a.safeguard_mode AS "safeguardMode",
+			a.month_repay_money AS "monthRepayMoney",
+			a.early_repayment_rate AS "earlyRepaymentRate",
+			a.credit_extension_money AS "creditExtensionMoney",
+			a.planned_repayment_date AS "plannedRepaymentDate",
+			a.actual_repayment_date AS "actualRepaymentDate",
+			a.last_repayment_date AS "lastRepaymentDate",
+			a.bidding_deadline AS "biddingDeadline",
+			a.transfer_code AS "transferCode",
+			a.create_dt AS "createDt",
+			a.create_user_id AS "createUserId",
+			a.review_dt AS "reviewDt",
+			a.review_user_id AS "reviewUserId",
+			a.publish_dt AS "publishDt",
+			a.close_dt AS "closeDt",
+			a.close_user_id AS "closeUserId",
+			a.project_status AS "projectStatus",
+			a.review_remark AS "reviewRemark",
+			a.is_del AS "isDel",
+			a.risk_info AS "riskInfo",
+			a.is_auto_repay AS "isAutoRepay",
+			a.auto_repay_code AS "autoRepayCode",
+			a.apply_src_id AS "applySrcId",
+	        b.amount AS "pir.amount",
+	        b.status AS "pir.status",
+	        b.id AS "pir.id"
+		FROM project_base a,
+		project_investment_record b,
+		customer_account c
+		<where>
+			a.project_id=b.project_id 
+            and b.investment_user_id=c.account_id
+            and c.outer_id =#{extendNo} 
+			<choose>
+				<when test="flag == '1'.toString()">
+            		AND (a.project_status='3' or a.project_status='4') 
+				</when>
+				<when test="flag == '2'.toString()">
+            		AND a.project_status='5' 
+				</when>
+				<when test="flag == '3'.toString()">
+            		AND (a.project_status='6' or a.project_status='7') 
+				</when>
+			</choose>
+            order by b.op_dt desc
+		</where>
+	</select>
+	
+	<select id="getProjectByRecordId" resultType="ProjectBaseInfo">
+		SELECT  
+			a.project_id AS "projectId",
+			a.project_code AS "projectCode",
+			a.is_new_user AS "isNewUser",
+			a.is_recommend AS "isRecommend",
+			a.can_use_rate_ticket AS "canUseRateTicket",
+			a.project_type_code AS "projectTypeCode",
+			a.project_name AS "projectName",
+		    a.project_tips AS "projectTips",
+			a.project_introduce AS "projectIntroduce",
+			a.repayment_mode AS "repaymentMode",
+			a.borrowers_user AS "borrowersUser",
+			a.agent_user AS "agentUser",
+			a.area_id AS "area.id",
+			a.service_charge AS "serviceCharge",
+			a.service_charge_type_code AS "serviceChargeTypeCode",
+			a.duration_type AS "durationType",
+			a.project_duration AS "projectDuration",
+			a.annualized_rate AS "annualizedRate",
+			a.is_increase_interest AS "isIncreaseInterest",
+			a.increase_interest_rate AS "increaseInterestRate",
+			a.use_method AS "useMethod",
+			a.finance_money AS "financeMoney",
+			a.repayment_money AS "repaymentMoney",		
+			a.starting_amount AS "startingAmount",
+			a.max_amount AS "maxAmount",
+			a.about_files AS "aboutFiles",
+			a.safeguard_mode AS "safeguardMode",
+			a.month_repay_money AS "monthRepayMoney",
+			a.early_repayment_rate AS "earlyRepaymentRate",
+			a.credit_extension_money AS "creditExtensionMoney",
+			a.planned_repayment_date AS "plannedRepaymentDate",
+			a.actual_repayment_date AS "actualRepaymentDate",
+			a.last_repayment_date AS "lastRepaymentDate",
+			a.bidding_deadline AS "biddingDeadline",
+			a.transfer_code AS "transferCode",
+			a.create_dt AS "createDt",
+			a.create_user_id AS "createUserId",
+			a.review_dt AS "reviewDt",
+			a.review_user_id AS "reviewUserId",
+			a.publish_dt AS "publishDt",
+			a.close_dt AS "closeDt",
+			a.close_user_id AS "closeUserId",
+			a.project_status AS "projectStatus",
+			a.review_remark AS "reviewRemark",
+			a.is_del AS "isDel",
+			a.risk_info AS "riskInfo",
+			a.is_auto_repay AS "isAutoRepay",
+			a.auto_repay_code AS "autoRepayCode",
+			a.apply_src_id AS "applySrcId",
+	        b.amount AS "pir.amount",
+	        b.id AS "pir.id"
+		FROM project_base a,
+		project_investment_record b
+		<where>
+			a.project_id=b.project_id 
+            and b.id=#{recordId} 
+		</where>
+	</select>
+	
+	<select id="findProjectByBorrowerAccountIdAndProjectStatus" resultType="ProjectBaseInfo">
+		SELECT 
+		<include refid="projectBaseInfoColumns"/>
+			,d.finance_money AS "pes.financeMoney"
+			,d.end_finance_money AS "pes.endFinanceMoney"
+			,d.remaining_time as "pes.remainingTime"
+			,d.end_repay_money as "pes.endRepayMoney"
+			,d.status AS "pes.status"
+		FROM project_base a
+		<include refid="projectBaseInfoJoins"/>
+		LEFT JOIN project_execute_snapshot d ON d.project_id=a.project_id and d.transfer_project_id = 0
+		<where>
+			(a.borrowers_user=#{accountId} or a.agent_user=#{accountId})
+			and a.project_status in 
+			<foreach item="item" index="index" collection="projectStatuses" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.publish_dt desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findFundingProjectByBorrowerAccountId" resultType="ProjectBaseInfo">
+		select a.project_id as "projectId",
+		a.project_name as "projectName",
+		a.finance_money as "financeMoney",
+		a.project_duration as "projectDuration",
+		a.service_charge as "serviceCharge",
+		a.month_repay_money as "monthRepayMoney",
+		a.repayment_money as "repaymentMoney",
+		a.is_auto_repay as "isAutoRepay",
+		<!-- 查询出来的autoRepayCode其实是：项目是否可以做授权自动还款操作 （"1"代表可以授权自动还款）-->
+		b.can_authorize_auto_repayment as "autoRepayCode"
+		from project_base a left join 
+		(select project_id,can_authorize_auto_repayment from
+			(select project_id,case when count(1) > 0 then 1 else 0 end as can_authorize_auto_repayment from project_investment_record where transfer_project_id = 0 and status = '0' group by project_id) as a) b on b.project_id = a.project_id
+		<where>
+			(a.borrowers_user=#{borrowersUser} or a.agent_user=#{borrowersUser})
+			and (a.project_status='3' or a.project_status='4') 
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.publish_dt desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getOnlineProjectCount" resultType="java.lang.Integer">
+		select count(*) from project_base where (project_status='3' or project_status='4' or project_status='5' or project_status='6') 
+	</select>
+	<select id="getTenderingProjectCount" resultType="java.lang.Integer">
+		select count(*) from project_base where project_status='3'
+	</select>
+	<select id="getTenderedProjectCount" resultType="java.lang.Integer">
+		select count(*) from project_base where project_status='4'
+	</select>
+	<select id="getRepaymentingProjectCount" resultType="java.lang.Integer">
+		select count(*) from project_base where project_status='5'
+	</select>
+	<select id="getRepaymentedProjectCount" resultType="java.lang.Integer">
+		select count(*) from project_base where project_status='6'
+	</select>
+	<select id="getNotEndProjectMyCreditProject" resultType="java.lang.Double">
+		select case when  ISNULL(sum(finance_money)) then 0 else sum(finance_money) end from project_base where project_status!='7' and project_status!='-1' and borrowers_user=#{accountId} and project_type_code=2
+	</select>
+	
+	<select id="getNeedToInvestmentProject" resultType="ProjectBaseInfo">
+		SELECT 
+		<include refid="projectBaseInfoColumns"/>
+        FROM project_base a
+		<include refid="projectBaseInfoJoins"/>
+		<where>
+		a.project_status='2' and a.publish_dt<![CDATA[ <= #{theDate} ]]>
+		</where> 
+	</select>
+	
+	<select id="getNeedToInvestmentFinishProject" resultType="ProjectBaseInfo">
+		SELECT 
+		<include refid="projectBaseInfoColumns"/>
+        FROM project_base a
+		<include refid="projectBaseInfoJoins"/>
+		<where>
+		a.project_status='3' and a.bidding_deadline<![CDATA[ <= #{theDate} ]]>
+		</where> 
+	</select>
+	<update id="updateProjectToInvestment">
+		update  project_base set project_status='3' where project_id=#{projectId}
+	</update>
+	
+	<update id="updateProjectToInvestmentFinish">
+		update  project_base set project_status='4',sort_in_list=9999999-project_id*3,sort_in_index=9999999-project_id*3 where project_id=#{projectId}
+	</update>
+	
+	<update id="updateIsAutoRepay">
+		update project_base set is_auto_repay = #{isAutoRepay} where project_id = #{projectId}
+	</update>
+	
+	<update id="updateAutoRepayCode">
+		update project_base set auto_repay_code = #{autoRepayCode} where project_id = #{projectId}
+	</update>
+	
+	<update id="updateProjectStatus">
+        UPDATE project_base
+		<set>
+			<if test="projectStatus != null">
+                project_status = #{projectStatus}
+			</if>
+		</set>
+		<where>
+            project_id = #{projectId}
+		</where>
+	</update>
+    
+	<update id="updateProjectIsLoan">
+        UPDATE project_base
+		<set>
+			<if test="isLoan != null">
+                is_loan = #{isLoan},
+                loan_dt = now()
+			</if>
+		</set>
+		<where>
+            project_id = #{projectId}
+		</where>
+	</update>
+    
+	<update id="updateProjectMonthRepayMoney">
+        UPDATE project_base
+		<set>
+			<if test="monthRepayMoney != null">
+                month_repay_money = #{monthRepayMoney}
+			</if>
+		</set>
+		<where>
+            project_id = #{projectId}
+		</where>
+	</update>
+    
+	<update id="updateProjectRepaymentMoney">
+        UPDATE project_base
+		<set>
+			<if test="repaymentMoney != null">
+                repayment_money = #{repaymentMoney}
+			</if>
+		</set>
+		<where>
+            project_id = #{projectId}
+		</where>
+	</update>
+    
+	<select id="findRunningProject" resultType="ProjectBaseInfo">
+    	select * from project_base where project_status ='3' or project_status ='4' or project_status ='5'
+	</select>
+    
+	<select id="findOverDueProject" resultType="ProjectBaseInfo">
+    	select * from project_base a,project_execute_snapshot b where b.project_id=a.project_id and b.transfer_project_id=0 and a.project_status='5' and b.status='1'
+	</select>
+    
+	<update id="updateSortInList">
+    	update project_base set sort_in_list = #{sortInList} where project_id = #{projectId}
+	</update>
+    
+	<update id="updateSortInIndex">
+    	update project_base set sort_in_index = #{sortInIndex} where project_id = #{projectId}
+	</update>
+
+	<select id="findProjectList" resultType="java.util.Map">
+		select a.project_id as "projectId",a.project_name as "projectName",a.project_type_code as "projectType",
+			a.repayment_mode as "repaymentMode",a.starting_amount as "startingAmount",a.finance_money as "financeMoney",
+			b.end_finance_money as "endFinanceMoney",a.project_status as "status",a.annualized_rate as "annualizedRate",
+			a.is_increase_interest as "isIncreaseInterest",a.increase_interest_rate as "increaseInterestRate",
+			a.duration_type as "durationUnit",a.project_duration as "projectDuration",a.safeguard_mode as "safeguardMode",
+			a.is_new_user as "isNewUser",a.is_recommend as "isRecommend",a.transfer_code as "transferCode",ifnull(a.project_tips,'') as "projectTips"
+		from project_base a
+		left join project_execute_snapshot b on a.project_id = b.project_id and b.transfer_project_id = 0
+		<where>
+			a.project_status in ('3','4','5','6','7')
+			<if test="statuses != null">
+				and a.project_status in
+				<foreach item="status" index="index" collection="statuses" open="(" separator="," close=")">
+					#{status}
+				</foreach>
+			</if>
+			<if test="durationType != null">
+				and a.duration_type &gt;= #{durationType}
+			</if>
+			<if test="minDuration != null">
+				and a.project_duration &gt;= #{minDuration}
+			</if>
+			<if test="maxDuration != null">
+				and a.project_duration &lt;= #{maxDuration}
+			</if>
+			<if test="minRate != null">
+				and a.annualized_rate &gt;= #{minRate}
+			</if>
+			<if test="maxRate != null">
+				and a.annualized_rate &lt; #{maxRate}
+			</if>
+			<if test="repaymentMode != null">
+				and a.repayment_mode = #{repaymentMode}
+			</if>
+			<if test="type != null">
+				and a.project_type_code = #{type}
+			</if>
+			<if test="projectSearch != null and projectSearch.isNewUser != null">
+				and a.is_new_user = #{projectSearch.isNewUser}
+			</if>
+			<if test="projectSearch != null and projectSearch.durationUnit != null">
+				and a.duration_type = #{projectSearch.durationUnit}
+			</if>
+			<if test="projectSearch != null and projectSearch.projectDuration != null">
+				and a.project_duration = #{projectSearch.projectDuration}
+			</if>
+		</where>
+		order by a.sort_in_list,a.project_id limit #{index},#{limit}
+	</select>
+
+	<select id="getCount" resultType="java.lang.Integer">
+		select count(1) from project_base a
+		<where>
+			a.project_status in ('3','4','5','6','7')
+			<if test="statuses != null">
+				and a.project_status in
+				<foreach item="status" index="index" collection="statuses" open="(" separator="," close=")">
+					#{status}
+				</foreach>
+			</if>
+			<if test="durationType != null">
+				and a.duration_type &gt;= #{durationType}
+			</if>
+			<if test="minDuration != null">
+				and a.project_duration &gt;= #{minDuration}
+			</if>
+			<if test="maxDuration != null">
+				and a.project_duration &lt;= #{maxDuration}
+			</if>
+			<if test="minRate != null">
+				and a.annualized_rate &gt;= #{minRate}
+			</if>
+			<if test="maxRate != null">
+				and a.annualized_rate &lt;= #{maxRate}
+			</if>
+			<if test="repaymentMode != null">
+				and a.repayment_mode = #{repaymentMode}
+			</if>
+			<if test="type != null">
+				and a.project_type_code = #{type}
+			</if>
+			<if test="projectSearch != null and projectSearch.isNewUser != null">
+				and a.is_new_user = #{projectSearch.isNewUser}
+			</if>
+			<if test="projectSearch != null and projectSearch.durationUnit != null">
+				and a.duration_type = #{projectSearch.durationUnit}
+			</if>
+			<if test="projectSearch != null and projectSearch.projectDuration != null">
+				and a.project_duration = #{projectSearch.projectDuration}
+			</if>
+		</where>
+	</select>
+
+	<select id="getCanInvestmentProjectCount" resultType="java.lang.Integer">
+		select count(1) from project_base
+		where project_status = '3'
+		<if test="isNewUser != null">
+			and is_new_user = #{isNewUser}
+		</if>
+		<if test="durationUnit != null">
+			and duration_type = #{durationUnit}
+		</if>
+		<if test="projectDuration != null">
+			and project_duration = #{projectDuration}
+		</if>
+	</select>
+</mapper>

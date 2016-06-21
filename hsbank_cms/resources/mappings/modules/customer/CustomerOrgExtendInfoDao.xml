@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerOrgExtendInfoDao">
+    
+	<sql id="customerOrgExtendInfoColumns">
+		a.customer_id AS "customerId",
+		a.org_code AS "orgCode",
+		a.org_business_license AS "orgBusinessLicense",
+		a.org_tax_registration AS "orgTaxRegistration",
+		a.registered_ife AS "registeredIfe",
+		a.registered_capital AS "registeredCapital",
+		a.net_worth AS "net_worth",
+		a.cash_inflows AS "cashInflows",
+		a.industry AS "industry",
+		a.business_activities AS "businessActivities",
+		a.litigation_situatio AS "litigationSituatio",
+		a.credit_record AS "creditRecord",
+		a.create_dt AS "createDt",
+		a.create_user_id AS "createUserId",
+		a.modify_dt AS "modifyDt",
+		a.modify_user_id AS "modifyUserId",
+		a.status AS "status"
+	</sql>
+	
+	<sql id="customerOrgExtendInfoJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomerOrgExtendInfo">
+		SELECT 
+			<include refid="customerOrgExtendInfoColumns"/>
+		FROM customer_org_extend_info a
+		<include refid="customerOrgExtendInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerOrgExtendInfo">
+		SELECT 
+			<include refid="customerOrgExtendInfoColumns"/>
+		FROM customer_org_extend_info a
+		<include refid="customerOrgExtendInfoJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerOrgExtendInfo">
+		SELECT 
+			<include refid="customerOrgExtendInfoColumns"/>
+		FROM customer_org_extend_info a
+		<include refid="customerOrgExtendInfoJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_org_extend_info(
+			customer_id,
+			org_code,
+			org_business_license,
+			org_tax_registration,
+			registered_ife,
+			registered_capital,
+			net_worth,
+			cash_inflows,
+			industry,
+			business_activities,
+			litigation_situatio,
+			credit_record,
+			create_user_id,
+			status
+		) VALUES (
+			#{customerId},
+			#{orgCode},
+			#{orgBusinessLicense},
+			#{orgTaxRegistration},
+			#{registeredIfe},
+			#{registeredCapital},
+			#{netWorth},
+			#{cashInflows},
+			#{industry},
+			#{businessActivities},
+			#{litigationSituatio},
+			#{creditRecord},
+			#{createBy.id},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_org_extend_info SET 	
+			org_code = #{orgCode},
+			org_business_license = #{orgBusinessLicense},
+			org_tax_registration = #{orgTaxRegistration},
+			registered_ife = #{registeredIfe},
+			registered_capital = #{registeredCapital},
+			net_worth = #{netWorth},
+			cash_inflows = #{cashInflows},
+			industry = #{industry},
+			business_activities = #{businessActivities},
+			litigation_situatio = #{litigationSituatio},
+			credit_record = #{creditRecord},
+			modify_user_id = #{updateBy.id},
+			status = #{status}
+		WHERE customer_id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_org_extend_info
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

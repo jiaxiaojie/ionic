@@ -1,0 +1,11 @@
+delete from marketing_activity_info where acticity_id=16;
+INSERT INTO `marketing_activity_info` VALUES (16, '微信推广', '2015-10-30', '2099-12-31', '00:00:00', '23:59:59', 'marketActivity1004Handler', '规则1 用户注册并认证后送1.88元；规则2 用户首次投资后送8元（活动开始后，满足条件即送）；规则3 邀请好友注册，可获得1.88元/人，好友首次投资后还可获得2.88元（与长期活动--邀请好友规则叠加）', 1, '2015-10-27 14:29:16', 1, '2015-10-27 14:30:09', '1');
+delete from marketing_activity_channel_limit where activity_id=15;
+INSERT INTO `marketing_activity_channel_limit` VALUES (107, 16, 0);
+INSERT INTO `marketing_activity_channel_limit` VALUES (108, 16, 1);
+INSERT INTO `marketing_activity_channel_limit` VALUES (109, 16, 2);
+INSERT INTO `marketing_activity_channel_limit` VALUES (110, 16, 3);
+delete from marketing_activity_user_behavior_limit where activity_code=16 ;
+INSERT INTO `marketing_activity_user_behavior_limit` VALUES (80, 16, '1060');
+INSERT INTO `marketing_activity_user_behavior_limit` VALUES (81, 16, '1020');
+INSERT INTO `marketing_activity_user_behavior_limit` VALUES (79, 16, '1130');

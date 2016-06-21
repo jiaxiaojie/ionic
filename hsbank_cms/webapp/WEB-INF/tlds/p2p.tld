@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+  version="2.0">
+    
+  <description>JSTL 1.1 functions library</description>
+  <display-name>JSTL functions sys</display-name>
+  <tlib-version>1.1</tlib-version>
+  <short-name>p2p</short-name>
+  <uri>http://java.sun.com/jsp/jstl/functionss</uri>
+  
+  <!-- CustomerUtils -->
+  <function>
+    <description>获取当前用户对象</description>
+    <name>getCustomerAccount</name>
+    <function-class>com.thinkgem.jeesite.modules.sys.utils.CustomerUtils</function-class>
+    <function-signature>com.thinkgem.jeesite.modules.sys.entity.CustomerAccount getCustomerAccount()</function-signature>
+    <example>${fns:getCustomerAccount()}</example>  
+  </function>
+  
+  <function>
+    <description>根据编码获取用户对象</description>
+    <name>getCustomerAccountById</name>
+    <function-class>com.thinkgem.jeesite.modules.sys.utils.CustomerUtils</function-class>
+    <function-signature>com.thinkgem.jeesite.modules.sys.entity.CustomerAccount get(java.lang.String)</function-signature>
+    <example>${fns:getCustomerAccountById(id)}</example>  
+  </function>
+  
+  <function>
+    <description>获取授权用户信息</description>
+    <name>getPrincipal</name>
+    <function-class>com.thinkgem.jeesite.modules.sys.utils.CustomerUtils</function-class>
+    <function-signature>com.thinkgem.jeesite.modules.sys.security.SystemAuthorizingRealm.Principal getPrincipal()</function-signature>
+    <example>${fns:getPrincipal()}</example>  
+  </function>
+  
+  <function>
+    <description>查看用户是否可以进行签到操作</description>
+    <name>customerCanSign</name>
+    <function-class>com.thinkgem.jeesite.modules.sys.utils.CustomerUtils</function-class>
+    <function-signature>java.lang.Boolean customerCanSign()</function-signature>
+    <example>${p2p:customerCanSign()}</example>
+  </function>
+  
+  <function>
+    <description>缩写字符串，超过最大长度位用“...”表示</description>
+    <name>abbrev</name>
+    <function-class>com.thinkgem.jeesite.common.utils.StringUtils</function-class>
+    <function-signature>java.lang.String abbrev(java.lang.String, int)</function-signature>
+    <example>${p2p:abbrev(str,length)}</example>  
+  </function>
+  
+  <function>
+    <description>模糊化姓名</description>
+    <name>vagueName</name>
+    <function-class>com.thinkgem.jeesite.common.utils.StringUtils</function-class>
+    <function-signature>java.lang.String vagueName(java.lang.String)</function-signature>
+    <example>${p2p:vagueName(name)}</example>
+  </function>
+  
+  <function>
+    <description>模糊化身份证号</description>
+    <name>vagueCertNum</name>
+    <function-class>com.thinkgem.jeesite.common.utils.StringUtils</function-class>
+    <function-signature>java.lang.String vagueCertNum(java.lang.String)</function-signature>
+    <example>${p2p:vagueCertNum(certNum)}</example>
+  </function>
+  
+  <function>
+    <description>模糊化手机号</description>
+    <name>vagueMobile</name>
+    <function-class>com.thinkgem.jeesite.common.utils.StringUtils</function-class>
+    <function-signature>java.lang.String vagueMobile(java.lang.String)</function-signature>
+    <example>${p2p:vagueMobile(mobile)}</example>
+  </function>
+  
+  <function>
+    <description>模糊化邮箱地址</description>
+    <name>vagueEmail</name>
+    <function-class>com.thinkgem.jeesite.common.utils.StringUtils</function-class>
+    <function-signature>java.lang.String vagueEmail(java.lang.String)</function-signature>
+    <example>${p2p:vagueEmail(email)}</example>
+  </function>
+  
+  <function>
+    <description>模糊化地址</description>
+    <name>vagueAddress</name>
+    <function-class>com.thinkgem.jeesite.common.utils.StringUtils</function-class>
+    <function-signature>java.lang.String vagueAddress(java.lang.String)</function-signature>
+    <example>${p2p:vagueAddress(address)}</example>
+  </function>
+</taglib>

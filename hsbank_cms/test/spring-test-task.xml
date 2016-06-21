@@ -1,0 +1,892 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd"
+	default-lazy-init="true">
+	 
+	 <!-- 启动触发器的配置开始 -->  
+    <bean name="startQuertz" lazy-init="false" autowire="no"  
+        class="org.springframework.scheduling.quartz.SchedulerFactoryBean">  
+        <property name="triggers">  
+            <list>  
+            	<ref bean="fixEffectiveMarketingActivityListJobTrigger" />  
+				<ref bean="fixMessageCreateRuleListTaskJobTrigger" />  
+				<ref bean="autoClientTokenTaskJobTrigger" />  
+				<ref bean="autoApiCacheTaskJobTrigger" />
+                <ref bean="autoChangeProjectStatusToBidTaskJobTrigger" />  
+				<ref bean="computeOverduePenaltyTaskJobTrigger" />  
+				<ref bean="normalRepayTaskJobTrigger" />  
+				<ref bean="overDueRepayTaskJobTrigger" />  
+				<ref bean="transferProjectAutoEndTaskJobTrigger" />  
+				<ref bean="autoCancelOrderTaskJobTrigger" />  
+				<ref bean="autoChangeProjectStatusToInvesFinishedTaskJobTrigger" />  
+				<ref bean="autoChangeProjectRemainingTimeJobTrigger" />  
+				<ref bean="autoChangeCustomerInvestmentTicketStatusToExpiredJobTrigger" />
+				<ref bean="autoExpiredCustomerRateTicketTaskJobTrigger" />
+				<ref bean="autoChangeCurrentProjectStatusTaskJobTrigger" />  
+				<ref bean="autoAlignmentBlanceTaskJobTrigger" />  
+				<ref bean="autoFixRepayProcessTaskJobTrigger" />  
+				<ref bean="autoWeekInvestStatTaskJobTrigger" />  
+				<ref bean="autoMonthInvestStatTaskJobTrigger" />  
+				<ref bean="autoGiveWheelPrizeJobTrigger" />  
+				<ref bean="fixOperationDataTaskJobTrigger" />  
+				<ref bean="autoDeleteLogTimerTaskJobTrigger" />  
+				<ref bean="autoInsertProjectOperationSummaryDataTaskJobTrigger" />  
+				<ref bean="autoUpdateJanuaryInvestmentRankDataTaskJobTrigger" />  
+				<ref bean="autoGiveDoubleEggPrizeJobTrigger" />  
+				<ref bean="currentProjectAutoDoWindingUpTaskJobTrigger" />  
+				<ref bean="currentProjectAutoPayRedeemTaskJobTrigger" />  
+				<ref bean="currentProjectAutoRepayInterestTaskJobTrigger" />  
+				<ref bean="autoCancelCurrentOrderTaskJobTrigger" />  
+				<ref bean="autoCurrentCapitalAlertTaskJobTrigger" />  
+				<ref bean="sendCustomSmsMessageTaskJobTrigger" />  
+				<ref bean="sendRuleSmsMessageTaskJobTrigger" />  
+				<ref bean="finishMoneyAwardRecordTaskJobTrigger" />  
+				<ref bean="autoLoanProjectTaskJobTrigger" />  
+				<ref bean="pushAppMessageTaskJobTrigger" />
+				<ref bean="UpdateActivity1010LotteryTimesTaskJobTrigger" />
+				<ref bean="autoTransErrorTaskJobTrigger"/>
+				<ref bean="balanceReminderTaskJobTrigger"/>
+				<ref bean="changeCreditStatusTaskJobTrigger" />
+				<ref bean="giveActivity1015RankAwardTaskJobTrigger" />
+                <ref bean="updateActivity1016GambleResultTaskJobTrigger" />
+                <ref bean="autoInvestmentRankListJobTrigger" />
+                <ref bean="investmentAmountTaskJobTrigger" />
+                <ref bean="refreshProjectTypeInfoTaskJobTrigger" />
+            </list>
+        </property>  
+    </bean>  
+    <!-- 启动触发器的配置结束 -->  
+  
+  
+    <!-- quartz-2.x的配置 -->  
+    <bean id="fixEffectiveMarketingActivityListJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="fixEffectiveMarketingActivityListJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 0/5 * * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="fixEffectiveMarketingActivityListJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="fixEffectiveMarketingActivityList" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="fixMessageCreateRuleListTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="fixMessageCreateRuleListTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 0/5 * * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="fixMessageCreateRuleListTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="fixMessageCreateRuleListTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoClientTokenTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoClientTokenTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 0/30 * * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="autoClientTokenTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoClientTokenTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoApiCacheTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoApiCacheTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 0/5 * * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="autoApiCacheTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoApiCacheTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoChangeProjectStatusToBidTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoChangeProjectStatusToBidTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 0/5 * * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="autoChangeProjectStatusToBidTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoChangeProjectStatusToBidTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="computeOverduePenaltyTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="computeOverduePenaltyTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 0 2 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="computeOverduePenaltyTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="computeOverduePenaltyTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="normalRepayTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="normalRepayTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 0 7,19 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="normalRepayTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="normalRepayTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="overDueRepayTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="overDueRepayTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 0 9,21 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="overDueRepayTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="overDueRepayTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="transferProjectAutoEndTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="transferProjectAutoEndTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 0/30 * * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="transferProjectAutoEndTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="transferProjectAutoEndTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoCancelOrderTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoCancelOrderTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 0/5 * * * ?</value>
+        </property>  
+    </bean>  
+    <bean id="autoCancelOrderTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoCancelOrderTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoChangeProjectStatusToInvesFinishedTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoChangeProjectStatusToInvesFinishedTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 0/5 * * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="autoChangeProjectStatusToInvesFinishedTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoChangeProjectStatusToInvesFinishedTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoChangeProjectRemainingTimeJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoChangeProjectRemainingTimeJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 0 11 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="autoChangeProjectRemainingTimeJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoChangeProjectRemainingTime" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoChangeCustomerInvestmentTicketStatusToExpiredJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoChangeCustomerInvestmentTicketStatusToExpiredJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 5 0 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="autoChangeCustomerInvestmentTicketStatusToExpiredJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoChangeCustomerInvestmentTicketStatusToExpired" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoExpiredCustomerRateTicketTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoExpiredCustomerRateTicketTaskJobDetai" />
+        </property>  
+        <property name="cronExpression">  
+            <value>0 50 * * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="autoExpiredCustomerRateTicketTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoExpiredCustomerRateTicketTask" />
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoChangeCurrentProjectStatusTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoChangeCurrentProjectStatusTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 0/5 * * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="autoChangeCurrentProjectStatusTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoChangeCurrentProjectStatusTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoAlignmentBlanceTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoAlignmentBlanceTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 0 2 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="autoAlignmentBlanceTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoAlignmentBlanceTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoFixRepayProcessTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoFixRepayProcessTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 0/30 * * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="autoFixRepayProcessTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoFixRepayProcessTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoWeekInvestStatTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoWeekInvestStatTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>59 59 11,23 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="autoWeekInvestStatTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoWeekInvestStatTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoMonthInvestStatTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoMonthInvestStatTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>59 59 11,23 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="autoMonthInvestStatTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoMonthInvestStatTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoGiveWheelPrizeJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoGiveWheelPrizeJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 22 22 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="autoGiveWheelPrizeJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoGiveWheelPrize" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="fixOperationDataTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="fixOperationDataTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 25 1 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="fixOperationDataTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="fixOperationDataTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoDeleteLogTimerTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoDeleteLogTimerTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 5 1 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="autoDeleteLogTimerTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoDeleteLogTimerTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoInsertProjectOperationSummaryDataTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoInsertProjectOperationSummaryDataTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>25 25 2 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="autoInsertProjectOperationSummaryDataTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoInsertProjectOperationSummaryDataTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoUpdateJanuaryInvestmentRankDataTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoUpdateJanuaryInvestmentRankDataTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 16 0,12 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="autoUpdateJanuaryInvestmentRankDataTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoUpdateJanuaryInvestmentRankDataTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoGiveDoubleEggPrizeJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoGiveDoubleEggPrizeJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 5 1 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="autoGiveDoubleEggPrizeJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoGiveDoubleEggPrize" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="currentProjectAutoDoWindingUpTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="currentProjectAutoDoWindingUpTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>23 23 23 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="currentProjectAutoDoWindingUpTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="currentProjectAutoDoWindingUpTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="currentProjectAutoPayRedeemTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="currentProjectAutoPayRedeemTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 3/30 * * * ?</value>
+        </property>  
+    </bean>  
+    <bean id="currentProjectAutoPayRedeemTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="currentProjectAutoPayRedeemTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="currentProjectAutoRepayInterestTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="currentProjectAutoRepayInterestTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>10 0 0 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="currentProjectAutoRepayInterestTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="currentProjectAutoRepayInterestTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoCancelCurrentOrderTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoCancelCurrentOrderTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 0/5 * * * ?</value>
+        </property>  
+    </bean>  
+    <bean id="autoCancelCurrentOrderTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoCancelCurrentOrderTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoCurrentCapitalAlertTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoCurrentCapitalAlertTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 0/15 * * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="autoCurrentCapitalAlertTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoCurrentCapitalAlertTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="sendCustomSmsMessageTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="sendCustomSmsMessageTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>20 3/15 * * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="sendCustomSmsMessageTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="sendCustomSmsMessageTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="sendRuleSmsMessageTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="sendRuleSmsMessageTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>20 0/15 * * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="sendRuleSmsMessageTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="sendRuleSmsMessageTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="finishMoneyAwardRecordTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="finishMoneyAwardRecordTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 20 * * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="finishMoneyAwardRecordTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="finishMoneyAwardRecordTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoLoanProjectTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoLoanProjectTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 0 8,12,16,20 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="autoLoanProjectTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoLoanProjectTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+	
+    <bean id="pushAppMessageTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="pushAppMessageTaskJobDetail" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 1/30 * * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="pushAppMessageTaskJobDetail"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="pushAppMessageTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+	
+    <bean id="UpdateActivity1010LotteryTimesTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="UpdateActivity1010LotteryTimesTaskJobDetail" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>1 0 0 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="UpdateActivity1010LotteryTimesTaskJobDetail"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="updateActivity1010LotteryTimesTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    <bean id="autoTransErrorTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="autoTransErrorTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 30 2 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="autoTransErrorTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="autoTransErrorTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    
+      <bean id="balanceReminderTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="balanceReminderTaskJobDetai" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 0 * * * ?</value>
+        </property>  
+    </bean>  
+    <bean id="balanceReminderTaskJobDetai"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="balanceReminderTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    
+     <bean id="changeCreditStatusTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="changeCreditStatusTaskJobDetail" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>1 0 0 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="changeCreditStatusTaskJobDetail"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="changeCreditStatusTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    
+     <bean id="giveActivity1015RankAwardTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="giveActivity1015RankAwardTaskJobDetail" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 10 0 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="giveActivity1015RankAwardTaskJobDetail"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="giveActivity1015RankAwardTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+    
+    <!--<bean id="giveActivity1015TugWarAwardTaskJobTrigger"
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="giveActivity1015TugWarAwardTaskJobDetail" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>0 15 0 1 6 ? 2016</value>  
+        </property>  
+    </bean>  
+    <bean id="giveActivity1015TugWarAwardTaskJobDetail"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="giveActivity1015TugWarAwardTask" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>-->
+    
+    <bean id="updateActivity1016GambleResultTaskJobTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="updateActivity1016GambleResultTaskJobDetail" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>5 0 0 * * ?</value>  
+        </property>  
+    </bean>  
+    <bean id="updateActivity1016GambleResultTaskJobDetail"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="updateActivity1016GambleResultTask"/>
+        </property>  
+        <property name="targetMethod">  
+            <value>job</value>  
+        </property>  
+    </bean>
+
+    <bean id="autoInvestmentRankListJobTrigger"
+          class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="autoInvestmentRankListJobDetai" />
+        </property>
+        <property name="cronExpression">
+            <value>0 0/5 * * * ?</value>
+        </property>
+    </bean>
+    <bean id="autoInvestmentRankListJobDetai"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="autoInvestmentRankList" />
+        </property>
+        <property name="targetMethod">
+            <value>job</value>
+        </property>
+    </bean>
+    <!-- investmentAmountTask begin -->
+    <bean id="investmentAmountTaskJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="investmentAmountTaskJob" />
+        </property>
+        <property name="cronExpression">
+            <value>0 0/1 * * * ?</value>
+        </property>
+    </bean>
+    <bean id="investmentAmountTaskJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="investmentAmountCacheTask"/>
+        </property>
+        <property name="targetMethod">
+            <value>sumAmountJob</value>
+        </property>
+    </bean>
+    <!-- investmentAmountTask end -->
+
+    <!-- refreshProjectTypeInfoTask begin -->
+    <bean id="refreshProjectTypeInfoTaskJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="refreshProjectTypeInfoTaskJob" />
+        </property>
+        <property name="cronExpression">
+            <value>5 0/5 * * * ?</value>
+        </property>
+    </bean>
+    <bean id="refreshProjectTypeInfoTaskJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="refreshProjectTypeInfoTask"/>
+        </property>
+        <property name="targetMethod">
+            <value>job</value>
+        </property>
+    </bean>
+    <!-- refreshProjectTypeInfoTask end -->
+</beans>

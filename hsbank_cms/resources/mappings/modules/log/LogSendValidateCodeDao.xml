@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.log.dao.LogSendValidateCodeDao">
+    
+	<sql id="logSendValidateCodeColumns">
+		a.id AS "id",
+		a.mobile AS "mobile",
+		a.email AS "email",
+		a.service_type_code AS "serviceTypeCode",
+		a.validate_code AS "validateCode",
+		a.op_dt AS "opDt",
+		a.ip AS "ip"
+	</sql>
+	
+	<sql id="logSendValidateCodeJoins">
+	</sql>
+    
+	<select id="get" resultType="LogSendValidateCode">
+		SELECT 
+			<include refid="logSendValidateCodeColumns"/>
+		FROM log_send_validate_code a
+		<include refid="logSendValidateCodeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="LogSendValidateCode">
+		SELECT 
+			<include refid="logSendValidateCodeColumns"/>
+		FROM log_send_validate_code a
+		<include refid="logSendValidateCodeJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="LogSendValidateCode">
+		SELECT 
+			<include refid="logSendValidateCodeColumns"/>
+		FROM log_send_validate_code a
+		<include refid="logSendValidateCodeJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO log_send_validate_code(
+			mobile,
+			email,
+			service_type_code,
+			validate_code,
+			op_dt,
+			ip
+		) VALUES (
+			#{mobile},
+			#{email},
+			#{serviceTypeCode},
+			#{validateCode},
+			#{opDt},
+			#{ip}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE log_send_validate_code SET 	
+			mobile = #{mobile},
+			email = #{email},
+			service_type_code = #{serviceTypeCode},
+			validate_code = #{validateCode},
+			op_dt = #{opDt},
+			ip = #{ip}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM log_send_validate_code
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getLastEmailValidateCodeRecordByEmail" resultType="LogSendValidateCode">
+		select * from log_send_validate_code where email = #{email} order by op_dt desc limit 1
+	</select>
+</mapper>

@@ -1,0 +1,19 @@
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1234" measuredH="661" mockupW="1159" mockupH="652">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="212" y="9" w="1022" h="652" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>A%20Web%20Page%0Ahttp%3A//www.yeepbank.com</text>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::Image" x="249" y="97" w="970" h="530" measuredW="747" measuredH="509" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <src>./assets/%25e6%2589%2598%25e7%25ae%25a1%25e5%25b8%2590%25e5%258f%25b7%25e5%25bc%2580%25e9%2580%259a.png</src>
+      </controlProperties>
+    </control>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::StickyNote" x="75" y="147" w="-1" h="-1" measuredW="109" measuredH="123" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%u8FD9%u4E2A%u9875%u9762%u662F%u7B2C%u4E09%u65B9%u4EA4%u6613%u5E73%u53F0%u7ED9%u51FA%u7684%u9875%u9762%uFF0C%u5177%u4F53%u53C2%u7167%u6613%u5B9D%u7684%u63A5%u53E3%u800C%u5B9A</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

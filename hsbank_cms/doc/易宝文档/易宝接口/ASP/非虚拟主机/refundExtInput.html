@@ -1,0 +1,38 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>退款</title>
+</head>
+<body>
+		<table>
+			<form action='refundExt/refundExt.asp' method='post'> 
+			<!--接口类型:退款-->
+			<input type='hidden' name='p0_Cmd' value='RefundExt'><!--(必填)固定值RefundExt-->
+		  <tr>
+		  	<td align="left">&nbsp;&nbsp;唯一请求号</td>
+		  	<td align="left">&nbsp;&nbsp;<input type='text' name='p1_RequestId' value=''>必须唯一（不传由易宝生成）。避免用户的误操作可能会引起重复退款。</td>
+      </tr>
+		  <tr>
+		  	<td align="left">&nbsp;&nbsp;交易流水号</td>
+		  	<td align="left">&nbsp;&nbsp;<input type='text' name='p2_TrxId' value=''>(必填)YeePay返回给商家的交易号</td>
+      </tr>
+		  <tr>
+		  	<td align="left">&nbsp;&nbsp;退款描述</td>
+		  	<td align="left">&nbsp;&nbsp;<input type='text' name='p3_Desc' value=''>(可选)退款说明，最大长度200</td>
+      </tr>
+		  <tr>
+		  	<td align="left">&nbsp;&nbsp;退款明细</td>
+		  	<td align="left">&nbsp;&nbsp;<input type='text' name='p4_Details' value=''>(可选)通知YeePay需要给每个分账账户分别退多少。注:不传该参数表示退回全部分账明细</td>
+      </tr>	
+		  <tr>
+		  	<td align="left">&nbsp;&nbsp;订单退款金额</td>
+		  	<td align="left">&nbsp;&nbsp;<input type='text' name='p5_Amt' value=''>(必填)表示退给用户的金额，退款明细中的金额累加后不能超过总退款金额，总退款金额减去明细中的金额后,剩下的就是平台的退款金额</td>
+      </tr>
+		  <tr>
+		  	<td align="left">&nbsp;</td>
+		  	<td align="left">&nbsp;&nbsp;<input type="submit" value="马上提交" /></td>
+      </tr>
+    </form>
+      </table>
+	</body>
+</html>

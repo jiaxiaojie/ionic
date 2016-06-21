@@ -1,0 +1,108 @@
+#div_header_top{ width:980px; height:84px;}
+#div_header_top .div_left{ height:84px;width:364px;float:left;}
+#div_header_top .div_left .logo{height:84px;width:364px; cursor:pointer;}
+#div_header_top .div_right{width:616px;height:84px;float:right;}
+#div_header_top .div_right .spanLine{display:inline-block;padding-top:65px;width:5px;margin-left:5px;}
+#div_header_top .div_right .spanText{display:inline-block;padding-top:62px;margin-left:0;text-align:center;}
+#div_header_top .div_right .spanText a:link{width:65px; height:22px;background:url("")}
+#div_header_top .div_right .spanText a:visited{width:65px; height:22px;background:url("")}
+#div_header_top .div_right .spanText a:hover{width:65px; height:22px;background:url("")}
+#div_header_top .div_right .spanText a:active{width:65px; height:22px;background:url("")}
+#div_header_top .div_right .spanSNS{display:inline-block;padding-top:57px;margin-left:0;}
+#div_header_top .div_right .spanSNS .weixin a:link{display:block; width:32px; height:22px; background:url('../../images/util/weix.png') no-repeat center 0;}
+#div_header_top .div_right .spanSNS .weixin a:visited{display:block; width:32px; height:22px; background:url('../../images/util/weix.png') no-repeat center 0;}
+#div_header_top .div_right .spanSNS .weixin a:hover{background:url('../../images/util/weix-b.png') no-repeat center 0;} 
+#div_header_top .div_right .spanSNS .weixin a:active{background:url('../../images/util/weix-b.png') no-repeat center 0;} 
+#div_header_top .div_right .spanSNS .weibo a:link{display:inline-block; width:32px; height:22px; background:url('../../images/util/sina.png') no-repeat center 0;}
+#div_header_top .div_right .spanSNS .weibo a:visited{display:inline-block; width:32px; height:22px; background:url('../../images/util/sina.png') no-repeat center 0;}
+#div_header_top .div_right .spanSNS .weibo a:hover{background:url('../../images/util/sina-b.png') no-repeat center 0;} 
+#div_header_top .div_right .spanSNS .weibo a:active{background:url('../../images/util/sina-b.png') no-repeat center 0;} 
+#div_header_top .div_right .spanVIP{display:inline-block;padding-top:10px;margin-left:0;}
+#div_main_menu{ width:auto; height:62px;background:url('../../images/util/main_menu_bg.png') no-repeat center 0}
+#menu_bar { width:980px; height:62px; margin:0 auto;text-align: center;}
+#menu_bar li{ float:none; display:inline-block;}
+#menu_bar li a{ display:inline-block;}
+
+.about_content{ width:980px;padding-bottom:50px;margin-left:auto;margin-right:auto;overflow:hidden;}
+.about_content .left{float:left;width:212px;}
+.about_content .left .top{margin-left:auto;margin-right:auto;width:212px;height:64px;background-image:url('../../images/gywm/left_bg_top.png');background-repeat:no-repeat;background-position:center;}
+.about_content .left .one_menu {cursor:pointer;display:block; width:212px; height:48px;background:url('../../images/gywm/huawen-grid.png') no-repeat center 0;}
+.about_content .left .one_menu:hover {cursor:pointer;display:block; width:212px; height:48px;background:url('../../images/gywm/huawen-grid-active.png') no-repeat center 0;}
+.about_content .left .one_menu .span_text{cursor:pointer;float:left;line-height:48px;color:#956230;text-align:center;font-size:13px;margin-left:0;}
+.about_content .left .one_menu:hover .span_text{cursor:pointer;float:left;line-height:48px;color:white;text-align:center;font-size:13px;margin-left:0;}
+.about_content .left .one_menu a:link{display:block; width:212px; height:48px;background:url('../../images/gywm/huawen-grid.png') no-repeat center 0;}
+.about_content .left .one_menu a:visited{display:block; width:212px; height:48px;background:url('../../images/gywm/huawen-grid.png') no-repeat center 0;}
+.about_content .left .one_menu a:hover{display:block; width:212px; height:48px;background:url('../../images/gywm/huawen-grid-active.png') no-repeat center 0;}
+.about_content .left .one_menu a:active{display:block; width:212px; height:48px;background:url('../../images/gywm/huawen-grid-active.png') no-repeat center 0;} 
+.about_content .left .one_menu a:link .span_text{float:left;display:block;color:#956230;text-align:center;font-size:13px;}
+.about_content .left .one_menu a:visited .span_text{float:left;display:block;color:#956230;text-align:center;font-size:13px;}
+.about_content .left .one_menu a:hover .span_text{float:left;display:block;color:white;text-align:center;font-size:13px;}
+.about_content .left .one_menu a:active .span_text{float:left;display:block;color:white;text-align:center;font-size:13px;}
+.about_content .left .one_menu_selected {cursor:pointer;display:block; width:212px; height:48px;background:url('../../images/gywm/huawen-grid-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected .span_text{cursor:pointer;float:left;line-height:48px;color:white;text-align:center;font-size:13px;margin-left:0;}
+.about_content .left .one_menu_selected a:link{display:block; width:212px; height:48px;background:url('../../images/gywm/huawen-grid-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:visited{display:block; width:212px; height:48px;background:url('../../images/gywm/huawen-grid-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:hover{display:block; width:212px; height:48px;background:url('../../images/gywm/huawen-grid-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:active{display:block; width:212px; height:48px;background:url('../../images/gywm/huawen-grid-active.png') no-repeat center 0;} 
+.about_content .left .one_menu_selected a:link .span_text{float:left;display:block;color:white;text-align:center;font-size:13px;}
+.about_content .left .one_menu_selected a:visited .span_text{float:left;display:block;color:white;text-align:center;font-size:13px;}
+.about_content .left .one_menu_selected a:hover .span_text{float:left;display:block;color:white;text-align:center;font-size:13px;}
+.about_content .left .one_menu_selected a:active .span_text{float:left;display:block;color:white;text-align:center;font-size:13px;}
+/*公司简介*/
+.about_content .left .one_menu a:link .gsjj{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gsjj.png') no-repeat center 0;}
+.about_content .left .one_menu a:visited .gsjj{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gsjj.png') no-repeat center 0;}
+.about_content .left .one_menu a:hover .gsjj{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gsjj-active.png') no-repeat center 0;}
+.about_content .left .one_menu a:active .gsjj{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gsjj-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:link .gsjj{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gsjj-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:visited .gsjj{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gsjj-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:hover .gsjj{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gsjj-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:active .gsjj{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gsjj-active.png') no-repeat center 0;}
+/*管理团队*/
+.about_content .left .one_menu a:link .gltd{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gltd.png') no-repeat center 0;}
+.about_content .left .one_menu a:visited .gltd{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gltd.png') no-repeat center 0;}
+.about_content .left .one_menu a:hover .gltd{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gltd-active.png') no-repeat center 0;}
+.about_content .left .one_menu a:active .gltd{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gltd-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:link .gltd{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gltd-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:visited .gltd{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gltd-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:hover .gltd{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gltd-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:active .gltd{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gltd-active.png') no-repeat center 0;}
+/*安全保障*/
+.about_content .left .one_menu a:link .aqbz{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/aqbz.png') no-repeat center 0;}
+.about_content .left .one_menu a:visited .aqbz{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/aqbz.png') no-repeat center 0;}
+.about_content .left .one_menu a:hover .aqbz{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/aqbz-active.png') no-repeat center 0;}
+.about_content .left .one_menu a:active .aqbz{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/aqbz-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:link .aqbz{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/aqbz-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:visited .aqbz{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/aqbz-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:hover .aqbz{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/aqbz-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:active .aqbz{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/aqbz-active.png') no-repeat center 0;}
+/*加入我们*/
+.about_content .left .one_menu a:link .jrwm{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/jrwm.png') no-repeat center 0;}
+.about_content .left .one_menu a:visited .jrwm{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/jrwm.png') no-repeat center 0;}
+.about_content .left .one_menu a:hover .jrwm{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/jrwm-active.png') no-repeat center 0;}
+.about_content .left .one_menu a:active .jrwm{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/jrwm-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:link .jrwm{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/jrwm-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:visited .jrwm{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/jrwm-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:hover .jrwm{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/jrwm-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:active .jrwm{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/jrwm-active.png') no-repeat center 0;}
+/*联系我们*/
+.about_content .left .one_menu a:link .lxwm{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/lxwm.png') no-repeat center 0;}
+.about_content .left .one_menu a:visited .lxwm{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/lxwm.png') no-repeat center 0;}
+.about_content .left .one_menu a:hover .lxwm{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/lxwm-active.png') no-repeat center 0;}
+.about_content .left .one_menu a:active .lxwm{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/lxwm-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:link .lxwm{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/lxwm-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:visited .lxwm{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/lxwm-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:hover .lxwm{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/lxwm-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:active .lxwm{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/lxwm-active.png') no-repeat center 0;}
+/*公司新闻*/
+.about_content .left .one_menu a:link .gsxw{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gsxw.png') no-repeat center 0;}
+.about_content .left .one_menu a:visited .gsxw{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gsxw.png') no-repeat center 0;}
+.about_content .left .one_menu a:hover .gsxw{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gsxw-active.png') no-repeat center 0;}
+.about_content .left .one_menu a:active .gsxw{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gsxw-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:link .gsxw{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gsxw-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:visited .gsxw{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gsxw-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:hover .gsxw{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gsxw-active.png') no-repeat center 0;}
+.about_content .left .one_menu_selected a:active .gsxw{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/gywm/icon/gsxw-active.png') no-repeat center 0;}
+.about_content .left .bottom{margin-left:auto;margin-right:auto;width:212px;height:64px;background:url('../../images/gywm/left_bg_bottom.png') no-repeat 0 0;}
+.about_content .left .footer{margin-top:10px;margin-bottom:10px;margin-left:auto;margin-right:auto;width:200px;height:326px;background:url('../../images/gywm/banner-xia.jpg') no-repeat 0 0;}
+.about_content .right{float:right;width:748px;}
+.about_right_content{ width: 686px; overflow: hidden; padding: 30px 30px 30px 30px; border: 1px solid #C9B093; background-color: #fff; background-image: none;}

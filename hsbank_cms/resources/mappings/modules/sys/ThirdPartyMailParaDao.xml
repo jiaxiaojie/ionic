@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.sys.dao.ThirdPartyMailParaDao">
+    
+	<sql id="thirdPartyMailParaColumns">
+		a.id AS "id",
+		a.mail_server_host AS "mailServerHost",
+		a.mail_smtp_auth AS "mailSmtpAuth",
+		a.mail_smtp_timeout AS "mailSmtpTimeout",
+		a.mail_user_name AS "mailUserName",
+		a.mail_password AS "mailPassword"
+	</sql>
+	
+	<sql id="thirdPartyMailParaJoins">
+	</sql>
+    
+	<select id="get" resultType="ThirdPartyMailPara">
+		SELECT 
+			<include refid="thirdPartyMailParaColumns"/>
+		FROM third_party_mail_para a
+		<include refid="thirdPartyMailParaJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ThirdPartyMailPara">
+		SELECT 
+			<include refid="thirdPartyMailParaColumns"/>
+		FROM third_party_mail_para a
+		<include refid="thirdPartyMailParaJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ThirdPartyMailPara">
+		SELECT 
+			<include refid="thirdPartyMailParaColumns"/>
+		FROM third_party_mail_para a
+		<include refid="thirdPartyMailParaJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO third_party_mail_para(
+			mail_server_host,
+			mail_smtp_auth,
+			mail_smtp_timeout,
+			mail_user_name,
+			mail_password
+		) VALUES (
+			#{mailServerHost},
+			#{mailSmtpAuth},
+			#{mailSmtpTimeout},
+			#{mailUserName},
+			#{mailPassword}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE third_party_mail_para SET 	
+			mail_server_host = #{mailServerHost},
+			mail_smtp_auth = #{mailSmtpAuth},
+			mail_smtp_timeout = #{mailSmtpTimeout},
+			mail_user_name = #{mailUserName},
+			mail_password = #{mailPassword}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM third_party_mail_para
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

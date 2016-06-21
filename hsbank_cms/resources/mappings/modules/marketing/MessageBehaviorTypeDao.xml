@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.marketing.dao.MessageBehaviorTypeDao">
+    
+	<sql id="messageBehaviorTypeColumns">
+		a.id AS "id",
+		a.behavior_code AS "behaviorCode",
+		a.behavior_name AS "behaviorName"
+	</sql>
+	
+	<sql id="messageBehaviorTypeJoins">
+	</sql>
+    
+	<select id="get" resultType="MessageBehaviorType">
+		SELECT 
+			<include refid="messageBehaviorTypeColumns"/>
+		FROM message_behavior_type a
+		<include refid="messageBehaviorTypeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MessageBehaviorType">
+		SELECT 
+			<include refid="messageBehaviorTypeColumns"/>
+		FROM message_behavior_type a
+		<include refid="messageBehaviorTypeJoins"/>
+		<where>
+			
+			<if test="behaviorCode != null and behaviorCode != ''">
+				AND a.behavior_code = #{behaviorCode}
+			</if>
+			<if test="behaviorName != null and behaviorName != ''">
+				AND a.behavior_name = #{behaviorName}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MessageBehaviorType">
+		SELECT 
+			<include refid="messageBehaviorTypeColumns"/>
+		FROM message_behavior_type a
+		<include refid="messageBehaviorTypeJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO message_behavior_type(
+			behavior_code,
+			behavior_name
+		) VALUES (
+			#{behaviorCode},
+			#{behaviorName}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE message_behavior_type SET 	
+			behavior_code = #{behaviorCode},
+			behavior_name = #{behaviorName}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM message_behavior_type
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

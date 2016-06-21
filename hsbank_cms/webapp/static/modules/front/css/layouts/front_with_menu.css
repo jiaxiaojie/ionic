@@ -1,0 +1,24 @@
+#div_header_top{ width:980px; height:84px;}
+#div_header_top .div_left{ height:84px;width:364px;float:left;}
+#div_header_top .div_left .logo{height:84px;width:364px; cursor:pointer;}
+#div_header_top .div_right{width:616px;height:84px;float:right;}
+#div_header_top .div_right .spanLine{display:inline-block;padding-top:65px;width:5px;margin-left:5px;}
+#div_header_top .div_right .spanText{display:inline-block;padding-top:62px;margin-left:0;text-align:center;}
+#div_header_top .div_right .spanText a:link{width:65px; height:22px;background:url("")}
+#div_header_top .div_right .spanText a:visited{width:65px; height:22px;background:url("")}
+#div_header_top .div_right .spanText a:hover{width:65px; height:22px;background:url("")}
+#div_header_top .div_right .spanText a:active{width:65px; height:22px;background:url("")}
+#div_header_top .div_right .spanSNS{display:inline-block;padding-top:57px;margin-left:0;}
+#div_header_top .div_right .spanSNS .weixin a:link{display:block; width:32px; height:22px; background:url('../../images/util/weix.png') no-repeat center 0;}
+#div_header_top .div_right .spanSNS .weixin a:visited{display:block; width:32px; height:22px; background:url('../../images/util/weix.png') no-repeat center 0;}
+#div_header_top .div_right .spanSNS .weixin a:hover{background:url('../../images/util/weix-b.png') no-repeat center 0;} 
+#div_header_top .div_right .spanSNS .weixin a:active{background:url('../../images/util/weix-b.png') no-repeat center 0;} 
+#div_header_top .div_right .spanSNS .weibo a:link{display:inline-block; width:32px; height:22px; background:url('../../images/util/sina.png') no-repeat center 0;}
+#div_header_top .div_right .spanSNS .weibo a:visited{display:inline-block; width:32px; height:22px; background:url('../../images/util/sina.png') no-repeat center 0;}
+#div_header_top .div_right .spanSNS .weibo a:hover{background:url('../../images/util/sina-b.png') no-repeat center 0;} 
+#div_header_top .div_right .spanSNS .weibo a:active{background:url('../../images/util/sina-b.png') no-repeat center 0;} 
+#div_header_top .div_right .spanVIP{display:inline-block;padding-top:10px;margin-left:0;}
+#div_main_menu{ width:auto;height:62px;background:url('../../images/util/main_menu_bg.png') no-repeat center 0}
+#menu_bar { width:980px; height:62px; margin:0 auto;text-align: center;}
+#menu_bar li{ float:none; display:inline-block;}
+#menu_bar li a{ display:inline-block;}

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.sys.dao.AdChannelInfoDao">
+    
+	<sql id="adChannelInfoColumns">
+		a.id AS "id",
+		a.channel AS "channel",
+		a.channel_name AS "channelName",
+		a.start_dt AS "startDt",
+		a.end_dt AS "endDt",
+		a.status AS "status"
+	</sql>
+	
+	<sql id="adChannelInfoJoins">
+	</sql>
+    
+	<select id="get" resultType="AdChannelInfo">
+		SELECT 
+			<include refid="adChannelInfoColumns"/>
+		FROM ad_channel_info a
+		<include refid="adChannelInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	<select id="getByChannel" resultType="AdChannelInfo">
+		SELECT 
+			<include refid="adChannelInfoColumns"/>
+		FROM ad_channel_info a
+		<include refid="adChannelInfoJoins"/>
+		WHERE a.channel = #{channel}
+	</select>
+	
+	<select id="registPopChannelsStatisticsList" resultType="map">
+select aci.channel_name as channelName,ca.ad_channel_id as channelId,date_format(ca.register_dt,'%Y-%m-%d') as registerYearmonth,count(*) as registerCount from customer_account  
+ca left outer join ad_channel_info aci on ca.ad_channel_id=aci.id 
+
+where 1=1
+			<if test="channelId != null and channelId != ''">
+				AND aci.id LIKE 
+					<if test="dbName == 'oracle'">'%'||#{channelId}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{channelId}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{channelId},'%')</if>
+			</if>
+			<if test="beginDate != null and beginDate != ''">
+				AND date_format(ca.register_dt,'%Y-%m-%d') >= date_format(#{beginDate},'%Y-%m-%d')
+			</if>
+			<if test="endDate != null and endDate != ''">
+				AND date_format(#{endDate},'%Y-%m-%d') >= date_format(ca.register_dt,'%Y-%m-%d')
+			</if>
+
+GROUP BY ca.ad_channel_id,date_format(ca.register_dt,'%Y-%m-%d') HAVING ca.ad_channel_id  is NOT null
+	</select>
+	
+		<!-- 根据名称查询推广渠道 -->
+	<select id="getByName" resultType="AdChannelInfo" parameterType="AdChannelInfo">
+		SELECT
+			<include refid="adChannelInfoColumns"/>
+		FROM ad_channel_info a
+			<include refid="adChannelInfoJoins"/>
+		WHERE a.channel_name = #{channelName}
+	</select>
+	
+	
+	<select id="findList" resultType="AdChannelInfo">
+		SELECT 
+			<include refid="adChannelInfoColumns"/>
+		FROM ad_channel_info a
+		<include refid="adChannelInfoJoins"/>
+		<where>
+			
+			<if test="status != null and status != ''">
+				and status = #{status}
+			</if>
+			<if test="channel != null and channel != ''">
+				AND a.channel LIKE 
+					<if test="dbName == 'oracle'">'%'||#{channel}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{channel}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{channel},'%')</if>
+			</if>
+			<if test="channelName != null and channelName != ''">
+				AND a.channel_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{channelName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{channelName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{channelName},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="AdChannelInfo">
+		SELECT 
+			<include refid="adChannelInfoColumns"/>
+		FROM ad_channel_info a
+		<include refid="adChannelInfoJoins"/>
+		<where>
+			<if test="status != null and status != ''">
+				and status = #{status}
+			</if>
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO ad_channel_info(
+			
+			channel,
+			channel_name,
+			start_dt,
+			end_dt,
+			status
+		) VALUES (
+			
+			#{channel},
+			#{channelName},
+			#{startDt},
+			#{endDt},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE ad_channel_info SET 	
+			channel = #{channel},
+			channel_name = #{channelName},
+			start_dt = #{startDt},
+			end_dt = #{endDt},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE ad_channel_info SET 	
+		status = '1'
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

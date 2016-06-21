@@ -1,0 +1,74 @@
+一.接口使用方法：
+第一步：将范例中的所有文件上传到有外网IP的服务器(通常是贵公司电子商务网站所在的发布目录下的相应位置。保证支付提交时的p6_Url是外网可访问的，以此确保商户能接收到交易结果)；
+第二步：找到business.php中的doBeforPay(),doSuccessAfterPay(),doFailAfterPay()函数，分别代表“客户提交订单”，“支付成功”和“支付失败”后的业务处理，如更新数据库，校验金额，校验订单......
+第三步：找到merchantproperties.php文件，换上您的正式商户编号和密钥以及正式地址.
+
+
+二.关于中文问题：
+如果要使用中文请配置iconv环境，否则不支持中文。iconv的配置方法和操作系统相关，请在互联网搜索，谢谢！
+
+
+三.关于日志文件问题：
+1. 找到merchantproperties.php文件中的$logName变量，配置日志所在路径；
+2. 日志文件记录了所有向易宝支付发起的请求数据，返回数据；且为了方便将来的错误排查，还记录了生成签名的所有数据。当接口出现问题时，请检查日志中的信息，在无法自行解决时，将信息提供给易宝技术支持；
+
+
+四. 测试帐号/密钥
+1.测试商户编号
+  p1_MerId = "10001126856";
+2.测试用商户密钥
+  keyValue = "69cl522AV6q613Ii4W6u8K6XuW8vM1N6bFgyv769220IuYe9u37N4y7rI4Pl";
+
+
+五.文件结构说明
+┣ index.html 首页
+		
+┣ buyInput.html 支付输入页
+
+┣ buy.php 支付请求页
+
+┣ callback.php 通知页（接收支付结果，并向易宝服务器回写success）
+
+┣ refundExtInput.html 退款输入页
+
+┣ refundExt.php 退款请求页
+
+┣ indirectRegisterInput.html 子商户注册引导页
+
+┣ indirectRegister.php 子商户注册请求页
+
+┣ paymentConfirmInput.html 解冻输入页
+
+┣ paymentConfirm.php 解冻请求页
+
+┣ baseclass 
+┃┣ DistributeBizBase.class.php 基类,核心处理类
+
+┣ function  
+┃┣ HttpClient.class.php HTTP协议类
+
+┃┣ Map.class.php Map类
+
+┃┣ merchantproperties.php 配置文件（在此文件内修改商户ID，密钥和请求地址等）
+
+┣ pay  
+┃┣ DistributeBizPay.class.php 支付继承类
+
+┣ refund 
+┃┣ DistributeBizRefund.class.php 退款继承类（返回退款结果）
+
+┣ subreg
+┃┣ DistributeBizSubreg.class.php 子商户注册继承类
+
+┣ thaw
+┃┣ DistributeBizThaw.class.php 解冻继承类（返回子解冻结果）
+
+
+六.在接收到支付结果通知后，判断是否进行过业务逻辑处理，不要重复进行业务逻辑处理
+
+
+
+
+
+
+

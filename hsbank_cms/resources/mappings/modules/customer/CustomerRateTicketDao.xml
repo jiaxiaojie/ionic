@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerRateTicketDao">
+    
+	<sql id="customerRateTicketColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.ticket_type_id AS "ticketTypeId",
+		a.get_dt AS "getDt",
+		a.invalid_dt AS "invalidDt",
+		a.get_remark AS "getRemark",
+		a.use_dt AS "useDt",
+		a.use_remark AS "useRemark",
+		a.use_project_id AS "useProjectId",
+		a.status AS "status",
+		b.id AS "rateTicketType.id",
+		b.ticket_type_name AS "rateTicketType.ticketTypeName",
+		b.rate AS "rateTicketType.rate",
+		b.rate_duration AS "rateTicketType.rateDuration",
+		b.max_amount AS "rateTicketType.maxAmount",
+		b.term_of_validity AS "rateTicketType.termOfValidity",
+		b.status AS "rateTicketType.status",
+		b.use_description AS "rateTicketType.useDescription"
+	</sql>
+	
+	<sql id="customerRateTicketJoins">
+		LEFT JOIN rate_ticket_type b ON a.ticket_type_id=b.id 
+	</sql>
+    
+	<select id="get" resultType="CustomerRateTicket">
+		SELECT 
+			<include refid="customerRateTicketColumns"/>
+		FROM customer_rate_ticket a
+		<include refid="customerRateTicketJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerRateTicket">
+		SELECT 
+			<include refid="customerRateTicketColumns"/>
+		FROM customer_rate_ticket a
+		<include refid="customerRateTicketJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="ticketTypeId != null and ticketTypeId != ''">
+				AND a.ticket_type_id = #{ticketTypeId}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerRateTicket">
+		SELECT 
+			<include refid="customerRateTicketColumns"/>
+		FROM customer_rate_ticket a
+		<include refid="customerRateTicketJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_rate_ticket(
+			account_id,
+			ticket_type_id,
+			get_dt,
+			invalid_dt,
+			get_remark,
+			use_dt,
+			use_remark,
+			use_project_id,
+			status
+		) VALUES (
+			#{accountId},
+			#{ticketTypeId},
+			#{getDt},
+			#{invalidDt},
+			#{getRemark},
+			#{useDt},
+			#{useRemark},
+			#{useProjectId},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_rate_ticket SET 	
+			account_id = #{accountId},
+			ticket_type_id = #{ticketTypeId},
+			get_dt = #{getDt},
+			invalid_dt = #{invalidDt},
+			get_remark = #{getRemark},
+			use_dt = #{useDt},
+			use_remark = #{useRemark},
+			use_project_id = #{useProjectId},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_rate_ticket
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getListByRateTicketIds" resultType="CustomerRateTicket">
+		SELECT 
+			<include refid="customerRateTicketColumns"/>
+		FROM customer_rate_ticket a
+		<include refid="customerRateTicketJoins"/>
+		<where>
+			a.id IN (${rateTicketIds})
+		</where>
+	</select>
+	
+	<select id="getListByAccountId" resultType="CustomerRateTicket">
+		SELECT 
+			<include refid="customerRateTicketColumns"/>
+		FROM customer_rate_ticket a
+		<include refid="customerRateTicketJoins"/>
+		<where>
+			a.account_id = #{accountId}
+			AND a.status = #{status}
+		</where>
+	</select>
+	
+	<select id="findListByMap" resultType="CustomerRateTicket">
+		select a.*,
+			b.ticket_type_name AS "rateTicketType.ticketTypeName",
+			b.rate AS "rateTicketType.rate",
+			b.rate_duration AS "rateTicketType.rateDuration",
+			b.max_amount AS "rateTicketType.maxAmount",
+			b.term_of_validity AS "rateTicketType.termOfValidity",
+			b.status AS "rateTicketType.status",
+			b.use_description AS "rateTicketType.useDescription"
+		from customer_rate_ticket a left join rate_ticket_type b on a.ticket_type_id = b.id
+		where a.account_id = #{accountId} and a.status = #{status}
+		<if test="page.orderBy != null and page.orderBy != ''">
+			order by ${page.orderBy}
+		</if>
+	</select>
+	
+	<update id="expiredTicket">
+		update customer_rate_ticket set status = '2' where date(invalid_dt) &lt; date(now()) and status = '0'
+	</update>
+
+	<select id="getRateTicketStatistics" resultType="map">
+		select count(*) AS count, ifnull(sum(b.rate), 0) AS sumRate
+		  from customer_rate_ticket a
+		<include refid="customerRateTicketJoins"/>
+		 where a.account_id = #{accountId}
+		   and a. status = #{status}
+	</select>
+</mapper>

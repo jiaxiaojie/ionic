@@ -1,0 +1,76 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>创建订单</title>
+</head>
+<body>
+<table>
+<form action='pay/pay.asp' method='post' target="_blank">
+<!--消息类型:--> 
+<input type='hidden' name='p0_Cmd' value='Buy'><!--(必填)固定值Buy-->
+<!--交易币种:--> 
+<input type='hidden' name='p4_Cur' value='RMB'><!--(必填)固定值RMB-->
+<!--是否使用应答机制:--> 
+<input type='hidden' name='pr_NeedResponse' value='1'><!--(必填)默认为1-->
+<!--固定为易宝账号-->
+<input name="py_IsYeePayName" value="1" type="hidden" />
+       <tr>
+		  	<td align="left">&nbsp;&nbsp;商户订单号</td>
+		  	<td align="left">&nbsp;&nbsp;<input type='text' name='p2_Order' size="40" value='yue_20091105_1'>(必填)由平台的系统生成，必须保证唯一。可利用当前时间随机生成。</td>
+      </tr>
+		  <tr>
+		  	<td align="left">&nbsp;&nbsp;支付金额</td>
+		  	<td align="left">&nbsp;&nbsp;<input type='text' name='p3_Amt' size="40" value='1'>(必填)最小为1元。</td>
+      </tr>
+		  <tr>
+		  	<td align="left">&nbsp;&nbsp;商品名称</td>
+		  	<td align="left">&nbsp;&nbsp;<input type='text' name='p5_Pid' size="40" value='ticket'>(必填)</td>
+      </tr>
+		  <tr>
+		  	<td align="left">&nbsp;&nbsp;返回地址</td>
+		  	<td align="left">&nbsp;&nbsp;<input type='text' name='p6_Url' size="40" value='http://localhost/FZaspXN/callBack.asp'>(必填) 商家处理结果返回页面。</td>
+      </tr>
+		  <tr>
+		  	<td align="left">&nbsp;&nbsp;扩展信息</td>
+		  	<td align="left">&nbsp;&nbsp;<input type='text' name='p7_MP' size="40" value='ticke'>(可选)可以为空串，该字段的内容会在交易完成后原样返回。</td>
+      </tr>
+		  <tr>
+		  	<td align="left">&nbsp;&nbsp;支付通道编码</td>
+		  	<td align="left">&nbsp;&nbsp;<input type='text' name='p8_FrpId' value=''>(可选)支付的银行通道编码。</td>
+      </tr>
+		  <tr>
+		  	<td align="left">&nbsp;&nbsp;购买者手机号</td>
+		  	<td align="left">&nbsp;&nbsp;<input type='text' name='p9_TelNum' value=''>(可选)可以为空串。</td>
+      </tr>
+		  <tr>
+		  	<td align="left">&nbsp;&nbsp;分账明细</td>
+		  	<td align="left">&nbsp;&nbsp;<input type='text' name='pa_Details' value=''>(可选)规则见帮助文档。
+		  	</td>
+      </tr>
+		  <tr>
+		  	<td align="left">&nbsp;&nbsp;是否自动分账</td>
+		  	<td align="left">&nbsp;&nbsp;<select name="pc_AutoSplit" id="pc_AutoSplit">
+		  			<option value="0">否</option>
+					<option value="1">是</option>
+		  		</select>
+			(可选)默认为0不分账，1为分账。
+		  	</td>
+      </tr>
+		  <tr>
+		  	<td align="left">&nbsp;&nbsp;订单有效期</td>
+		  	<td align="left">&nbsp;&nbsp;<input type='text' name='pm_Period' value=''>(可选)阿拉伯数字
+		  	</td>
+      </tr>
+		  <tr>
+		  	<td align="left">&nbsp;&nbsp;有效期单位</td>
+		  	<td align="left">&nbsp;&nbsp;<input type='text' name='pn_Unit' value=''>(可选)day    天
+		  	</td>
+      </tr>				
+		  <tr>
+		  	<td align="left">&nbsp;</td>
+		  	<td align="left">&nbsp;&nbsp;<input type="submit" value="马上支付" /></td>
+      </tr>
+    </form>
+      </table>
+	</body>
+</html>

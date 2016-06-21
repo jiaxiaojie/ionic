@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.current.dao.CurrentProjectHoldInfoDao">
+    
+	<sql id="currentProjectHoldInfoColumns">
+		a.id AS "id",
+		a.project_id AS "projectId",
+		a.account_id AS "accountId",
+		a.principal AS "principal",
+		a.apply_redeem_principal AS "applyRedeemPrincipal",
+		a.interest AS "interest",
+		a.status AS "status",
+		pi.name AS "currentProjectInfo.name",
+		cb.mobile AS "customerBase.mobile",
+		pi.code AS "currentProjectInfo.code"
+	</sql>
+	
+	<sql id="currentProjectHoldInfoJoins">
+	JOIN current_project_info pi ON pi.id=a.project_id
+	JOIN customer_base cb ON cb.account_id=a.account_id
+	</sql>
+    
+	<select id="get" resultType="CurrentProjectHoldInfo">
+		SELECT 
+			<include refid="currentProjectHoldInfoColumns"/>
+		FROM current_project_hold_info a
+		<include refid="currentProjectHoldInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getStatPrincipalListByAccountId" resultType="java.util.Map">
+		select sum(t.principal) AS principal,account_id AS accountId
+		from current_project_hold_info t group by t.account_id
+	</select>
+	
+	<select id="findList" resultType="CurrentProjectHoldInfo">
+		SELECT 
+			<include refid="currentProjectHoldInfoColumns"/>
+		FROM current_project_hold_info a
+		<include refid="currentProjectHoldInfoJoins"/>
+		<where>
+			
+			<if test="projectId != null and projectId != ''">
+				AND a.project_id = #{projectId}
+			</if>
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="beginPrincipal != null  and beginPrincipal != ''">
+				AND a.principal >= #{beginPrincipal}
+			</if>
+			<if test="endPrincipal != null  and endPrincipal != ''">
+				AND  #{endPrincipal} >= a.principal
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="customerBase != null">
+				<if test="customerBase.mobile != null and customerBase.mobile != ''">
+				AND cb.mobile  LIKE 
+					<if test="dbName == 'oracle'">'%'||#{customerBase.mobile}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{customerBase.mobile}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{customerBase.mobile},'%')</if>
+				</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CurrentProjectHoldInfo">
+		SELECT 
+			<include refid="currentProjectHoldInfoColumns"/>
+		FROM current_project_hold_info a
+		<include refid="currentProjectHoldInfoJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="searchMyPageList" resultType="CurrentProjectHoldInfo">
+		SELECT  a.id AS "id",
+				a.project_id AS "projectId",
+				a.account_id AS "accountId",
+				a.principal AS "principal",
+				a.apply_redeem_principal AS "applyRedeemPrincipal",
+				a.interest AS "interest",
+				a.status AS "status",
+				pi.name AS "currentProjectInfo.name",
+				pi.rate AS "currentProjectInfo.rate",
+				pi.status AS "currentProjectInfo.status",
+				pi.code AS "currentProjectInfo.code",
+				case when pif.totalProfit > 0 then pif.totalProfit ELSE 0.00  end AS "totalProfit"
+		FROM current_project_hold_info a
+		JOIN current_project_info pi ON pi.id=a.project_id
+		LEFT JOIN  (SELECT SUM(change_value) AS totalProfit,project_id from current_account_interest_change_his WHERE account_id=#{accountId} AND change_type='0' GROUP BY project_id) pif ON pif.project_id=a.project_id
+		<where>
+			a.account_id = #{accountId} AND (a.principal > 0 OR truncate(a.interest,2) > 0)
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			    ORDER BY pi.status asc,pi.publish_dt desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getMyCurrentProjectHoldInfo" resultType="CurrentProjectHoldInfo">
+		SELECT  a.id AS "id",
+				a.project_id AS "projectId",
+				a.account_id AS "accountId",
+				a.principal AS "principal",
+				a.apply_redeem_principal AS "applyRedeemPrincipal",
+				a.interest AS "interest",
+				a.status AS "status",
+				pi.name AS "currentProjectInfo.name",
+				pi.rate AS "currentProjectInfo.rate",
+				pi.status AS "currentProjectInfo.status",
+				pes.has_repaid_money AS "totalProfit",
+				pi.code AS "currentProjectInfo.code"
+		FROM current_project_hold_info a
+		JOIN current_project_info pi ON pi.id=a.project_id
+		JOIN current_project_execute_snapshot pes ON pes.project_id=a.project_id
+		<where>
+			a.account_id = #{accountId} AND CONVERT(a.project_id,CHAR) = #{projectId}
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>		
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO current_project_hold_info(
+			project_id,
+			account_id,
+			principal,
+			apply_redeem_principal,
+			interest,
+			status
+		) VALUES (
+			#{projectId},
+			#{accountId},
+			#{principal},
+			#{applyRedeemPrincipal},
+			#{interest},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE current_project_hold_info SET 	
+			project_id = #{projectId},
+			account_id = #{accountId},
+			principal = #{principal},
+			apply_redeem_principal = #{applyRedeemPrincipal},
+			interest = #{interest},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updatePrincipal">
+		UPDATE current_project_hold_info SET 	
+			principal = principal + #{amount}
+		WHERE project_id = #{projectId}
+			  AND account_id = #{accountId}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM current_project_hold_info
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getByAccountIdAndProjectId" resultType="CurrentProjectHoldInfo">
+		select * from current_project_hold_info where account_id = #{accountId} and project_id = #{projectId} and status = #{status} limit 1
+	</select>
+	
+	<update id="doRedeemPrincipal">
+		update current_project_hold_info set apply_redeem_principal = apply_redeem_principal + #{redeemPrincipal}
+		where account_id = #{accountId} and project_id = #{projectId}
+	</update>
+	
+	<select id="findListByStatuses" resultType="CurrentProjectHoldInfo">
+		select * from current_project_hold_info where status in
+			<foreach collection="statuses" index="index" item="status" open="(" separator="," close=")">
+				#{status}
+			</foreach>
+	</select>
+	
+	<update id="updateByRepay">
+		update current_project_hold_info set interest = interest + #{reayInterest} where id = #{id}
+	</update>
+	
+	<update id="updateByPayRedeem">
+		update current_project_hold_info set principal = principal - #{redeemPrincipal}, apply_redeem_principal = apply_redeem_principal - #{redeemPrincipal} where id = #{id}
+	</update>
+	
+	<update id="updateByPollInterest">
+		update current_project_hold_info set interest = interest - #{pollInterest} where account_id = #{accountId} and project_id = #{projectId}
+	</update>
+	
+	<select id="findListByProjectIdAndStatus" resultType="CurrentProjectHoldInfo">
+		select * from current_project_hold_info where project_id = #{projectId} and status = #{status}
+	</select>
+	
+	<update id="updateByWindingUp">
+		update current_project_hold_info set principal = apply_redeem_principal, interest = 0, status = '1' where id = #{id}
+	</update>
+	
+	<select id="findListByAccountId" resultType="CurrentProjectHoldInfo">
+		select * from current_project_hold_info where account_id = #{accountId}
+	</select>
+	
+	<select id="getSumPrincipalByAccountId" resultType="java.lang.Double">
+		select sum(t.principal) from current_project_hold_info t where t.account_id= #{accountId} group by t.account_id
+	</select>
+</mapper>

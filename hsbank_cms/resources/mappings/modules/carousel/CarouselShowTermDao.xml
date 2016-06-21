@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.carousel.dao.CarouselShowTermDao">
+    
+	<sql id="carouselShowTermColumns">
+		a.id AS "id",
+		a.carousel_id AS "carouselId",
+		a.term_code AS "termCode"
+	</sql>
+	
+	<sql id="carouselShowTermJoins">
+	</sql>
+    
+	<select id="get" resultType="CarouselShowTerm">
+		SELECT 
+			<include refid="carouselShowTermColumns"/>
+		FROM carousel_show_term a
+		<include refid="carouselShowTermJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CarouselShowTerm">
+		SELECT 
+			<include refid="carouselShowTermColumns"/>
+		FROM carousel_show_term a
+		<include refid="carouselShowTermJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findListByCarouselId" resultType="CarouselShowTerm">
+		SELECT 
+			<include refid="carouselShowTermColumns"/>
+		FROM carousel_show_term a
+		<include refid="carouselShowTermJoins"/>
+		<where>
+			a.carousel_id = #{carouselId} 
+		</where>
+	</select>
+	
+	
+	<select id="findAllList" resultType="CarouselShowTerm">
+		SELECT 
+			<include refid="carouselShowTermColumns"/>
+		FROM carousel_show_term a
+		<include refid="carouselShowTermJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<insert id="insert">
+		INSERT INTO carousel_show_term(
+			carousel_id,
+			term_code
+		) VALUES (
+			#{carouselId},
+			#{termCode}
+		)
+	</insert>
+	
+	
+	<insert id="insertBatch" >
+        INSERT INTO carousel_show_term(carousel_id,term_code)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.carouselId},#{item.termCode})
+        </foreach>
+    </insert>
+	
+	 <update id="deleteByCarouselId">
+		DELETE FROM carousel_show_term
+		WHERE carousel_id = #{carouselId}
+	</update>  
+	
+	<update id="update">
+		UPDATE carousel_show_term SET 	
+			carousel_id = #{carouselId},
+			term_code = #{termCode}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<update id="delete">
+		DELETE FROM carousel_show_term
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

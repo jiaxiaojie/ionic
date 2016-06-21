@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerBaseHisDao">
+    
+	<sql id="customerBaseHisColumns">
+		a.id AS "id",
+		a.customer_id AS "customerBase.customerId",
+		a.account_id AS "customerBase.accountId",
+		a.customer_name AS "customerBase.customerName",
+		a.name_auth AS "customerBase.nameAuth",
+		a.nationality AS "customerBase.nationality",
+		a.cert_num AS "customerBase.certNum",
+		a.age_score AS "customerBase.ageScore",
+		a.gender_code AS "customerBase.genderCode",
+		a.marriage_code AS "customerBase.marriageCode",
+		a.education_code AS "customerBase.educationCode",
+		a.income_code AS "customerBase.incomeCode",
+		a.contact_number AS "customerBase.contactNumber",
+		a.mobile_1 AS "customerBase.mobile1",
+		a.is_mobile_validate AS "customerBase.isMobileValidate",
+		a.mobile_2 AS "customerBase.mobile2",
+		a.address AS "customerBase.address",
+		a.qq_num AS "customerBase.qqNum",
+		a.email AS "customerBase.email",
+		a.is_email_validate AS "customerBase.isEmailValidate",
+		a.post_code AS "customerBase.postCode",
+		a.credit_card_bank AS "customerBase.creditCardBank",
+		a.credit_card_no AS "customerBase.creditCardNo",
+		a.credit_card_auth AS "customerBase.creditCardAuth",
+		a.cert_file_1 AS "customerBase.certFile1",
+		a.cert_file_2 AS "customerBase.certFile2",
+		a.cert_file_3 AS "customerBase.certFile3",
+		a.create_dt AS "createDt",
+		b.account_type AS "customerBase.accountType",
+		b.account_name AS "accountName",
+		c.org_code AS "customerBase.customerOrgExtendInfo.orgCode",
+		c.org_business_license AS "customerBase.customerOrgExtendInfo.orgBusinessLicense",
+		c.org_tax_registration AS "customerBase.customerOrgExtendInfo.orgTaxRegistration",
+		c.registered_ife AS "customerBase.customerOrgExtendInfo.registeredIfe",
+		c.registered_capital AS "customerBase.customerOrgExtendInfo.registeredCapital",
+		c.cash_inflows AS "customerBase.customerOrgExtendInfo.cashInflows",
+		c.industry AS "customerBase.customerOrgExtendInfo.industry",
+		c.business_activities "customerBase.customerOrgExtendInfo.businessActivities",
+		c.litigation_situatio AS "customerBase.customerOrgExtendInfo.litigationSituatio",
+		c.credit_record AS "customerBase.customerOrgExtendInfo.creditRecord",
+		c.create_user_id AS "customerBase.customerOrgExtendInfo.createUserId",
+		c.modify_user_id AS "customerBase.customerOrgExtendInfo.modifyUserId",
+		c.status AS "customerBase.customerOrgExtendInfo.status"
+	</sql>
+	
+	<sql id="customerBaseHisJoins">
+		LEFT JOIN customer_account b ON b.account_id=a.account_id
+		LEFT JOIN customer_org_extend_info c ON c.customer_id=a.customer_id
+	</sql>
+    
+	<select id="get" resultType="CustomerBaseHis">
+		SELECT 
+			<include refid="customerBaseHisColumns"/>
+		FROM customer_base_his a
+		<include refid="customerBaseHisJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerBaseHis">
+		SELECT 
+			<include refid="customerBaseHisColumns"/>
+		FROM customer_base_his a
+		<include refid="customerBaseHisJoins"/>
+		<where>
+			
+			<choose>
+				<when test="customerBase !=null and customerBase.customerId != null and customerBase.customerId != ''">
+					AND a.customer_id=#{customerBase.customerId}
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerBaseHis">
+		SELECT 
+			<include refid="customerBaseHisColumns"/>
+		FROM customer_base_his a
+		<include refid="customerBaseHisJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_base_his(
+			customer_id,
+			account_id,
+			customer_name,
+			name_auth,
+			nationality,
+			cert_num,
+			age_score,
+			gender_code,
+			marriage_code,
+			education_code,
+			income_code,
+			contact_number,
+			mobile_1,
+			is_mobile_validate,
+			mobile_2,
+			address,
+			qq_num,
+			email,
+			is_email_validate,
+			post_code,
+			credit_card_bank,
+			credit_card_no,
+			credit_card_auth,
+			cert_file_1,
+			cert_file_2,
+			cert_file_3,
+			create_dt
+		) VALUES (
+			#{customerBase.customerId},
+			#{customerBase.accountId},
+			#{customerBase.customerName},
+			#{customerBase.nameAuth},
+			#{customerBase.nationality},
+			#{customerBase.certNum},
+			#{customerBase.ageScore},
+			#{customerBase.genderCode},
+			#{customerBase.marriageCode},
+			#{customerBase.educationCode},
+			#{customerBase.incomeCode},
+			#{customerBase.contactNumber},
+			#{customerBase.mobile1},
+			#{customerBase.isMobileValidate},
+			#{customerBase.mobile2},
+			#{customerBase.address},
+			#{customerBase.qqNum},
+			#{customerBase.email},
+			#{customerBase.isEmailValidate},
+			#{customerBase.postCode},
+			#{customerBase.creditCardBank},
+			#{customerBase.creditCardNo},
+			#{customerBase.creditCardAuth},
+			#{customerBase.certFile1},
+			#{customerBase.certFile2},
+			#{customerBase.certFile3},
+			#{createDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_base_his SET 	
+			customer_name = #{customerName},
+			name_auth = #{nameAuth},
+			nationality = #{nationality},
+			cert_type = #{certType},
+			cert_num = #{certNum},
+			age_score = #{ageScore},
+			gender_code = #{genderCode},
+			marriage_code = #{marriageCode},
+			education_code = #{educationCode},
+			income_code = #{incomeCode},
+			contact_number = #{contactNumber},
+			mobile_1 = #{mobile1},
+			is_mobile_validate = #{isMobileValidate},
+			mobile_2 = #{mobile2},
+			address = #{address},
+			qq_num = #{qqNum},
+			email = #{email},
+			is_email_validate = #{isEmailValidate},
+			post_code = #{postCode},
+			credit_card_bank = #{creditCardBank},
+			credit_card_no = #{creditCardNo},
+			credit_card_auth = #{creditCardAuth},
+			cert_file_1 = #{certFile1},
+			cert_file_2 = #{certFile2},
+			cert_file_3 = #{certFile3}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_base_his
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

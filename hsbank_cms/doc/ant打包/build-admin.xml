@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<project name="hsbank-admin" default="dist" basedir="../../">
+	<property environment="env" />
+	<property name="project.name" value="${basedir}" description="项目目录" />
+	<property name="java.lib.dir" value="${env.JAVA_HOME}/lib" description="java lib目录" />
+	<property name="tomcat.lib.dir" value="${env.TOMCAT_HOME}/lib" description="tomcat lib目录" />
+
+	<property name="root.dir" value="${basedir}/../AntCompileDir" description="输出文件夹" />
+	<property name="build.dir" value="${root.dir}/${ant.project.name}" description="输出目录" />
+	<property name="build.web.dir" value="${build.dir}/WEB-INF" description="web-info" />
+	<property name="build.web.classes.dir" value="${build.web.dir}/classes" description="编译后class文件目录" />
+	<property name="build.web.lib.dir" value="${build.web.dir}/lib" description="lib" />
+
+	<property name="src.dir" value="${project.name}/src" description="源码目录" />
+	<property name="webapp.dir" value="${project.name}/webapp" />
+	<property name="lib.dir" value="${webapp.dir}/WEB-INF/lib" />
+
+
+	<target name="init">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.web.dir}" />
+		<mkdir dir="${build.web.classes.dir}" />
+		<mkdir dir="${build.web.lib.dir}" />
+	</target>
+	<target name="compile" depends="init">
+		<javac destdir="${build.web.classes.dir}" source="1.8" target="1.8" debug="on" deprecation="false" optimize="false" failonerror="true" srcdir="${src.dir}">
+			<compilerarg line="-encoding UTF-8" />
+			<classpath>
+				<fileset dir="${lib.dir}" includes="*.jar" />
+				<fileset dir="${tomcat.lib.dir}" includes="*.jar" />
+				<fileset dir="${java.lib.dir}" includes="*.jar" />
+			</classpath>
+		</javac>
+
+		<copy todir="${build.web.classes.dir}">
+			<fileset dir="${src.dir}" excludes="**/*.java">
+			</fileset>
+		</copy>
+
+		<copy todir="${build.dir}">
+			<fileset dir="${webapp.dir}" excludes="**/*.class">
+			</fileset>
+		</copy>
+
+		<copy todir="${build.web.classes.dir}">
+			<fileset dir="${project.name}/resources" excludes="**/*.class">
+			</fileset>
+		</copy>
+
+
+
+	</target>
+
+	<target name="main" depends="compile">
+		<delete includeemptydirs="true">
+			<fileset dir="${build.web.classes.dir}\com\thinkgem\jeesite\modules" defaultexcludes="false">
+				<include name="front/**/*Controller.class" />
+			</fileset>
+			<fileset dir="${build.web.dir}\views\modules" defaultexcludes="false">
+				<include name="front/" />
+			</fileset>
+			<fileset dir="${build.web.classes.dir}" defaultexcludes="false">
+				<include name="spring-context-task.xml" />
+			</fileset>
+		</delete>
+	</target>
+	<target name="dist" depends="main">
+		<war destfile="${root.dir}/admin.war" basedir="${build.dir}" webxml="${build.web.dir}/web.xml" />
+	</target>
+</project>

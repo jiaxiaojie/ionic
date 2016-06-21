@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.marketing.dao.MarketingActivityUserBehaviorLimitDao">
+    
+	<sql id="marketingActivityUserBehaviorLimitColumns">
+		a.id AS "id",
+		a.activity_code AS "activityCode",
+		a.action_type AS "actionType"
+	</sql>
+	
+	<sql id="marketingActivityUserBehaviorLimitJoins">
+	</sql>
+    
+	<select id="get" resultType="MarketingActivityUserBehaviorLimit">
+		SELECT 
+			<include refid="marketingActivityUserBehaviorLimitColumns"/>
+		FROM marketing_activity_user_behavior_limit a
+		<include refid="marketingActivityUserBehaviorLimitJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MarketingActivityUserBehaviorLimit">
+		SELECT 
+			<include refid="marketingActivityUserBehaviorLimitColumns"/>
+		FROM marketing_activity_user_behavior_limit a
+		<include refid="marketingActivityUserBehaviorLimitJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findListByActivityCode" resultType="MarketingActivityUserBehaviorLimit">
+		SELECT 
+			<include refid="marketingActivityUserBehaviorLimitColumns"/>
+		FROM marketing_activity_user_behavior_limit a
+		<include refid="marketingActivityUserBehaviorLimitJoins"/>
+		<where>
+			a.activity_code = #{activityCode}
+		</where>
+	</select>
+	
+	<select id="findAllList" resultType="MarketingActivityUserBehaviorLimit">
+		SELECT 
+			<include refid="marketingActivityUserBehaviorLimitColumns"/>
+		FROM marketing_activity_user_behavior_limit a
+		<include refid="marketingActivityUserBehaviorLimitJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO marketing_activity_user_behavior_limit(
+			activity_code,
+			action_type
+		) VALUES (
+			#{activityCode},
+			#{actionType}
+		)
+	</insert>
+	
+	<insert id="insertBatch">
+        INSERT INTO marketing_activity_user_behavior_limit(activity_code,action_type)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.activityCode},#{item.actionType})
+        </foreach>
+    </insert>
+	
+	<update id="update">
+		UPDATE marketing_activity_user_behavior_limit SET 	
+			activity_code = #{activityCode},
+			action_type = #{actionType}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM marketing_activity_user_behavior_limit
+		WHERE id = #{id}
+	</update>
+	
+	<update id="deleteByActivityCode">
+		DELETE FROM marketing_activity_user_behavior_limit
+		WHERE activity_code = #{activityCode}
+	</update>
+</mapper>

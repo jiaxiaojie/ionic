@@ -1,0 +1,724 @@
+﻿
+SET @acitivity_id_1000 = 13;
+
+
+SET @acitivity_id_1001 = 12;
+
+
+SET @acitivity_id_1002 = 14;
+
+
+SET @acitivity_id_1003 = 15;
+
+
+SET @acitivity_id_1004 = 16;
+
+
+SET @behavior_register = '1020';
+
+
+SET @behavior_recharge = '1050';
+
+
+SET @behavior_open_third_account = '1060';
+
+
+SET @behavior_tender = '1090';
+
+
+SET @behavior_tender_over = '1130';
+
+
+SET @award_type_money = '2';
+
+
+SET @award_type_integral = '3';
+
+
+SET @award_type_investment_ticket = '1';
+
+
+SET @award_type_free_withdraw_count = '4';
+
+
+SET @cause_self = '0';
+
+
+SET @cause_friend_investment = '1';
+
+
+SET @cause_friend_other_behavior = '2';
+
+
+SET @ticket_id_1 = '5';
+
+
+SET @ticket_id_2 = '10';
+
+
+SET @ticket_id_3 = '20';
+
+
+SET @ticket_id_4 = '50';
+
+
+SET @ticket_id_5 = '100';
+
+INSERT INTO marketing_activity_award_record (
+	`activity_id`,
+	`behavior_code`,
+	`channel_id`,
+	`account_id`,
+	`award_type`,
+	`award_dt`,
+	`award_value`,
+	`award_reason`,
+	`cause_type`,
+	`cause_id`
+) SELECT
+	a.*
+FROM
+	(
+		(
+			SELECT
+				@acitivity_id_1004 AS 'activity_id',
+				@behavior_open_third_account AS 'behavior_code',
+				op_term_type AS 'channel_id',
+				account_id AS 'account_id',
+				@award_type_money AS 'award_type',
+				op_dt AS 'award_dt',
+				change_val AS 'award_value',
+				'开通第三方账号送现金。' AS 'award_reason',
+				@cause_self AS 'cause_type',
+				ext_1 AS 'cause_id'
+			FROM
+				customer_balance_his
+			WHERE
+				change_reason = '新用户注册并完成实名认证'
+			OR change_reason = '补送实名认证奖励1.88元'
+		)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1002 AS 'activity_id',
+					@behavior_recharge AS 'behavior_code',
+					op_term_type AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_money AS 'award_type',
+					op_dt AS 'award_dt',
+					change_val AS 'award_value',
+					'首次充值送现金。' AS 'award_reason',
+					@cause_self AS 'cause_type',
+					ext_1 AS 'cause_id'
+				FROM
+					customer_balance_his
+				WHERE
+					change_type = '7'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1004 AS 'activity_id',
+					@behavior_tender_over AS 'behavior_code',
+					op_term_type AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_money AS 'award_type',
+					op_dt AS 'award_dt',
+					change_val AS 'award_value',
+					'完成首次投资送现金。' AS 'award_reason',
+					@cause_self AS 'cause_type',
+					ext_1 AS 'cause_id'
+				FROM
+					customer_balance_his
+				WHERE
+					(
+						change_type = '6'
+						AND change_reason = '好友首次投资返利'
+						AND change_val = 8
+					)
+				OR (
+					change_reason = '补送首次投资返利8元'
+				)
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1002 AS 'activity_id',
+					@behavior_tender AS 'behavior_code',
+					op_term_type AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_money AS 'award_type',
+					op_dt AS 'award_dt',
+					change_val AS 'award_value',
+					'中秋活动完成投资送投资额千分之五现金。' AS 'award_reason',
+					@cause_self AS 'cause_type',
+					ext_1 AS 'cause_id'
+				FROM
+					customer_balance_his
+				WHERE
+					change_type = '8'
+				AND change_reason = '中秋活动赠送'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1004 AS 'activity_id',
+					@behavior_open_third_account AS 'behavior_code',
+					op_term_type AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_money AS 'award_type',
+					op_dt AS 'award_dt',
+					change_val AS 'award_value',
+					'好友开通第三方账号送现金。' AS 'award_reason',
+					@cause_friend_other_behavior AS 'cause_type',
+					ext_1 AS 'cause_id'
+				FROM
+					customer_balance_his
+				WHERE
+					(
+						change_type = '6'
+						AND change_reason = '好友注册奖励'
+					)
+				OR (
+					change_reason = '补送好友实名认证奖励1.88元'
+				)
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1004 AS 'activity_id',
+					@behavior_tender_over AS 'behavior_code',
+					op_term_type AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_money AS 'award_type',
+					op_dt AS 'award_dt',
+					change_val AS 'award_value',
+					'好友完成首次投资送现金。' AS 'award_reason',
+					@cause_friend_investment AS 'cause_type',
+					ext_1 AS 'cause_id'
+				FROM
+					customer_balance_his
+				WHERE
+					(
+						change_type = '6'
+						AND change_reason = '好友首次投资返利'
+						AND change_val = 2.88
+					)
+				OR (
+					change_reason = '补送好友首次投资奖励2.88元'
+				)
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1001 AS 'activity_id',
+					@behavior_tender_over AS 'behavior_code',
+					op_term_type AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_money AS 'award_type',
+					op_dt AS 'award_dt',
+					change_val AS 'award_value',
+					'好友完成首次投资送投资额千分之一现金。' AS 'award_reason',
+					@cause_friend_investment AS 'cause_type',
+					ext_1 AS 'cause_id'
+				FROM
+					customer_balance_his
+				WHERE
+					change_type = '6'
+				AND change_reason = '好友首次投资返利'
+				AND change_val != 2.88
+				AND change_val != 8
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1001 AS 'activity_id',
+					@behavior_open_third_account AS 'behavior_code',
+					op_term_type AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_integral AS 'award_type',
+					op_dt AS 'award_dt',
+					change_val AS 'award_value',
+					'好友开通第三方账号送花生豆。' AS 'award_reason',
+					@cause_friend_other_behavior AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_integral_his
+				WHERE
+					change_reason = '2'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1003 AS 'activity_id',
+					@behavior_tender_over AS 'behavior_code',
+					op_term_type AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_integral AS 'award_type',
+					op_dt AS 'award_dt',
+					change_val AS 'award_value',
+					'完成投资送花生豆。' AS 'award_reason',
+					@cause_friend_investment AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_integral_his
+				WHERE
+					change_reason = '3'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1001 AS 'activity_id',
+					@behavior_open_third_account AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_1 AS 'award_value',
+					'好友开通第三方账号送投资券。' AS 'award_reason',
+					@cause_friend_other_behavior AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark = '奖励推荐人5元券'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1001 AS 'activity_id',
+					@behavior_open_third_account AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_1 AS 'award_value',
+					'好友开通第三方账号送投资券。' AS 'award_reason',
+					@cause_friend_other_behavior AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark LIKE '%推荐赠送，被推荐人手机号：%'
+				AND ticket_type_id = '1'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1001 AS 'activity_id',
+					@behavior_open_third_account AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_3 AS 'award_value',
+					'好友开通第三方账号送投资券。' AS 'award_reason',
+					@cause_friend_other_behavior AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark LIKE '%推荐赠送，被推荐人手机号：%'
+				AND ticket_type_id = '3'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1000 AS 'activity_id',
+					@behavior_open_third_account AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_1 AS 'award_value',
+					'开通第三方账号送投资券。' AS 'award_reason',
+					@cause_self AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark = '新用户注册并完成实名认证'
+				AND ticket_type_id = '1'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1000 AS 'activity_id',
+					@behavior_open_third_account AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_2 AS 'award_value',
+					'开通第三方账号送投资券。' AS 'award_reason',
+					@cause_self AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark = '新用户注册并完成实名认证'
+				AND ticket_type_id = '2'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1000 AS 'activity_id',
+					@behavior_open_third_account AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_1 AS 'award_value',
+					'开通第三方账号送投资券。' AS 'award_reason',
+					@cause_self AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark = '注册大礼包'
+				AND ticket_type_id = '1'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1000 AS 'activity_id',
+					@behavior_open_third_account AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_2 AS 'award_value',
+					'开通第三方账号送投资券。' AS 'award_reason',
+					@cause_self AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark = '注册大礼包'
+				AND ticket_type_id = '2'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1000 AS 'activity_id',
+					@behavior_open_third_account AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_3 AS 'award_value',
+					'开通第三方账号送投资券。' AS 'award_reason',
+					@cause_self AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark = '注册大礼包'
+				AND ticket_type_id = '3'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1001 AS 'activity_id',
+					@behavior_open_third_account AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_2 AS 'award_value',
+					'好友开通第三方账号送投资券。' AS 'award_reason',
+					@cause_friend_other_behavior AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark = '邀请好友赠送'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1001 AS 'activity_id',
+					@behavior_tender_over AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_2 AS 'award_value',
+					'满5位好友完成投资送投资券。' AS 'award_reason',
+					@cause_friend_investment AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark = '邀请好友满5位赠送'
+				AND ticket_type_id = '2'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1001 AS 'activity_id',
+					@behavior_tender_over AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_3 AS 'award_value',
+					'满5位好友完成投资送投资券。' AS 'award_reason',
+					@cause_friend_investment AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark = '邀请好友满5位赠送'
+				AND ticket_type_id = '3'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1001 AS 'activity_id',
+					@behavior_tender_over AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_4 AS 'award_value',
+					'满5位好友完成投资送投资券。' AS 'award_reason',
+					@cause_friend_investment AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark = '邀请好友满5位赠送'
+				AND ticket_type_id = '4'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1001 AS 'activity_id',
+					@behavior_tender_over AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_5 AS 'award_value',
+					'满5位好友完成投资送投资券。' AS 'award_reason',
+					@cause_friend_investment AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark = '邀请好友满5位赠送'
+				AND ticket_type_id = '5'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1000 AS 'activity_id',
+					@behavior_tender AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_2 AS 'award_value',
+					'首次投资送投资券。' AS 'award_reason',
+					@cause_self AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark = '首次投资'
+				AND ticket_type_id = '2'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1000 AS 'activity_id',
+					@behavior_tender AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_3 AS 'award_value',
+					'首次投资送投资券。' AS 'award_reason',
+					@cause_self AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark = '首次投资'
+				AND ticket_type_id = '3'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1000 AS 'activity_id',
+					@behavior_tender AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_4 AS 'award_value',
+					'首次投资送投资券。' AS 'award_reason',
+					@cause_self AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark = '首次投资'
+				AND ticket_type_id = '4'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1000 AS 'activity_id',
+					@behavior_tender AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_5 AS 'award_value',
+					'首次投资送投资券。' AS 'award_reason',
+					@cause_self AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark = '首次投资'
+				AND ticket_type_id = '5'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1000 AS 'activity_id',
+					@behavior_tender AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_1 AS 'award_value',
+					'首次投资送投资券。' AS 'award_reason',
+					@cause_self AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark = '首次投资赠送200元红包'
+				AND ticket_type_id = '1'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1000 AS 'activity_id',
+					@behavior_tender AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_2 AS 'award_value',
+					'首次投资送投资券。' AS 'award_reason',
+					@cause_self AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark = '首次投资赠送200元红包'
+				AND ticket_type_id = '2'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1000 AS 'activity_id',
+					@behavior_tender AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_3 AS 'award_value',
+					'首次投资送投资券。' AS 'award_reason',
+					@cause_self AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark = '首次投资赠送200元红包'
+				AND ticket_type_id = '3'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1000 AS 'activity_id',
+					@behavior_tender AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_4 AS 'award_value',
+					'首次投资送投资券。' AS 'award_reason',
+					@cause_self AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark = '首次投资赠送200元红包'
+				AND ticket_type_id = '4'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1000 AS 'activity_id',
+					@behavior_tender AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_investment_ticket AS 'award_type',
+					get_dt AS 'award_dt',
+					@ticket_id_5 AS 'award_value',
+					'首次投资送投资券。' AS 'award_reason',
+					@cause_self AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_investment_ticket
+				WHERE
+					get_remark = '首次投资赠送200元红包'
+				AND ticket_type_id = '5'
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1000 AS 'activity_id',
+					@behavior_register AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_free_withdraw_count AS 'award_type',
+					get_dt AS 'award_dt',
+					change_val AS 'award_value',
+					'注册送提现券。' AS 'award_reason',
+					@cause_self AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_free_withdraw_count_his
+				WHERE
+					change_type_code = '0'
+				AND change_val > 10
+			)
+		UNION ALL
+			(
+				SELECT
+					@acitivity_id_1000 AS 'activity_id',
+					@behavior_tender_over AS 'behavior_code',
+					'0' AS 'channel_id',
+					account_id AS 'account_id',
+					@award_type_free_withdraw_count AS 'award_type',
+					get_dt AS 'award_dt',
+					change_val AS 'award_value',
+					'完成首次投资送提现券。' AS 'award_reason',
+					@cause_self AS 'cause_type',
+					NULL AS 'cause_id'
+				FROM
+					customer_free_withdraw_count_his
+				WHERE
+					change_type_code = '0'
+				AND change_val = 10
+			)
+	) a
+ORDER BY
+	a.award_dt

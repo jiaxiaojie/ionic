@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerRechargeHisDao">
+    
+	<sql id="customerRechargeHisColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.request_dt AS "requestDt",
+		a.money AS "money",
+		a.recharge_type AS "rechargeType",
+		a.remark AS "remark",
+		a.response_dt AS "responseDt",
+		a.response_code AS "responseCode",
+		a.third_party_req AS "thirdPartyReq",
+		a.query_dt AS "queryDt",
+		a.query_result AS "queryResult",
+		a.status AS "status"
+	</sql>
+	
+	<sql id="customerRechargeHisJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomerRechargeHis">
+		SELECT 
+			<include refid="customerRechargeHisColumns"/>
+		FROM customer_recharge_his a
+		<include refid="customerRechargeHisJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerRechargeHis">
+		SELECT 
+			<include refid="customerRechargeHisColumns"/>
+		FROM customer_recharge_his a
+		<include refid="customerRechargeHisJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="beginRequestDt != null  and beginRequestDt != ''">				AND a.request_dt >= #{beginRequestDt}			</if>			<if test="endRequestDt != null and endRequestDt != ''">				AND #{endRequestDt} >= a.request_dt			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerRechargeHis">
+		SELECT 
+			<include refid="customerRechargeHisColumns"/>
+		FROM customer_recharge_his a
+		<include refid="customerRechargeHisJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_recharge_his(
+			account_id,
+			request_dt,
+			money,
+			recharge_type,
+			remark,
+			response_dt,
+			response_code,
+			third_party_req,
+			query_dt,
+			query_result,
+			status
+		) VALUES (
+			#{accountId},
+			#{requestDt},
+			#{money},
+			#{rechargeType},
+			#{remark},
+			#{responseDt},
+			#{responseCode},
+			#{thirdPartyReq},
+			#{queryDt},
+			#{queryResult},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_recharge_his SET 	
+			account_id = #{accountId},
+			request_dt = #{requestDt},
+			money = #{money},
+			recharge_type = #{rechargeType},
+			remark = #{remark},
+			response_dt = #{responseDt},
+			response_code = #{responseCode},
+			third_party_req = #{thirdPartyReq},
+			query_dt = #{queryDt},
+			query_result = #{queryResult},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_recharge_his
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

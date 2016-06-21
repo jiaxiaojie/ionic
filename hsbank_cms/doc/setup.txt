@@ -1,0 +1,11 @@
+更新时需要修改的地方
+		文件							内容
+	1.jeesite.properties		jdbc.url、jdbc.password、数据库连接池链接数量、web.view.index
+	2.YeepayConstant.java		相关参数替换
+	3.head_for_front.jsp		注释掉百度站长统计代码
+	4.sql_script_****.sql		执行相应sql脚本
+	5.spring-context-task.xml	注意相关任务
+	6.两个taglib.jsp				修改version的值
+	7.MessageConstant.java		修改IOS_ENVIRONMENT
+	8.编译打包
+	9.重启redis

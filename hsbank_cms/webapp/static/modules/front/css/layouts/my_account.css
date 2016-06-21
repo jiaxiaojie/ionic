@@ -1,0 +1,119 @@
+#div_header_top{ width:980px; height:84px;}
+#div_header_top .div_left{ height:84px;width:364px;float:left;}
+#div_header_top .div_left .logo{height:84px;width:364px; cursor:pointer;}
+#div_header_top .div_right{width:616px;height:84px;float:right;}
+#div_header_top .div_right .spanLine{display:inline-block;padding-top:65px;width:5px;margin-left:5px;}
+#div_header_top .div_right .spanText{display:inline-block;padding-top:62px;margin-left:0;text-align:center;}
+#div_header_top .div_right .spanText a:link{width:65px; height:22px;background:url("")}
+#div_header_top .div_right .spanText a:visited{width:65px; height:22px;background:url("")}
+#div_header_top .div_right .spanText a:hover{width:65px; height:22px;background:url("")}
+#div_header_top .div_right .spanText a:active{width:65px; height:22px;background:url("")}
+#div_header_top .div_right .spanSNS{display:inline-block;padding-top:57px;margin-left:0;}
+#div_header_top .div_right .spanSNS .weixin a:link{display:block; width:32px; height:22px; background:url('../../images/util/weix.png') no-repeat center 0;}
+#div_header_top .div_right .spanSNS .weixin a:visited{display:block; width:32px; height:22px; background:url('../../images/util/weix.png') no-repeat center 0;}
+#div_header_top .div_right .spanSNS .weixin a:hover{background:url('../../images/util/weix-b.png') no-repeat center 0;} 
+#div_header_top .div_right .spanSNS .weixin a:active{background:url('../../images/util/weix-b.png') no-repeat center 0;} 
+#div_header_top .div_right .spanSNS .weibo a:link{display:inline-block; width:32px; height:22px; background:url('../../images/util/sina.png') no-repeat center 0;}
+#div_header_top .div_right .spanSNS .weibo a:visited{display:inline-block; width:32px; height:22px; background:url('../../images/util/sina.png') no-repeat center 0;}
+#div_header_top .div_right .spanSNS .weibo a:hover{background:url('../../images/util/sina-b.png') no-repeat center 0;} 
+#div_header_top .div_right .spanSNS .weibo a:active{background:url('../../images/util/sina-b.png') no-repeat center 0;} 
+#div_header_top .div_right .spanVIP{display:inline-block;padding-top:10px;margin-left:0;}
+#div_main_menu{height:62px;background:url('../../images/util/main_menu_bg.png') no-repeat center 0}
+#menu_bar { width:980px; height:62px; margin:0 auto;text-align: center;}
+#menu_bar li{ float:none; display:inline-block;}
+#menu_bar li a{ display:inline-block;}
+#content{ width:1024px;padding-bottom:50px;margin:10px auto 0 auto; overflow:hidden;}
+#content .left{float:left;width:212px;margin-left:10px;}
+#content .left .top{margin-left:auto;margin-right:auto;width:212px;height:64px;background-image:url('../../images/wdzh/left_bg_top.png');background-repeat:no-repeat;background-position:center;}
+#content .left .one_menu {cursor:pointer;display:block; width:212px; height:48px;background:url('../../images/wdzh/huawen-grid.png') no-repeat center 0;}
+#content .left .one_menu:hover {cursor:pointer;display:block; width:212px; height:48px;background:url('../../images/wdzh/huawen-grid-active.png') no-repeat center 0;}
+#content .left .one_menu .span_text{cursor:pointer;float:left;line-height:48px;color:#956230;text-align:center;font-size:13px;margin-left:0;}
+#content .left .one_menu:hover .span_text{cursor:pointer;float:left;line-height:48px;color:white;text-align:center;font-size:13px;margin-left:0;}
+#content .left .one_menu a:link{display:block; width:212px; height:48px;background:url('../../images/wdzh/huawen-grid.png') no-repeat center 0;}
+#content .left .one_menu a:visited{display:block; width:212px; height:48px;background:url('../../images/wdzh/huawen-grid.png') no-repeat center 0;}
+#content .left .one_menu a:hover{display:block; width:212px; height:48px;background:url('../../images/wdzh/huawen-grid-active.png') no-repeat center 0;}
+#content .left .one_menu a:active{display:block; width:212px; height:48px;background:url('../../images/wdzh/huawen-grid-active.png') no-repeat center 0;} 
+#content .left .one_menu a:link .span_text{float:left;display:block;color:#956230;text-align:center;font-size:13px;}
+#content .left .one_menu a:visited .span_text{float:left;display:block;color:#956230;text-align:center;font-size:13px;}
+#content .left .one_menu a:hover .span_text{float:left;display:block;color:white;text-align:center;font-size:13px;}
+#content .left .one_menu a:active .span_text{float:left;display:block;color:white;text-align:center;font-size:13px;}
+#content .left .one_menu a:link .zhzl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/zhzl.png') no-repeat center 0;}
+#content .left .one_menu a:visited .zhzl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/zhzl.png') no-repeat center 0;}
+#content .left .one_menu a:hover .zhzl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/zhzl-active.png') no-repeat center 0;}
+#content .left .one_menu a:active .zhzl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/zhzl-active.png') no-repeat center 0;}
+#content .left .one_menu .zjgl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/zjgl.png') no-repeat center 0;}
+#content .left .one_menu:hover .zjgl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/zjgl-active.png') no-repeat center 0;}
+#content .left .one_menu .tzgl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/tzgl.png') no-repeat center 0;}
+#content .left .one_menu:hover .tzgl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/tzgl-active.png') no-repeat center 0;}
+#content .left .one_menu .rzgl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/rzgl.png') no-repeat center 0;}
+#content .left .one_menu:hover .rzgl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/rzgl-active.png') no-repeat center 0;}
+#content .left .one_menu .zhgl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/zhgl.png') no-repeat center 0;}
+#content .left .one_menu:hover .zhgl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/zhgl-active.png') no-repeat center 0;}
+#content .left .one_menu a:link .wdyhj{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/wdyhj.png') no-repeat center 0;}
+#content .left .one_menu a:visited .wdyhj{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/wdyhj.png') no-repeat center 0;}
+#content .left .one_menu a:hover .wdyhj{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/wdyhj-active.png') no-repeat center 0;}
+#content .left .one_menu a:active .wdyhj{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/wdyhj-active.png') no-repeat center 0;}
+#content .left .one_menu .wdjf{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/wdjf.png') no-repeat center 0;}
+#content .left .one_menu:hover .wdjf{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/wdjf-active.png') no-repeat center 0;}
+#content .left .one_menu a:link .wdxx{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/wdxx.png') no-repeat center 0;}
+#content .left .one_menu a:visited .wdxx{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/wdxx.png') no-repeat center 0;}
+#content .left .one_menu a:hover .wdxx{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/wdxx-active.png') no-repeat center 0;}
+#content .left .one_menu a:active .wdxx{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/wdxx-active.png') no-repeat center 0;}
+#content .left .one_menu .number{ margin-left:10px; margin-top:13px; min-width:20px; height:20px; line-height:20px; text-align:center; display:inline-block; background-color:#d92929; color:#fff;    border-radius: 40px;
+    -o-border-radius: 40px; -ms-border-radius: 40px; -moz-border-radius: 40px; -webkit-border-radius: 40px;}
+#content .left .one_menu .number em{ width:20px; font-style:normal; display:inline-block; transform: scale(0.8); -o-transform: scale(0.8); -moz-transform: scale(0.8); -webkit-transform: scale(0.8);}
+#content .left .one_menu a:link .yqhy{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/yqhy.png') no-repeat center 0;}
+#content .left .one_menu a:visited .yqhy{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/yqhy.png') no-repeat center 0;}
+#content .left .one_menu a:hover .yqhy{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/yqhy-active.png') no-repeat center 0;}
+#content .left .one_menu a:active .yqhy{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/yqhy.png') no-repeat center 0;}
+#content .left .one_menu_selected {cursor:pointer;display:block; width:212px; height:48px;background:url('../../images/wdzh/huawen-grid-active.png') no-repeat center 0;}
+#content .left .one_menu_selected .span_text{cursor:pointer;float:left;line-height:48px;color:white;text-align:center;font-size:13px;margin-left:0;}
+#content .left .one_menu_selected a:link{display:block; width:212px; height:48px;background:url('../../images/wdzh/huawen-grid-active.png') no-repeat center 0;}
+#content .left .one_menu_selected a:visited{display:block; width:212px; height:48px;background:url('../../images/wdzh/huawen-grid-active.png') no-repeat center 0;}
+#content .left .one_menu_selected a:hover{display:block; width:212px; height:48px;background:url('../../images/wdzh/huawen-grid-active.png') no-repeat center 0;}
+#content .left .one_menu_selected a:active{display:block; width:212px; height:48px;background:url('../../images/wdzh/huawen-grid-active.png') no-repeat center 0;} 
+#content .left .one_menu_selected a:link .span_text{float:left;display:block;color:white;text-align:center;font-size:13px;}
+#content .left .one_menu_selected a:visited .span_text{float:left;display:block;color:white;text-align:center;font-size:13px;}
+#content .left .one_menu_selected a:hover .span_text{float:left;display:block;color:white;text-align:center;font-size:13px;}
+#content .left .one_menu_selected a:active .span_text{float:left;display:block;color:white;text-align:center;font-size:13px;}
+#content .left .one_menu_selected a:link .zhzl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/zhzl-active.png') no-repeat center 0;}
+#content .left .one_menu_selected a:visited .zhzl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/zhzl-active.png') no-repeat center 0;}
+#content .left .one_menu_selected a:hover .zhzl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/zhzl-active.png') no-repeat center 0;}
+#content .left .one_menu_selected a:active .zhzl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/zhzl-active.png') no-repeat center 0;}
+#content .left .one_menu_selected .zjgl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/zjgl-active.png') no-repeat center 0;}
+#content .left .one_menu_selected:hover .zjgl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/zjgl-active.png') no-repeat center 0;}
+#content .left .one_menu_selected .tzgl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/tzgl-active.png') no-repeat center 0;}
+#content .left .one_menu_selected:hover .tzgl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/tzgl-active.png') no-repeat center 0;}
+#content .left .one_menu_selected .rzgl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/rzgl-active.png') no-repeat center 0;}
+#content .left .one_menu_selected:hover .rzgl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/rzgl-active.png') no-repeat center 0;}
+#content .left .one_menu_selected .zhgl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/zhgl-active.png') no-repeat center 0;}
+#content .left .one_menu_selected:hover .zhgl{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/zhgl-active.png') no-repeat center 0;}
+#content .left .one_menu_selected a:link .wdyhj{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/wdyhj-active.png') no-repeat center 0;}
+#content .left .one_menu_selected a:visited .wdyhj{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/wdyhj-active.png') no-repeat center 0;}
+#content .left .one_menu_selected a:hover .wdyhj{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/wdyhj-active.png') no-repeat center 0;}
+#content .left .one_menu_selected a:active .wdyhj{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/wdyhj-active.png') no-repeat center 0;}
+#content .left .one_menu_selected .wdjf{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/wdjf-active.png') no-repeat center 0;}
+#content .left .one_menu_selected:hover .wdjf{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/wdjf-active.png') no-repeat center 0;}
+#content .left .one_menu_selected a:link .wdxx{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/wdxx-active.png') no-repeat center 0;}
+#content .left .one_menu_selected a:visited .wdxx{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/wdxx-active.png') no-repeat center 0;}
+#content .left .one_menu_selected a:hover .wdxx{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/wdxx-active.png') no-repeat center 0;}
+#content .left .one_menu_selected a:active .wdxx{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/wdxx-active.png') no-repeat center 0;}
+
+#content .left .one_menu_selected a:link .yqhy{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/yqhy-active.png') no-repeat center 0;}
+#content .left .one_menu_selected a:visited .yqhy{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/yqhy-active.png') no-repeat center 0;}
+#content .left .one_menu_selected a:hover .yqhy{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/yqhy-active.png') no-repeat center 0;}
+#content .left .one_menu_selected a:active .yqhy{float:left;width:30px; height:30px;margin-top:7px;margin-left:50px;margin-right:10px;background:url('../../images/wdzh/icon/yqhy-active.png') no-repeat center 0;}
+#content .left .two_menu_list {width:212px;}
+#content .left .two_menu {display:block;width:212px;height:32px;text-align:center;}
+#content .left .two_menu a:link{display:block;color:white;width:212px; height:32px;padding-top:5px;text-align:center;background:url('../../images/wdzh/huawen-zi.png') no-repeat center 0;}
+#content .left .two_menu a:visited{display:block;color:white;width:212px; height:32px;text-align:center;background:url('../../images/wdzh/huawen-zi.png') no-repeat center 0;}
+#content .left .two_menu a:hover{display:block;color:white;width:212px; height:32px;text-align:center;background:url('../../images/wdzh/huawen-zi-active.png') no-repeat center 0;}
+#content .left .two_menu a:active{display:block;color:white;width:212px; height:32px;text-align:center;background:url('../../images/wdzh/huawen-zi-active.png') no-repeat center 0;} 
+#content .left .two_menu_selected {display:block;color:white;width:212px;height:32px;text-align:center;}
+#content .left .two_menu_selected a:link{display:block;color:white;width:212px; height:32px;padding-top:5px;text-align:center;background:url('../../images/wdzh/huawen-zi-active.png') no-repeat center 0;}
+#content .left .two_menu_selected a:visited{display:block;color:white;width:212px; height:32px;text-align:center;background:url('../../images/wdzh/huawen-zi-active.png') no-repeat center 0;}
+#content .left .two_menu_selected a:hover{display:block;color:white;width:212px; height:32px;text-align:center;background:url('../../images/wdzh/huawen-zi-active.png') no-repeat center 0;}
+#content .left .two_menu_selected a:active{display:block;color:white;width:212px; height:32px;text-align:center;background:url('../../images/wdzh/huawen-zi-active.png') no-repeat center 0;} 
+#content .left .bottom{margin-left:auto;margin-right:auto;width:212px;height:64px;background:url('../../images/wdzh/left_bg_bottom.png') no-repeat 0 0;}
+#content .left .footer{margin-top:10px;margin-bottom:10px;margin-left:auto;margin-right:auto;width:200px;height:326px;background:url('../../images/wdzh/banner-xia.jpg') no-repeat 0 0;}
+#content .right{float:right;width:789px; margin-right:4px;}

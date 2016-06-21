@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.feedback.dao.CustomerLeaveMessageDao">
+    
+	<sql id="customerLeaveMessageColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.mobile AS "mobile",
+		a.email AS "email",
+		a.content AS "content",
+		a.address AS "address",
+		a.type AS "type",
+		a.account_id AS "accountId",
+		a.op_dt AS "opDt",
+		a.status AS "status",
+		a.ip AS "ip",
+		a.personal_id AS "personalId",
+		b.name as "projectName"
+	</sql>
+	
+	<sql id="customerLeaveMessageJoins">
+		left join
+		project_personal_tailor b
+		on a.personal_id=b.id
+	</sql>
+    
+	<select id="get" resultType="CustomerLeaveMessage">
+		SELECT 
+			<include refid="customerLeaveMessageColumns"/>
+		FROM customer_leave_message a
+		<include refid="customerLeaveMessageJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerLeaveMessage">
+		SELECT 
+			<include refid="customerLeaveMessageColumns"/>
+		FROM customer_leave_message a
+		<include refid="customerLeaveMessageJoins"/>
+		<where>
+			
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="mobile != null and mobile != ''">
+				AND a.mobile = #{mobile}
+			</if>
+			<if test="email != null and email != ''">
+				AND a.email = #{email}
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+			<if test="beginOpDt != null and beginOpDt != ''">
+				AND a.op_dt &gt;= #{beginOpDt}
+			</if>
+			<if test="endOpDt != null and endOpDt != ''">
+				AND a.op_dt &lt;= #{endOpDt}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.op_dt desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerLeaveMessage">
+		SELECT 
+			<include refid="customerLeaveMessageColumns"/>
+		FROM customer_leave_message a
+		<include refid="customerLeaveMessageJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_leave_message(
+			name,
+			mobile,
+			email,
+			content,
+			address,
+			type,
+			account_id,
+			op_dt,
+			status,
+			ip,
+			personal_id
+		) VALUES (
+			#{name},
+			#{mobile},
+			#{email},
+			#{content},
+			#{address},
+			#{type},
+			#{accountId},
+			#{opDt},
+			#{status},
+			#{ip},
+			#{personalId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_leave_message SET 	
+			name = #{name},
+			mobile = #{mobile},
+			email = #{email},
+			content = #{content},
+			address = #{address},
+			type = #{type},
+			account_id = #{accountId},
+			status = #{status},
+			ip = #{ip}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_leave_message
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

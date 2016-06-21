@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.carousel.dao.AdPositionInfoDao">
+    
+	<sql id="adPositionInfoColumns">
+		a.id AS "id",
+		a.code AS "code",
+		a.name AS "name",
+		a.image AS "image",
+		a.can_click AS "canClick",
+		a.type AS "type",
+		a.target AS "target",
+		a.description AS "description",
+		a.start_dt AS "startDt",
+		a.end_dt AS "endDt",
+		a.version AS "version",
+		a.status AS "status",
+		a.create_user_id AS "createUserId",
+		a.create_dt AS "createDt",
+		a.review_user_id AS "reviewUserId",
+		a.review_dt AS "reviewDt",
+		b.term_code AS "termCode"
+	</sql>
+	
+	<sql id="adPositionInfoJoins">
+  left join ad_position_show_term b on b.ad_position_id = a.id
+	</sql>
+    
+	<select id="get" resultType="AdPositionInfo">
+		SELECT 
+			<include refid="adPositionInfoColumns"/>
+		FROM ad_position_info a
+		<include refid="adPositionInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<!--根据状态、终端和广告位类型查询出对应的广告位信息-->
+	<select id="findAdPositionInfoByAdCodeAndTerminalType" resultType="AdPositionInfo">
+      select * from ad_position_info a LEFT  JOIN  ad_position_show_term b on b.ad_position_id=a.id
+      WHERE  a.status ='1' and a.code = #{adCode} and b.term_code = #{opTerm} and now() BETWEEN    a.start_dt AND  a.end_dt limit 1
+	</select>
+
+
+	<select id="findList" resultType="AdPositionInfo">
+		SELECT 
+			<include refid="adPositionInfoColumns"/>
+		FROM ad_position_info a
+		<include refid="adPositionInfoJoins"/>
+		<where>
+
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="canClick != null and canClick != ''">
+				AND a.can_click = #{canClick}
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+			<if test="createDt != null and createDt != ''">
+				AND date(a.create_dt) = date(#{createDt})
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="termCode != null and termCode != ''">
+				AND b.term_code = #{termCode}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+		order by  b.term_code, a.create_dt desc
+	</select>
+	
+	<select id="findAllList" resultType="AdPositionInfo">
+		SELECT 
+			<include refid="adPositionInfoColumns"/>
+		FROM ad_position_info a
+		<include refid="adPositionInfoJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO ad_position_info(
+			code,
+			name,
+			image,
+			can_click,
+			type,
+			target,
+			description,
+			start_dt,
+			end_dt,
+			version,
+			status,
+			create_user_id,
+			create_dt,
+			review_user_id,
+			review_dt
+		) VALUES (
+			#{code},
+			#{name},
+			#{image},
+			#{canClick},
+			#{type},
+			#{target},
+			#{description},
+			#{startDt},
+			#{endDt},
+			#{version},
+			#{status},
+			#{createUserId},
+			#{createDt},
+			#{reviewUserId},
+			#{reviewDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE ad_position_info SET 	
+			code = #{code},
+			name = #{name},
+			image = #{image},
+			can_click = #{canClick},
+			type = #{type},
+			target = #{target},
+			description = #{description},
+			start_dt = #{startDt},
+			end_dt = #{endDt},
+			version = #{version},
+			status = #{status},
+			create_user_id = #{createUserId},
+			create_dt = #{createDt},
+			review_user_id = #{reviewUserId},
+			review_dt = #{reviewDt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM ad_position_info
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

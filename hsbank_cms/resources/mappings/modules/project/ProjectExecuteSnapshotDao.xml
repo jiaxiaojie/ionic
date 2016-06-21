@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.project.dao.ProjectExecuteSnapshotDao">
+    
+	<sql id="projectExecuteSnapshotColumns">
+		a.id AS "id",
+		a.project_id AS "projectId",
+		a.finance_money AS "financeMoney",
+		a.end_finance_money AS "endFinanceMoney",
+		a.transfer_project_id AS "transferProjectId",
+		a.end_repay_money AS "endRepayMoney",
+		a.sum_service_charge AS "sumServiceCharge",
+		a.remaining_time AS "remainingTime",
+		a.sum_platform_amount AS "sumPlatformAmount",
+		a.status AS "status",
+		a.sum_ticket_money AS "sumTicketMoney"
+	</sql>
+	
+	<sql id="projectExecuteSnapshotJoins">
+		
+	</sql>
+    
+	<select id="get" resultType="ProjectExecuteSnapshot">
+		SELECT 
+			<include refid="projectExecuteSnapshotColumns"/>
+		FROM project_execute_snapshot a
+		<include refid="projectExecuteSnapshotJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ProjectExecuteSnapshot">
+		SELECT 
+			<include refid="projectExecuteSnapshotColumns"/>
+		FROM project_execute_snapshot a
+		<include refid="projectExecuteSnapshotJoins"/>
+		<where>
+			
+			<if test="queryProjectId != null and queryProjectId != ''">
+				AND a.project_id = #{queryProjectId}
+			</if>
+			
+			<if test="projectId != null and projectId != ''">
+				AND a.project_id = #{projectId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ProjectExecuteSnapshot">
+		SELECT 
+			<include refid="projectExecuteSnapshotColumns"/>
+		FROM project_execute_snapshot a
+		<include refid="projectExecuteSnapshotJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO project_execute_snapshot(
+			project_id,
+			transfer_project_id,
+			finance_money,
+			end_finance_money,
+			end_repay_money,
+			sum_service_charge,
+			remaining_time,
+			sum_platform_amount,
+			sum_ticket_money,
+			status
+		) VALUES (
+			#{projectId},
+			#{transferProjectId},
+			#{financeMoney},
+			#{endFinanceMoney},
+			#{endRepayMoney},
+			#{sumServiceCharge},
+			#{remainingTime},
+			#{sumPlatformAmount},
+			#{sumTicketMoney},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE project_execute_snapshot SET 	
+			project_id = #{projectId},
+			transfer_project_id = #{transferProjectId},
+			finance_money = #{financeMoney},
+			end_finance_money = #{endFinanceMoney},
+			end_repay_money = #{endRepayMoney},
+			sum_service_charge = #{sumServiceCharge},
+			remaining_time = #{remainingTime},
+			sum_platform_amount= #{sumPlatformAmount},
+			sum_ticket_money= #{sumTicketMoney}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM project_execute_snapshot
+		WHERE id = #{id}
+	</update>
+	
+	<update id="deleteByProjectId">
+		DELETE FROM project_execute_snapshot
+		WHERE project_id = #{projectId}
+	</update>
+	
+	<update id="updateStatus">
+        UPDATE project_execute_snapshot
+        <set>
+            <if test="status != null">
+                status = #{status}
+            </if>
+        </set>
+        <where>
+            project_id = #{projectId} and transfer_project_id=#{transferProjectId}
+        </where>
+    </update>
+    
+    <update id="updateAmount">
+        UPDATE project_execute_snapshot
+        <set>
+            <if test="amount != null">
+                end_finance_money = end_finance_money + #{amount},
+            </if>
+            <if test="ticketAmount != null">
+                sum_ticket_money = sum_ticket_money + #{ticketAmount},
+            </if>
+            <if test="platformAmount != null">
+                sum_platform_amount = sum_platform_amount + #{platformAmount},
+            </if>
+            <if test="toPlatformMoney != null">
+                sum_service_charge = sum_service_charge + #{toPlatformMoney}
+            </if>
+        </set>
+        <where>
+            project_id=#{projectId} and transfer_project_id=#{transferProjectId}
+        </where>
+    </update>
+    <select id="getByProjectId" resultType="ProjectExecuteSnapshot">
+		SELECT 
+			<include refid="projectExecuteSnapshotColumns"/>
+		FROM project_execute_snapshot a
+		<include refid="projectExecuteSnapshotJoins"/>
+		WHERE a.project_id = #{projectId} and a.transfer_project_id=#{transferProjectId}
+	</select>
+	
+	 <select id="getByProjectIdAndTransferId" resultType="ProjectExecuteSnapshot">
+		SELECT 
+			<include refid="projectExecuteSnapshotColumns"/>
+		FROM project_execute_snapshot a
+		<include refid="projectExecuteSnapshotJoins"/>
+		WHERE a.project_id = #{projectId} and transfer_project_id=#{transferProjectId}
+	</select>
+    
+    <select id="getTransferSnapshot" resultType="ProjectExecuteSnapshot">
+		SELECT 
+			<include refid="projectExecuteSnapshotColumns"/>
+		FROM project_execute_snapshot a
+		<include refid="projectExecuteSnapshotJoins"/>
+		WHERE a.project_id = #{projectId} and transfer_project_id = #{transferProjectId}
+	</select>
+</mapper>

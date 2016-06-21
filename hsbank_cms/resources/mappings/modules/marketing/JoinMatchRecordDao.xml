@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.marketing.dao.JoinMatchRecordDao">
+    
+	<sql id="joinMatchRecordColumns">
+		a.id AS "id",
+		a.side AS "side",
+		a.account_id AS "accountId",
+		a.activity_id AS "activityId",
+		a.op_dt AS "opDt",
+		a.op_term AS "opTerm"
+	</sql>
+	
+	<sql id="joinMatchRecordJoins">
+	</sql>
+	
+	<select id="get" resultType="JoinMatchRecord">
+		SELECT 
+			<include refid="joinMatchRecordColumns"/>
+		FROM join_match_record a
+		<include refid="joinMatchRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="JoinMatchRecord">
+		SELECT 
+			<include refid="joinMatchRecordColumns"/>
+		FROM join_match_record a
+		<include refid="joinMatchRecordJoins"/>
+		<where>
+			
+			<if test="side != null and side != ''">
+				AND a.side = #{side}
+			</if>
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="activityId != null and activityId != ''">
+				AND a.activity_id = #{activityId}
+			</if>
+			<if test="opDt != null and opDt != ''">
+				AND a.op_dt = #{opDt}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="JoinMatchRecord">
+		SELECT 
+			<include refid="joinMatchRecordColumns"/>
+		FROM join_match_record a
+		<include refid="joinMatchRecordJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO join_match_record(
+			side,
+			account_id,
+			activity_id,
+			op_dt,
+			op_term
+		) VALUES (
+			#{side},
+			#{accountId},
+			#{activityId},
+			#{opDt},
+			#{opTerm}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE join_match_record SET 	
+			side = #{side},
+			account_id = #{accountId},
+			activity_id = #{activityId},
+			op_dt = #{opDt},
+			op_term = #{opTerm}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM join_match_record
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findListByActivityIdAndAccountId" resultType="JoinMatchRecord">
+		select * from join_match_record where activity_id = #{activityId} and account_id = #{accountId}
+	</select>
+	
+	<select id="getOnedayInvestmentRankByActivityId" resultType="java.util.Map">
+		select a.account_id as 'accountId',c.mobile as 'mobile',sum(b.amount) as 'amount',a.side as 'side'
+		from join_match_record a
+		left join project_investment_record b on a.account_id = b.investment_user_id
+		left join customer_base c on a.account_id = c.account_id
+		left join project_base d on b.project_id = d.project_id
+		where a.activity_id = #{activityId} and (b.status = '0' or b.status = '3') and date(b.op_dt) = date(#{date}) and b.op_dt &gt;= a.op_dt and d.is_new_user = '1'
+		group by a.account_id
+		order by amount desc,b.id
+		limit #{limit}
+	</select>
+	
+	<select id="getSideInvestmentAmount" resultType="java.lang.Double">
+		select IFNULL(sum(b.amount),0)
+		from join_match_record a
+		left join project_investment_record b on a.account_id = b.investment_user_id
+		left join project_base c on b.project_id = c.project_id
+		where a.side = #{side} and a.activity_id = #{activityId}
+			and (b.status = '0' or b.status = '3') and c.is_new_user = '1'
+			and b.op_dt &gt;= a.op_dt
+			and (date(b.op_dt) between date(#{startDate}) and date(#{endDate}))
+	</select>
+	
+	<select id="findListByActivityId" resultType="JoinMatchRecord">
+		select * from join_match_record where activity_id = #{activityId}
+	</select>
+	
+	<select id="getUserInvestmentAmount" resultType="java.lang.Double">
+		select IFNULL(sum(b.amount),0)
+		from join_match_record a
+		left join project_investment_record b on a.account_id = b.investment_user_id
+		left join project_base c on b.project_id = c.project_id
+		where a.activity_id = #{activityId} and a.account_id = #{accountId}
+			and (b.status = '0' or b.status = '3') and c.is_new_user = '1'
+			and b.op_dt &gt;= a.op_dt
+			and (date(b.op_dt) between date(#{startDate}) and date(#{endDate}))
+	</select>
+	
+	<select id="getByActivityIdAndAccountId" resultType="JoinMatchRecord">
+		select * from join_match_record where activity_id = #{activityId} and account_id = #{accountId} limit 1
+	</select>
+
+	<select id="getInvestmentRankByActivityId" resultType="java.util.Map">
+		select a.account_id as 'accountId',c.mobile as 'mobile',sum(b.amount) as 'amount',a.side as 'side'
+		from join_match_record a
+		left join project_investment_record b on a.account_id = b.investment_user_id
+		left join customer_base c on a.account_id = c.account_id
+		left join project_base d on b.project_id = d.project_id
+		where a.activity_id = #{activityId} and (b.status = '0' or b.status = '3') and b.op_dt &gt;= a.op_dt and d.is_new_user = '1' and a.side = #{side}
+			and date(b.op_dt) between date(#{startDate}) and date(#{endDate})
+		group by a.account_id
+		order by amount desc,b.id
+		limit #{limit}
+	</select>
+</mapper>

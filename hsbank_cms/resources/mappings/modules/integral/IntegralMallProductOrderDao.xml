@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.integral.dao.IntegralMallProductOrderDao">
+    
+	<sql id="integralMallProductOrderColumns">
+		a.id AS "id",
+		a.product_type_id AS "productTypeId",
+		a.product_id AS "productId",
+		a.product_count AS "productCount",
+		a.customer_account AS "customerAccount",
+		a.address_id AS "addressId",
+		a.order_status AS "orderStatus",
+		a.flow_user_id AS "flowUserId",
+		a.create_dt AS "createDt",
+		a.create_channel_id AS "createChannelId",
+		b.show_name AS "address.showName",
+		b.mobile AS "address.mobile",
+		b.address AS "address.address",
+		b.post_code AS "address.postCode",
+		b.is_default AS "address.isDefault",
+		b.status AS "address.status",
+		b.district_Id AS "address.districtId",
+		c.product_name AS "product.productName",
+		c.product_logo_min AS "product.productLogoMin",
+		c.product_logo_normal AS "product.productLogoNormal",
+		d.customer_name AS "customerBase.customerName",
+		e.account_name AS "customerAccountShow",
+		f.type_name AS "productType.typeName",
+		a.product_price AS "productPrice",
+		a.order_no AS "orderNo",
+		a.show_name AS "showName",
+		a.mobile AS "mobile",
+		a.address_show AS "addressShow",
+		a.post_code AS "postCode",
+		a.district_id AS "districtIds",
+		a.price AS "price"
+	</sql>
+	
+	<sql id="integralMallProductOrderJoins">
+	    LEFT JOIN customer_address b ON a.address_id = b.id
+	    LEFT JOIN integral_mall_product c ON a.product_id = c.product_id
+	    LEFT JOIN customer_base d ON a.customer_account = d.account_id
+	    LEFT JOIN customer_account e ON a.customer_account=e.account_id
+	    LEFT JOIN integral_mall_product_type f ON f.type_id = a.product_type_id
+	</sql>
+    
+	<select id="get" resultType="IntegralMallProductOrder">
+		SELECT 
+			<include refid="integralMallProductOrderColumns"/>
+		FROM integral_mall_product_order a
+		<include refid="integralMallProductOrderJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="IntegralMallProductOrder">
+		SELECT 
+			<include refid="integralMallProductOrderColumns"/>
+		FROM integral_mall_product_order a
+		<include refid="integralMallProductOrderJoins"/>
+		<where>
+			
+			<if test="productTypeId != null and productTypeId != ''">
+				AND a.product_type_id = #{productTypeId}
+			</if>
+			<if test="productName != null and productName != ''">
+				AND c.product_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{productName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{productName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{productName},'%')</if>
+			</if>
+			<if test="customerName != null and customerName != ''">
+				AND d.customer_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{customerName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{customerName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{customerName},'%')</if>
+			</if>
+			<if test="orderStatus != null and orderStatus != ''">
+				AND a.order_status = #{orderStatus}
+			</if>
+			<if test="createChannelId != null and createChannelId != ''">
+				AND a.create_channel_id = #{createChannelId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="IntegralMallProductOrder">
+		SELECT 
+			<include refid="integralMallProductOrderColumns"/>
+		FROM integral_mall_product_order a
+		<include refid="integralMallProductOrderJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findPageList" resultType="IntegralMallProductOrder">
+		SELECT 
+			<include refid="integralMallProductOrderColumns"/>
+		FROM integral_mall_product_order a
+		<include refid="integralMallProductOrderJoins"/>
+		<where>
+			a.customer_account =#{accountId}  
+			order by a.create_dt desc   
+			limit #{startNumber},#{endNumber}
+		</where>		
+	</select>
+	
+	
+	<insert id="insert">
+		INSERT INTO integral_mall_product_order(
+			product_type_id,
+			product_id,
+			product_count,
+			customer_account,
+			address_id,
+			order_status,
+			flow_user_id,
+			create_dt,
+			create_channel_id,
+			product_price,
+			order_no,
+			show_name,
+			mobile,
+			address_show,
+			post_code,
+			district_id,
+			price
+		) VALUES (
+			#{productTypeId},
+			#{productId},
+			#{productCount},
+			#{customerAccount},
+			#{addressId},
+			#{orderStatus},
+			#{flowUserId},
+			#{createDt},
+			#{createChannelId},
+			#{productPrice},
+			#{orderNo},
+			#{showName},
+			#{mobile},
+			#{addressShow},
+			#{postCode},
+			#{districtIds},
+			#{price}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE integral_mall_product_order SET 	
+			product_type_id = #{productTypeId},
+			product_id = #{productId},
+			product_count = #{productCount},
+			customer_account = #{customerAccount},
+			address_id = #{addressId},
+			order_status = #{orderStatus},
+			flow_user_id = #{flowUserId},
+			create_dt = #{createDt},
+			create_channel_id = #{createChannelId},
+			product_price= #{productPrice},
+			order_no= #{orderNo},
+			show_name= #{showName},
+			mobile= #{mobile},
+			address_show= #{addressShow},
+			post_code= #{postCode},
+			district_id =#{districtIds},
+			price=#{price}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM integral_mall_product_order
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getLastOrders" resultType="IntegralMallProductOrder">
+		SELECT 
+			<include refid="integralMallProductOrderColumns"/>
+		FROM integral_mall_product_order a
+		<include refid="integralMallProductOrderJoins"/>
+		order by a.create_dt desc
+		limit #{limitCount}
+	</select>
+	
+	<select id="findCustomerList" resultType="IntegralMallProductOrder">
+		select a.*,b.product_name as "productName" from integral_mall_product_order a left join integral_mall_product b on b.product_id = a.product_id
+			where a.customer_account = #{customerAccount}
+			and (a.order_status='0' or a.order_status='1' or a.order_status='2' or a.order_status='3' or a.order_status='4') 
+		<if test="createDtStart != null and createDtEnd != ''">
+			AND (a.create_dt between #{createDtStart} and #{createDtEnd})
+		</if>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				order by a.create_dt desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getByOrderNo" resultType="IntegralMallProductOrder">
+		select a.* from integral_mall_product_order a where a.order_no = #{orderNo}
+	</select>
+
+	<!-- API 我的花生-兑换记录(订单)分页列表 -->
+	<select id="getOrderPageList" resultType="IntegralMallProductOrder">
+		SELECT
+			a.id AS "id",
+			a.product_type_id AS "productTypeId",
+			a.product_id AS "productId",
+			a.product_count AS "productCount",
+			a.customer_account AS "customerAccount",
+			a.address_id AS "addressId",
+			a.order_status AS "orderStatus",
+			a.flow_user_id AS "flowUserId",
+			a.create_dt AS "createDt",
+			a.create_channel_id AS "createChannelId",
+			a.product_price AS "productPrice",
+			a.order_no AS "orderNo",
+			a.show_name AS "showName",
+			a.mobile AS "mobile",
+			a.address_show AS "addressShow",
+			a.post_code AS "postCode",
+		    a.district_id AS "districtIds",
+			a.price AS "price",
+			p.product_name AS "product.productName",
+			p.product_logo_min AS "product.productLogoMin",
+			p.product_logo_normal AS "product.productLogoNormal"
+		FROM integral_mall_product_order a
+		LEFT JOIN integral_mall_product p ON a.product_id = p.product_id
+		WHERE a.customer_account =#{accountId}
+		<if test="startDateTime !=null and startDateTime !=''">
+			and date(a.create_dt) >= date(#{startDateTime})
+		</if>
+		<if test="endDateTime !=null and endDateTime !=''">
+			and date(#{endDateTime}) >= date(a.create_dt)
+		</if>
+		ORDER BY a.create_dt DESC
+		limit #{startNumber},#{endNumber}
+	</select>
+
+	<!-- API 我的订单总数量 -->
+	<select id="countOrderByAccountId" resultType="java.lang.Long">
+		SELECT count(a.id)
+		FROM integral_mall_product_order a
+		WHERE  a.customer_account =#{accountId}
+		<if test="startDateTime !=null and startDateTime !=''">
+			and date(a.create_dt) >= date(#{startDateTime})
+		</if>
+		<if test="endDateTime !=null and endDateTime !=''">
+			and date(#{endDateTime}) >= date(a.create_dt)
+		</if>
+	</select>
+
+	<select id="getDetailsByOrderNo" resultType="IntegralMallProductOrder">
+		SELECT
+			a.id AS "id",
+			a.product_type_id AS "productTypeId",
+			a.product_id AS "productId",
+			a.product_count AS "productCount",
+			a.customer_account AS "customerAccount",
+			a.address_id AS "addressId",
+			a.order_status AS "orderStatus",
+			a.flow_user_id AS "flowUserId",
+			a.create_dt AS "createDt",
+			a.create_channel_id AS "createChannelId",
+			a.product_price AS "productPrice",
+			a.order_no AS "orderNo",
+			a.show_name AS "showName",
+			a.mobile AS "mobile",
+			a.address_show AS "addressShow",
+			a.post_code AS "postCode",
+			a.district_id AS "districtIds",
+			a.price AS "price",
+			p.product_name AS "product.productName",
+			p.product_logo_min AS "product.productLogoMin",
+			p.product_logo_normal AS "product.productLogoNormal",
+			b.show_name AS "address.showName",
+			b.mobile AS "address.mobile",
+			b.address AS "address.address",
+			b.post_code AS "address.postCode",
+			b.district_id AS "address.districtId"
+		FROM integral_mall_product_order a
+		LEFT JOIN integral_mall_product p ON a.product_id = p.product_id
+	    LEFT JOIN customer_address b ON a.address_id = b.id
+		WHERE a.customer_account =#{accountId} AND a.order_no = #{orderNo}
+	</select>
+
+	<!--API 花生乐园-参与记录 -->
+	<select id="getOrderListByLast" resultType="IntegralMallProductOrder">
+		SELECT
+		a.product_id AS "productId",
+		a.product_count AS "productCount",
+		c.product_name AS "product.productName",
+		c.product_logo_normal AS "product.productLogoNormal",
+		c.product_logo_min AS "product.productLogoMin",
+		e.account_name AS "customerAccountShow"
+		FROM integral_mall_product_order a
+	    LEFT JOIN integral_mall_product c ON a.product_id = c.product_id
+	    LEFT JOIN customer_account e ON a.customer_account=e.account_id
+		order by a.create_dt desc
+		limit #{limitCount}
+	</select>
+</mapper>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.message.dao.MessageDao">
+    
+	<sql id="messageColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.title AS "title",
+		a.content AS "content",
+		a.send_dt AS "sendDt",
+		a.type AS "type",
+		a.label AS "label",
+		a.from_type AS "fromType",
+		a.from_id AS "fromId"
+	</sql>
+	
+	<sql id="messageJoins">
+	</sql>
+    
+	<select id="get" resultType="Message">
+		SELECT 
+			<include refid="messageColumns"/>
+		FROM message a
+		<include refid="messageJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Message">
+		SELECT 
+			<include refid="messageColumns"/>
+		FROM message a
+		<include refid="messageJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+			<if test="fromType != null and fromType != ''">
+				AND a.from_type = #{fromType}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Message">
+		SELECT 
+			<include refid="messageColumns"/>
+		FROM message a
+		<include refid="messageJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO message(
+			account_id,
+			title,
+			content,
+			send_dt,
+			type,
+			label,
+			from_type,
+			from_id
+		) VALUES (
+			#{accountId},
+			#{title},
+			#{content},
+			#{sendDt},
+			#{type},
+			#{label},
+			#{fromType},
+			#{fromId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE message SET 	
+			account_id = #{accountId},
+			title = #{title},
+			content = #{content},
+			send_dt = #{sendDt},
+			type = #{type},
+			label = #{label},
+			from_type = #{fromType},
+			from_id = #{fromId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM message
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getByAccountIdAndFromId" resultType="Message">
+		select * from message where account_id = #{accountId} and from_type = #{fromType} and from_id = #{fromId} limit 1
+	</select>
+</mapper>

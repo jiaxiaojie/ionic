@@ -1,0 +1,3 @@
+尊敬的${name}：您好！<br /><br />
+&nbsp;&nbsp;&nbsp;&nbsp;请您点击链接认证您的邮箱：<a href="${content}">${content}</a><br /><br />
+<div align="right">上海富定金融信息服务股份有限公司</div>

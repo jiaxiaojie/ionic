@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.operation.dao.DataQueryRowDao">
+    
+	<sql id="dataQueryRowColumns">
+		a.id AS "id",
+		a.query_id AS "queryId",
+		a.row_name AS "rowName",
+		a.show_row_name AS "showRowName",
+		a.sort AS "sort",
+		a.sortable AS "sortable",
+		a.dict_type AS "dictType",
+		a.date_format AS "dateFormat"
+	</sql>
+	
+	<sql id="dataQueryRowJoins">
+	</sql>
+    
+	<select id="get" resultType="DataQueryRow">
+		SELECT 
+			<include refid="dataQueryRowColumns"/>
+		FROM data_query_row a
+		<include refid="dataQueryRowJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="DataQueryRow">
+		SELECT 
+			<include refid="dataQueryRowColumns"/>
+		FROM data_query_row a
+		<include refid="dataQueryRowJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DataQueryRow">
+		SELECT 
+			<include refid="dataQueryRowColumns"/>
+		FROM data_query_row a
+		<include refid="dataQueryRowJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO data_query_row(
+			query_id,
+			row_name,
+			show_row_name,
+			sort,
+			sortable,
+			dict_type,
+			date_format
+		) VALUES (
+			#{queryId},
+			#{rowName},
+			#{showRowName},
+			#{sort},
+			#{sortable},
+			#{dictType},
+			#{dateFormat}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE data_query_row SET 	
+			query_id = #{queryId},
+			row_name = #{rowName},
+			show_row_name = #{showRowName},
+			sort = #{sort},
+			sortable = #{sortable},
+			dict_type = #{dictType},
+			date_format = #{dateFormat}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM data_query_row
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findListByQueryId" resultType="DataQueryRow">
+		select * from data_query_row where query_id = #{queryId} order by sort
+	</select>
+	
+	<delete id="deleteByQueryId">
+		delete from data_query_row where query_id = #{queryId}
+	</delete>
+</mapper>

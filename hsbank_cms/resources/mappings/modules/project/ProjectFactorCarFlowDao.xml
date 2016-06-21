@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.project.dao.ProjectFactorCarFlowDao">
+    
+	<sql id="projectFactorCarFlowColumns">
+		a.id AS "id",
+		a.project_id AS "projectId",
+		a.project_code AS "projectCode",
+		a.car_model AS "carModel",
+		a.degrees_depreciation AS "degreesDepreciation",
+		a.car_price AS "carPrice"
+	</sql>
+	
+	<sql id="projectFactorCarFlowJoins">
+	</sql>
+    
+	<select id="get" resultType="ProjectFactorCarFlow">
+		SELECT 
+			<include refid="projectFactorCarFlowColumns"/>
+		FROM project_factor_car_flow a
+		<include refid="projectFactorCarFlowJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ProjectFactorCarFlow">
+		SELECT 
+			<include refid="projectFactorCarFlowColumns"/>
+		FROM project_factor_car_flow a
+		<include refid="projectFactorCarFlowJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ProjectFactorCarFlow">
+		SELECT 
+			<include refid="projectFactorCarFlowColumns"/>
+		FROM project_factor_car_flow a
+		<include refid="projectFactorCarFlowJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO project_factor_car_flow(
+			project_id,
+			project_code,
+			car_model,
+			degrees_depreciation,
+			car_price
+		) VALUES (
+			#{projectId},
+			#{projectCode},
+			#{carModel},
+			#{degreesDepreciation},
+			#{carPrice}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE project_factor_car_flow SET 	
+			project_id = #{projectId},
+			project_code = #{projectCode},
+			car_model = #{carModel},
+			degrees_depreciation = #{degreesDepreciation},
+			car_price = #{carPrice}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<update id="deleteByProjectId">
+		DELETE FROM project_factor_car_flow
+		WHERE project_id = #{projectId}
+	</update>
+	<update id="delete">
+		DELETE FROM project_factor_car_flow
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getByProject" resultType="ProjectFactorCarFlow">
+		select * from project_factor_car_flow where project_id = #{projectId} and project_code = #{projectCode}
+	</select>
+</mapper>

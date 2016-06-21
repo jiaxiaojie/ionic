@@ -1,0 +1,375 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>花生金服 hsbank360.com-更优质、更安全、更便捷、更有诚意的互联网金融P2P平台</title>
+		<meta name="keywords" content="花生金服|网络理财|个人理财|投资理财|P2P理财|互联网金融|债权转让|理财计划|贷款|房产贷款|汽车贷款|个人贷款|无抵押贷款|个人无抵押贷款">
+		<meta name="description" content="花生金服(www.hsbank360.com) - 更优质、更安全、更便捷、更有诚意的互联网金融平台。花生金服有严格的风险控制,对接优选项目,第三方资金托管,保障资金安全。">
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="../images/util/favicon.ico" rel="shortcut icon"/>
+<meta name="renderer" content="webkit"><meta http-equiv="X-UA-Compatible" content="IE=8,IE=9,IE=10" />
+<meta http-equiv="Expires" content="0"><meta http-equiv="Cache-Control" content="no-cache"><meta http-equiv="Cache-Control" content="no-store">
+<script src="/static/jquery/jquery-1.8.3.min.js" type="text/javascript"></script>
+<script src="/static/bootstrap/2.3.2/js/bootstrap.js" type="text/javascript"></script>
+<link href="/static/bootstrap/2.3.2/awesome/font-awesome.css" type="text/css" rel="stylesheet" />
+<link href="/static/bootstrap/2.3.2/css_cerulean/bootstrap.css" rel="stylesheet"/>
+<!--[if lte IE 7]><link href="/static/bootstrap/2.3.1/awesome/font-awesome-ie7.min.css" type="text/css" rel="stylesheet" /><![endif]-->
+<!--[if lte IE 6]><link href="/static/bootstrap/bsie/css/bootstrap-ie6.min.css" type="text/css" rel="stylesheet" />
+<script src="/static/bootstrap/bsie/js/bootstrap-ie.min.js" type="text/javascript"></script><![endif]-->
+<link href="/static/jquery-select2/3.4/select2.min.css" rel="stylesheet" />
+<script src="/static/jquery-select2/3.4/select2.min.js" type="text/javascript"></script>
+<link href="/static/jquery-validation/1.11.0/jquery.validate.min.css" type="text/css" rel="stylesheet" />
+<script src="/static/jquery-validation/1.11.0/jquery.validate.js" type="text/javascript"></script>
+<link href="/static/jquery-jbox/2.3/Skins/Bootstrap/jbox.css" rel="stylesheet" />
+<script src="/static/jquery-slidejs/jquery.slides.min.js" type="text/javascript"></script>
+<script src="/static/jquery-jbox/2.3/jquery.jBox-2.3.js" type="text/javascript"></script>
+<script src="/static/My97DatePicker/WdatePicker.js" type="text/javascript"></script>
+<script src="../js/util.js" type="text/javascript"></script>
+<script src="../js/scrollbar.js" type="text/javascript"></script>
+<script src="../js/amount.js" type="text/javascript"></script>
+<script src="../js/peanut.js" type="text/javascript"></script><!--添加签到时撒落花生的JS效果-->
+<script src="/static/common/dateUtils.js" type="text/javascript"></script>
+<script type="text/javascript">var ctx = '/a', ctxStatic='/static';</script>
+<script>
+//百度站长统计代码
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?07b2a85308e4705c86371a9310089957";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+
+$(function () 
+{ $("[data-toggle='popover']").popover();
+	  });
+</script>
+
+		<link href="../css/util/util.css" rel="stylesheet"/>
+		<link href="../css/layouts/front_with_menu.css" rel="stylesheet"/>
+		<script>
+			var sign = function() {
+				$.getJSON("/f/customer/integral/sign", function(data) {
+					if(data.success) {
+						var coin=new Coin();
+						sign = function(){};
+						$("#sign").html("+" + data.signCoins);
+						$.jBox.tip('签到成功', 'success');
+						window.setTimeout(function() {
+							$("#sign").html("已签到");
+							$("#sign").removeClass("sign").addClass("signed");
+						}, 2000);
+					}else {
+						$.jBox.error("签到失败：" + data.message,"提示");
+					}
+				});
+			}
+			var SHAKE_THRESHOLD = 400;
+			var last_update = 0;
+			var index=0;
+			var x = y = z = last_x = last_y = last_z = 0;
+			var w_curTime=0;
+			function init() {
+				if (window.DeviceMotionEvent) {
+					window.addEventListener('devicemotion', deviceMotionHandler, false);
+				} else {
+					//$.jBox.alert('not support mobile event');
+				}
+			}
+			function deviceMotionHandler(eventData) {
+				var acceleration = eventData.accelerationIncludingGravity;
+				var curTime = new Date().getTime();
+				if ((curTime - last_update) > 100) {
+					var diffTime = curTime - last_update;
+					last_update = curTime;
+					x = acceleration.x;
+					y = acceleration.y;
+					z = acceleration.z;
+					var speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
+					var delta=Math.abs(x + y + z - last_x - last_y - last_z);
+					if (speed > SHAKE_THRESHOLD) {
+						if((curTime-w_curTime)>2000){
+							w_curTime!=0 && new Coin({density:Math.round(delta)});
+							w_curTime=curTime;
+						}
+					}
+					last_x = x;
+					last_y = y;
+					last_z = z;
+				}
+			}
+			$(function(){
+				init();
+			});
+		</script>
+		
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="decorator" content="front_with_menu"/>
+		<link href="../css/index.css" rel="stylesheet"/>
+		
+	
+	</head>
+	<body>
+		
+		<div class="div_bg_001">
+			<div id="div_header_top" class="div_width_1080">
+				<div class="div_left"><img id="logo" class="logo" src="../images/util/logo.png"/></div>
+                <div class="div_right">
+                    <ul class="top_menu">
+                        <li class="client">
+                        	<!--<div class="popup width272" style=" width:272px; margin-left:-136px">-->
+                        	<div class="popup width272" style=" width:144px; margin-left:-72px">
+                            	<div class="popup_arrow"></div>
+                                <div class="popup_content">
+                                	<p><img src="../images/util/img_app_tdc.png"><span>扫一扫下载<br>花生金服客户端</span></p>
+                            	</div>
+                            </div>
+                        	<i class="icon_phone"></i>
+                            <a href="/f/downloadApp">手机客户端</a>
+                        </li>
+                        
+                        
+                        <li class="line"></li>
+                        <li class="follow">关注：</li>
+                        <li class="follow ml0">
+                          <div class="popup" style=" width:144px; left:50%; margin-left:-72px">
+                              <div class="popup_arrow"></div>
+                              <div class="popup_content">
+                                  <p><img src="../images/util/img_tdc.png"><span>扫一扫关注<br>花生金服微信</span></p>
+                            </div>
+                            </div>
+                        	<a href="javascript:;" class="icon_wechat"></a>
+                        </li>
+                        
+                        <li class="follow">
+                        	<div class="popup" style=" width:144px; left:50%; margin-left:-72px">
+                            	<div class="popup_arrow"></div>
+                                <div class="popup_content">
+                                    <p>点击关注花生金服微博<a href="http://weibo.com/hsbank360" target="_blank" class="btn_text_gold"><br>@花生金服</a></p>
+                              </div>
+                            </div>
+                        	<a href="http://weibo.com/hsbank360" target="_blank" class="icon_weibo"></a>
+                        </li>
+                        <li class="line"></li>
+                        <li class="help"><a href="/f/xszy">新手指引</a></li>
+                        <li class="line"></li>
+                        <li class="help"><i class="icon_hot"></i><a href="/f/help/wytz_xsbd">帮助中心</a></li>
+                        <li class="line"></li>
+	              		<li class="help"><i class="icon_new"></i><a href="/f/integralMall/index">花生乐园</a></li>
+						<li class="line"></li>
+                        
+						
+						
+							<li class="login_register" style="display: inline-block">
+                            	<a href="/f/login" class="btn_text_gold mr10">立即登录</a>
+                                <a href="/f/register" class="btn_text_gold">马上注册</a>
+                            </li>
+						
+					
+                    </ul>
+                    <div class="service_hotline">服务热线：400-969-6599 (工作日9:00~18:00)</div>
+                </div>
+			</div>
+			<!-- 主菜单 -->
+			<div id="div_main_menu" class="div_width_1080">
+				<ul id="menu_bar">
+					<li class="wytz"><a href="/f/wytz"></a></li>
+					<li class="wyrz"><a href="/f/willloan/willloan"></a></li>
+					<li class="zxhd"><a href="/f/zxhd"></a></li>
+					<!-- <li class="xszy"><a href="/f/xszq"></a></li> -->
+					<li class="gywm"><a href="/f/gywm/index"></a></li>
+					<li class="wdzh"><a href="/f/customer/summary"></a></li>
+                </ul>
+                <div class="clearfix"></div>
+			</div>
+		</div>
+		
+		<div class="div_bg_001">
+			<!-- 轮播图 -->
+			<div id="div_carousel_area" class="div_width_1360 banner_area">
+				<div id="myCarousel" class="carousel slide banner"> 
+					<div class="banner_top"></div>
+					<div class="banner_right"></div> 
+					<div class="banner_bottom"></div>
+					<div class="banner_left"></div> 
+					 <div class="flexslider">
+                  <iframe id="video-iframe" src="http://www.iermu.com/svideo/4e28f1ed0b45d5a608431ed080557a72/159613" width="1000" height="480"></iframe> 
+				</div> 
+				</div>
+			</div> 
+			<div id="cooperation" class="div_width_980 cooperation_agency">
+				<div class="title" style="width:auto; padding-left:10px;"><a id="cooperationAgency" name="cooperationAgency">合作机构：</a></div>                
+                <ul class="ca_list clearfix">
+                	<li><a href="javascript:;" target="_blank"><img src="../images/util/cooperation/cooperation_zljt.jpg" width="235" height="68"></a></li>
+                	<li><a href="http://www.fdjf.net/" target="_blank"><img src="../images/util/cooperation/cooperation_fdjf.jpg" width="235" height="68"></a></li>
+                	<li><a href="javascript:;" target="_blank"><img src="../images/util/cooperation/cooperation_hwfo.jpg" width="235" height="68"></a></li>
+                	<li><a href="http://www.abccapital.cn/" target="_blank"><img src="../images/util/cooperation/cooperation_yszb.jpg" width="235" height="68"></a></li>
+                	<li><a href="javascript:;" target="_blank"><img src="../images/util/cooperation/cooperation_yrsj.jpg" width="235" height="68"></a></li>
+                	<li><a href="http://www.ljzfin.com/" target="_blank"><img src="../images/util/cooperation/cooperation_ljzfin.jpg" width="235" height="68"></a></li>
+                	<!-- <li><a href="http://www.jianwei.com/" target="_blank"><img src="../images/util/cooperation/cooperation_jw.jpg" width="235" height="68"></a></li> -->
+                	<li><a href="https://www.yeepay.com/" target="_blank"><img src="../images/util/cooperation/cooperation_ybzf.jpg" width="235" height="68"></a></li>
+                    <li><a href="http://www.allinpay.com/" target="_blank"><img src="../images/util/cooperation/cooperation_tlzf.jpg" width="235" height="68"></a></li>
+                	<li><a href="http://www.bqasset.com/" target="_blank"><img src="../images/util/cooperation/cooperation_bqzc.jpg" width="235" height="68"></a></li>
+                	<!-- <li><a href="http://www.wangdaizhijia.com/" target="_blank"><img src="../images/util/cooperation/cooperation_wdzj.jpg" width="235" height="68"></a></li> -->
+                	<!-- <li><a href="http://www.p2peye.com/" target="_blank"><img src="../images/util/cooperation/cooperation_wdty.jpg" width="235" height="68"></a></li> -->
+                	<li><a href="http://www.cmbchina.com/" target="_blank"><img src="../images/util/cooperation/cooperation_zsyh.jpg" width="235" height="68"></a></li>
+                	<li><a href="http://bank.pingan.com/" target="_blank"><img src="../images/util/cooperation/cooperation_payh.jpg" width="235" height="68"></a></li>
+                	<li><a href="http://www.cbhb.com.cn/" target="_blank"><img src="../images/util/cooperation/cooperation_bhyh.jpg" width="235" height="68"></a></li>
+                    <li><a href="http://www.cmbc.com.cn/" target="_blank"><img src="../images/util/cooperation/cooperation_msyh.jpg" width="235" height="68"></a></li>
+                    <li><a href="http://www.icbc.com.cn/" target="_blank"><img src="../images/util/cooperation/cooperation_gsyh.jpg" width="235" height="68"></a></li>
+                	
+                </ul>
+			</div>
+		</div>
+	
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<!-- 版权申明区域 -->
+<div id="footer_area" class="footer_area">
+	<div class="footer_menu">
+       	<span class=""><a href="/f/gywm/index">关于我们</a></span>
+           <span class="line">|</span>
+       	<span class=""><a href="/f/gywm/jrwm">加入我们</a></span>
+           <span class="line">|</span>
+       	<span class=""><a href="/f/gywm/lxwm">联系我们</a></span>
+           <span class="line">|</span>
+       	<span class=""><a href="/f/index#cooperationAgency">友情链接</a></span>
+           <span class="line">|</span>
+       	<span class=""><a href="javascript:void(0);">网站地图</a></span>
+           <span class="line">|</span>
+       	<span class=""><a href="javascript:void(0);">法律声明</a></span>
+           <span class="line">|</span>
+       	<span class=""><a href="javascript:void(0);">黑名单</a></span>
+    </div>
+	<div class="div_height_20"></div>
+	<div class="footer_text">
+    	<span>客服邮箱：service@fdjf.net</span>&nbsp;&nbsp;&nbsp;&nbsp;
+        <span>服务热线：<b class="font_size_18">400-969-6599</b>&nbsp;(工作日9:00~18:00)</span>
+    </div>
+    <div class="div_height_10"></div>
+	<div class="footer_text">©2015上海富定金融信息服务股份有限公司&nbsp;&nbsp;All right reserved.&nbsp;&nbsp;沪ICP备15025483号</div>
+   	<div class="div_height_20"></div>
+   	<div class="footer_logo">
+    	<!-- <a href="javascript:void(0);" class="logo_kx"></a> -->
+    	<!-- <a href="javascript:void(0);" class="logo_aq"></a> -->
+    	<!-- <a href="javascript:void(0);" class="logo_x"></a> -->
+    	<a href="javascript:void(0);" class="logo_gs"></a>
+    	<a href="javascript:void(0);" class="logo_nt"></a>
+    	<a href="javascript:void(0);" class="logo_jc"></a>
+   	</div>
+</div>
+<!-- 右侧工具栏 -->
+<div class="bottom_tools">
+	<a href="javascript:;" target="_blank" class="icon_erweima"></a>
+	<a href="http://wpa.b.qq.com/cgi/wpa.php?ln=1&key=XzkzODA0NTY4N18zMTkzMTJfNDAwOTY5NjU5OV8yXw"  target="_blank" class="icon_service"></a>
+	<a href="javascript:void(0);" id="bt_feedback" class="icon_feedback"></a>
+    <a id="scrollUp" href="javascript:;"></a>
+    <img class="img_tdc_right" src="../images/util/img_tdc_right.png">
+</div>
+<div id="div_feedback" class="feedback hide">
+	<div class="feedback_bg"></div>
+    <div class="feedback_main">
+    	<a href="javascript:void(0);" id="bt_close_feedback" class="icon_close"></a>
+    	<div class="feedback_title">意见反馈</div>
+        <div class="feedback_textarea">
+        	<form id="sendForm" action="feedback/send" method="post">
+            	<textarea id="feedback_content" name="content"  maxlength="500"  placeholder="请在此反馈您对我们网站的意见建议！"></textarea>
+            </form>
+        </div>
+        <div class="tips_text">您还可以输入<span id="content_word" style="color:red;">500</span>个文字</div>
+        <div class="feedback_button"><a id="bt_submit_send" href="javascript:void(0);" onclick="sendSubmit();" >发送</a></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+  	$(document).ready(function() {
+		$(document).on('click', '#logo', function() {
+			window.location.href="/f/index";
+		});
+		
+		var $body = $(document.body);
+		var $bottomTools = $('.bottom_tools');
+		var $qrTools = $('.icon_erweima');
+		var qrImg = $('.img_tdc_right');
+		$(window).scroll(function () {
+			var scrollHeight = $(document).height();
+			var scrollTop = $(window).scrollTop();
+			var $footerHeight = $('.page-footer').outerHeight(true);
+			var $windowHeight = $(window).innerHeight();
+			scrollTop > 50 ? $("#scrollUp").fadeIn(200).css("display","block") : $("#scrollUp").fadeOut(200);			
+			$bottomTools.css("bottom", scrollHeight - scrollTop - $footerHeight > $windowHeight ? 40 : $windowHeight + scrollTop + $footerHeight + 40 - scrollHeight);
+		});
+		$('#scrollUp').click(function (e) {
+			e.preventDefault();
+			$('html,body').animate({ scrollTop:0});
+		});
+		$qrTools.hover(function () {
+			qrImg.fadeIn();
+		}, function(){
+			 qrImg.fadeOut();
+		});
+		
+		//显示反馈意见
+		$(document).on('click', '#bt_feedback', function() {
+			$('#div_feedback').toggle();
+		});
+		
+		//关闭反馈意见
+		$(document).on('click', '#bt_close_feedback', function() {
+			$('#div_feedback').toggle();
+		});
+		//计算输入的文字
+		$(document).keyup(function() { 
+	  		var text = $("#feedback_content").val(); 
+	  	  	var length = text.length;	
+			$("#content_word").text(500 - length); 
+		}); 
+		
+	});
+  	//发送提交
+  	function sendSubmit(){
+  		var content = $("#feedback_content").val();
+  		if($("#sendForm").valid()) {
+  			$.ajax({
+  				type : 'post',
+  				url : '/f/feedback/send',
+  				data : {
+  					content : content
+  				},
+  				dataType : 'json',
+  				success : function(data) {
+  					if(data.flag=='ok'){
+  						$('#div_feedback').toggle();
+  						$.jBox.success("意见反馈发送成功！");
+  					}
+  				}
+  			});
+  		}
+	}
+  	//意见反馈内容校验
+  	$(function(){
+		$("#sendForm").validate({
+			rules: {content: {required: true, maxlength : 500}},
+			messages: {content: {required: "请输入意见反馈内容.", maxlength: "意见反馈内容最大为500字."}}
+		});
+	});
+</script>
+
+	</body>
+</html>

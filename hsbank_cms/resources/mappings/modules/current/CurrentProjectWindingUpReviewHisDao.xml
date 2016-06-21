@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.current.dao.CurrentProjectWindingUpReviewHisDao">
+    
+	<sql id="currentProjectWindingUpReviewHisColumns">
+		a.id AS "id",
+		a.project_id AS "projectId",
+		a.review_dt AS "reviewDt",
+		a.review_remark AS "reviewRemark",
+		a.review_user_id AS "reviewUserId",
+		a.review_result AS "reviewResult"
+	</sql>
+	
+	<sql id="currentProjectWindingUpReviewHisJoins">
+	</sql>
+    
+	<select id="get" resultType="CurrentProjectWindingUpReviewHis">
+		SELECT 
+			<include refid="currentProjectWindingUpReviewHisColumns"/>
+		FROM current_project_winding_up_review_his a
+		<include refid="currentProjectWindingUpReviewHisJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CurrentProjectWindingUpReviewHis">
+		SELECT 
+			<include refid="currentProjectWindingUpReviewHisColumns"/>
+		FROM current_project_winding_up_review_his a
+		<include refid="currentProjectWindingUpReviewHisJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CurrentProjectWindingUpReviewHis">
+		SELECT 
+			<include refid="currentProjectWindingUpReviewHisColumns"/>
+		FROM current_project_winding_up_review_his a
+		<include refid="currentProjectWindingUpReviewHisJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO current_project_winding_up_review_his(
+			project_id,
+			review_dt,
+			review_remark,
+			review_user_id,
+			review_result
+		) VALUES (
+			#{projectId},
+			#{reviewDt},
+			#{reviewRemark},
+			#{reviewUserId},
+			#{reviewResult}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE current_project_winding_up_review_his SET 	
+			project_id = #{projectId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM current_project_winding_up_review_his
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

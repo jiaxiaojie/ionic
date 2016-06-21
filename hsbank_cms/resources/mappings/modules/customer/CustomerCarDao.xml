@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerCarDao">
+    
+	<sql id="customerCarColumns">
+		a.id AS "id",
+		a.car_type AS "carType",
+		a.loan_value AS "loanValue",
+		a.distance AS "distance",
+		a.buy_year AS "buyYear",
+		a.car_file AS "carFile",
+		b.customer_id AS "customerId",
+		b.account_id as "accountId",
+		c.account_type AS "accountType"
+	</sql>
+	
+	<sql id="customerCarJoins">
+		RIGHT JOIN customer_base b ON b.customer_id=a.customer_id
+		LEFT JOIN customer_account c ON c.account_id=b.account_id
+	</sql>
+    
+	<select id="get" resultType="CustomerCar">
+		SELECT 
+			<include refid="customerCarColumns"/>
+		FROM customer_car a
+		<include refid="customerCarJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getByCustomerId" resultType="CustomerCar">
+		SELECT 
+			<include refid="customerCarColumns"/>
+		FROM customer_car a
+		<include refid="customerCarJoins"/>
+		WHERE b.customer_id = #{customerId} limit 1
+	</select>
+	
+	<select id="findList" resultType="CustomerCar">
+		SELECT 
+			<include refid="customerCarColumns"/>
+		FROM customer_car a
+		<include refid="customerCarJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerCar">
+		SELECT 
+			<include refid="customerCarColumns"/>
+		FROM customer_car a
+		<include refid="customerCarJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_car(
+			customer_id,
+			car_type,
+			loan_value,
+			distance,
+			buy_year,
+			car_file
+		) VALUES (
+			#{customerId},
+			#{carType},
+			#{loanValue},
+			#{distance},
+			#{buyYear},
+			#{carFile}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_car SET 	
+			car_type = #{carType},
+			loan_value = #{loanValue},
+			distance = #{distance},
+			buy_year = #{buyYear},
+			car_file = #{carFile}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_car
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

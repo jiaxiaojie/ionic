@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerWithdrawDepositSnapshotDao">
+    
+	<sql id="customerWithdrawDepositSnapshotColumns">
+		a.account_id AS "accountId",
+		a.deposit_balance AS "depositBalance",
+		a.first_get_dt AS "firstGetDt",
+		a.last_change_dt AS "lastChangeDt"
+	</sql>
+	
+	<sql id="customerWithdrawDepositSnapshotJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomerWithdrawDepositSnapshot">
+		SELECT 
+			<include refid="customerWithdrawDepositSnapshotColumns"/>
+		FROM customer_withdraw_deposit_snapshot a
+		<include refid="customerWithdrawDepositSnapshotJoins"/>
+		WHERE a.account_id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerWithdrawDepositSnapshot">
+		SELECT 
+			<include refid="customerWithdrawDepositSnapshotColumns"/>
+		FROM customer_withdraw_deposit_snapshot a
+		<include refid="customerWithdrawDepositSnapshotJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerWithdrawDepositSnapshot">
+		SELECT 
+			<include refid="customerWithdrawDepositSnapshotColumns"/>
+		FROM customer_withdraw_deposit_snapshot a
+		<include refid="customerWithdrawDepositSnapshotJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_withdraw_deposit_snapshot(
+			account_id,
+			deposit_balance,
+			first_get_dt,
+			last_change_dt
+		) VALUES (
+			#{accountId},
+			#{depositBalance},
+			#{firstGetDt},
+			#{lastChangeDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_withdraw_deposit_snapshot SET 	
+			account_id = #{accountId},
+			deposit_balance = #{depositBalance},
+			first_get_dt = #{firstGetDt},
+			last_change_dt = #{lastChangeDt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_withdraw_deposit_snapshot
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

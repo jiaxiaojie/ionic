@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.project.dao.ProjectShowTermDao">
+    
+	<sql id="projectShowTermColumns">
+		a.id AS "id",
+		a.project_id AS "projectId",
+		a.term_code AS "termCode"
+	</sql>
+	
+	<sql id="projectShowTermJoins">
+	</sql>
+    
+	<select id="get" resultType="ProjectShowTerm">
+		SELECT 
+			<include refid="projectShowTermColumns"/>
+		FROM project_show_term a
+		<include refid="projectShowTermJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ProjectShowTerm">
+		SELECT 
+			<include refid="projectShowTermColumns"/>
+		FROM project_show_term a
+		<include refid="projectShowTermJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ProjectShowTerm">
+		SELECT 
+			<include refid="projectShowTermColumns"/>
+		FROM project_show_term a
+		<include refid="projectShowTermJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO project_show_term(
+			id,
+			project_id,
+			term_code
+		) VALUES (
+			#{id},
+			#{projectId},
+			#{termCode}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE project_show_term SET 	
+			project_id = #{projectId},
+			term_code = #{termCode}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM project_show_term
+		WHERE id = #{id}
+	</update>
+	
+	<update id="deleteByProjectId">
+		DELETE FROM project_show_term
+		WHERE project_id = #{projectId}
+	</update>
+	
+	<insert id="insertBatch">
+		INSERT INTO project_show_term(project_id,term_code)
+		VALUES
+		<foreach collection="projectShowTermList" item="projectShowTerm" separator=",">
+			(#{projectShowTerm.projectId},#{projectShowTerm.termCode})
+		</foreach>
+	</insert>
+
+	<select id="findListByProjectId" resultType="ProjectShowTerm">
+		select * from project_show_term where project_id = #{projectId}
+	</select>
+</mapper>

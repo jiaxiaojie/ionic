@@ -1,0 +1,71 @@
+<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+<html> 
+<body>
+<form action='buy.jsp' method='post'> 
+<table> 
+<tr> 
+	<td><!--接口类型:创建订单--></td> 
+	<td><input type='hidden' name='p0_Cmd' value='Buy'><!--(必填)固定值Buy--></td> 
+</tr> 
+<tr> 
+	<td>订单号</td> 
+	<td><input type='text' name='p2_Order' value=''>(必填)由平台的系统生成，必须保证唯一。可利用当前时间随机生成。</td> 
+</tr> 
+<tr> 
+	<td>金额</td> 
+	<td><input type='text' name='p3_Amt' value='1'>(必填)最小为1元。</td> 
+</tr> 
+<tr> 
+	<td><!--货币单位--></td> 
+	<td><input type='hidden' name='p4_Cur' value='RMB'><!--(必填)固定值RMB--></td> 
+</tr> 
+<tr> 
+	<td>商品名称</td> 
+	<td><input type='text' name='p5_Pid' value='ticket'>(必填) </td> 
+</tr> 
+<tr> 
+	<td>返回地址:</td> 
+	<td><input type='text' name='p6_Url' value=''>(必填) 商家处理结果返回页面。</td> 
+</tr> 
+<tr> 
+	<td>扩展信息:</td> 
+	<td><input type='text' name='p7_MP' value='ticke'>(可选)可以为空串，该字段的内容会在交易完成后原样返回。</td> 
+</tr> 
+<tr> 
+	<td>银行ID</td> 
+	<td><input type='text' name='p8_FrpId' value=''>(可选)支付的银行通道编码。</td> 
+</tr> 
+<tr> 
+	<td>购买者手机号:</td> 
+	<td><input type='text' name='p9_TelNum' value=''>(可选)可以为空串。</td> 
+</tr> 
+<tr> 
+	<td>分账明细:</td> 
+	<td><input type='text' name='pa_Details' value=''>(可选)规则见帮助文档。</td> 
+</tr> 
+<tr> 
+	<td>是否自动分账:</td> 
+	<td><input type='text' name='pc_AutoSplit' value='0'>(可选)默认为0不分账，1为分账。</td> 
+</tr> 
+<tr> 
+	<td>订单有效期:</td> 
+	<td><input type='text' name='pm_Period' value=''>(可选)阿拉伯数字</td> 
+</tr> 
+<tr> 
+	<td>有效期单位:</td> 
+	<td><input type='text' name='pn_Unit' value=''>(可选)day    天</td> 
+</tr> 
+ 
+<tr> 
+	<td><!--是否使用应答机制:--></td> 
+	<td><input type='hidden' name='pr_NeedResponse' value='1'><!--(必填)默认为1--></td> 
+</tr>
+<tr> 
+	<td><input type='submit' name='' value='提交'></td> 
+	<td></td> 
+</tr> 
+ 
+</table> 
+</form>
+</body> 
+</html>

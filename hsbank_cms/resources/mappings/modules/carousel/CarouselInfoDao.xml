@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.carousel.dao.CarouselInfoDao">
+    
+	<sql id="carouselInfoColumns">
+		 a.carousel_id AS "carouselId",
+		a.title AS "title",
+		a.picture_big AS "pictureBig",
+		a.type_code AS "typeCode",
+		a.is_new_website AS "isNewWebsite",
+		a.activity_time AS "activityTime", 
+		a.target AS "target",
+		a.sort AS "sort",
+		a.start_dt AS "startDt",
+		a.end_dt AS "endDt",
+		a.create_user_id AS "createUserId",
+		a.create_dt AS "createDt",
+		a.review_user_id AS "reviewUserId",
+		a.review_dt AS "reviewDt",
+		a.status AS "status"
+	</sql>
+	
+	<sql id="carouselInfoJoins">
+	</sql>
+    
+	<select id="get" resultType="CarouselInfo">
+		SELECT 
+			<include refid="carouselInfoColumns"/>
+		FROM carousel_info a
+		<include refid="carouselInfoJoins"/>
+		WHERE a.carousel_id = #{carouselId}
+	</select>
+	
+	
+	<select id="findList" resultType="CarouselInfo">
+		SELECT 
+			<include refid="carouselInfoColumns"/>
+		FROM carousel_info a
+		<include refid="carouselInfoJoins"/>
+		<where>  
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+			<if test="typeCode != null and typeCode != ''">
+				AND a.type_code = #{typeCode}
+			</if>
+			<if test="startDt != null  and startDt != ''">
+				AND a.create_dt >= #{startDt}
+			</if>
+			<if test="endDt != null and endDt != ''">
+				AND #{endDt} >= a.create_dt
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="isNewWebsite != null and isNewWebsite != ''">
+				AND a.is_new_website = #{isNewWebsite}
+			</if>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			ORDER BY a.sort
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	
+	
+	<select id="findAllList" resultType="CarouselInfo">
+		SELECT 
+			<include refid="carouselInfoColumns"/>
+		FROM carousel_info a
+		<include refid="carouselInfoJoins"/>
+		<where>
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			ORDER BY a.sort 
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	
+	<select id="getRelationCarouselList" resultType="CarouselInfo">
+		SELECT distinct
+			<include refid="carouselInfoColumns"/>
+		FROM carousel_info a
+		JOIN carousel_show_term cl ON cl.carousel_id=a.carousel_id
+		<where>
+			 cl.term_code = #{termCode}
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			AND #{currDate} BETWEEN startDt AND endDt
+		</where>
+	</select>
+	
+	<select id="getEffectiveCarouselList" resultType="CarouselInfo">
+		SELECT 
+			<include refid="carouselInfoColumns"/>
+		FROM carousel_info a
+		<where>
+			a.status = #{status}
+			AND #{currDate} BETWEEN start_dt AND endDt
+		</where>
+	</select>
+	
+	<select id="getCarouselListByStatusAndTerm" resultType="CarouselInfo">
+		SELECT DISTINCT
+			<include refid="carouselInfoColumns"/>
+		FROM carousel_info a
+		LEFT JOIN carousel_show_term b on a.carousel_id=b.carousel_id
+		<where>
+			a.status = #{status}
+			<if test="isNewWebsite != null and isNewWebsite != ''">
+				AND a.is_new_website = #{isNewWebsite}
+			</if>
+			AND b.term_code = #{term}
+			AND #{theDate} BETWEEN a.start_dt AND a.end_dt 
+			order by sort DESC
+		</where>
+	</select>
+	
+	 	<select id="getCarouselListByStatusAndTermAndShow" resultType="CarouselInfo">
+		SELECT DISTINCT
+			<include refid="carouselInfoColumns"/>
+		FROM carousel_info a
+		LEFT JOIN carousel_show_term b on a.carousel_id=b.carousel_id
+		<where>
+			a.status = #{status}
+			AND b.term_code = #{term}
+			order by sort DESC
+		</where>
+	</select> 
+	
+	
+	
+	
+	<select id="getCarouselListPage" resultType="CarouselInfo">
+		SELECT DISTINCT
+			<include refid="carouselInfoColumns"/>
+		FROM carousel_info a
+		LEFT JOIN carousel_show_term b on a.carousel_id=b.carousel_id
+		<where>
+			a.status = #{status}
+			AND b.term_code = #{term}
+			AND #{theDate} BETWEEN a.start_dt AND a.end_dt 
+			order by sort DESC
+			limit #{startNumber},#{endNumber}
+		</where>
+	</select>
+	
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="carouselId">
+		INSERT INTO carousel_info(
+			title,
+			picture_big,
+			type_code,
+			is_new_website,
+		    activity_time,
+			target,
+			sort,
+			create_user_id,
+			start_dt,
+			end_dt,
+			create_dt,
+			review_dt,
+			review_user_id,
+			status
+		) VALUES (
+     		#{title},
+			#{pictureBig},
+			#{typeCode},
+			#{isNewWebsite},
+			#{activityTime},
+			#{target},
+			#{sort},
+			#{createUserId},
+			#{startDt},
+			#{endDt},
+			#{createDt},
+			#{reviewDt},
+			#{reviewUserId},
+			#{status}
+		)
+	</insert>
+	
+	
+	
+	
+	<update id="update">
+		UPDATE carousel_info SET 	
+		    title = #{title},
+			picture_big = #{pictureBig},
+			type_code = #{typeCode},
+			is_new_website = #{isNewWebsite},
+		    activity_time=#{activityTime},
+			target = #{target},
+			sort = #{sort},
+			create_user_id = #{createUserId},
+			start_dt = #{startDt},
+			end_dt = #{endDt},
+			create_dt = #{createDt},
+			review_dt = #{reviewDt},
+			review_user_id = #{reviewUserId},
+			status = #{status} 
+		WHERE carousel_id = #{carouselId}
+	</update>
+	
+	
+	<update id="delete">
+		DELETE FROM carousel_info
+		WHERE carousel_id = #{carouselId}
+	</update>
+	
+	
+</mapper>

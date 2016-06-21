@@ -1,0 +1,19 @@
+﻿/*
+change_reason
+0  签到 customer_integral_change_reason_dict   会员积分变更原因 10 修改 删除 添加键值
+1  消费 customer_integral_change_reason_dict   会员积分变更原因 20 修改 删除 添加键值
+2  推荐好友赠送   customer_integral_change_reason_dict   会员积分变更原因 30 修改 删除 添加键值
+3  投资赠送  customer_integral_change_reason_dict   会员积分变更原因 40 修改 删除 添加键值
+4  兑换商品  customer_integral_change_reason_dict   会员积分变更原因 50 修改 删除 添加键值
+change_type
+0  签到 customer_integral_change_type_dict  会员积分变更原因 10 修改 删除 添加键值
+1  消费 customer_integral_change_type_dict  会员积分变更原因 20 修改 删除 添加键值
+2  活动奖励  customer_integral_change_type_dict  会员积分变更原因 30 修改 删除 添加键值
+3  取消消费返还   customer_integral_change_type_dict  会员积分变更原因 40 修改 删除 添加键值
+*/
+update customer_integral_his set change_type = '0' where change_reason = '0';
+update customer_integral_his set change_type = '1' where change_reason in ('1','4');
+update customer_integral_his set change_type = '2' where change_reason in ('2','3');
+
+处理change_type为null数据、change_reason无意义数据
+select * from customer_integral_his where change_type is null;

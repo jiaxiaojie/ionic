@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.log.dao.LogThirdPartyDao">
+    
+	<sql id="logThirdPartyColumns">
+		a.id AS "id",
+		a.request_no AS "requestNo",
+		a.service AS "service",
+		a.req_content AS "reqContent",
+		a.req_dt AS "reqDt",
+		a.resp_content AS "respContent",
+		a.resp_code AS "respCode",
+		a.resp_dt AS "respDt",
+		a.notify_content AS "notifyContent",
+		a.notify_code AS "notifyCode",
+		a.notify_dt AS "notifyDt",
+		a.query_dt AS "queryDt",
+		a.query_req AS "queryReq",
+		a.query_resp AS "queryResp",
+		a.query_code AS "queryCode",
+		a.confirm_dt AS "confirmDt",
+		a.confirm_code AS "confirmCode",
+		a.confirm_req AS "confirmReq",
+		a.confirm_resp AS "confirmResp"
+	</sql>
+	
+	<sql id="logThirdPartyJoins">
+	</sql>
+    
+	<select id="get" resultType="LogThirdParty">
+		SELECT 
+			<include refid="logThirdPartyColumns"/>
+		FROM log_third_party a
+		<include refid="logThirdPartyJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="LogThirdParty">
+		SELECT 
+			<include refid="logThirdPartyColumns"/>
+		FROM log_third_party a
+		<include refid="logThirdPartyJoins"/>
+		<where>
+			
+			<if test="requestNo != null and requestNo != ''">
+				AND a.request_no = #{requestNo}
+			</if>
+			<if test="service != null and service != ''">
+				AND a.service = #{service}
+			</if>
+			<if test="beginReqDt != null  and beginReqDt != ''">				AND a.req_dt >= #{beginReqDt}			</if>			<if test="endReqDt != null and endReqDt != ''">				AND #{endReqDt} >= a.req_dt			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="LogThirdParty">
+		SELECT 
+			<include refid="logThirdPartyColumns"/>
+		FROM log_third_party a
+		<include refid="logThirdPartyJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO log_third_party(
+			request_no,
+			service,
+			req_content,
+			req_dt,
+			resp_content,
+			resp_code,
+			resp_dt,
+			notify_content,
+			notify_code,
+			notify_dt,
+			query_dt,
+			query_req,
+			query_resp,
+			query_code,
+			confirm_dt,
+			confirm_code,
+			confirm_req,
+			confirm_resp
+		) VALUES (
+			#{requestNo},
+			#{service},
+			#{reqContent},
+			#{reqDt},
+			#{respContent},
+			#{respCode},
+			#{respDt},
+			#{notifyContent},
+			#{notifyCode},
+			#{notifyDt},
+			#{queryDt},
+			#{queryReq},
+			#{queryResp},
+			#{queryCode},
+			#{confirmDt},
+			#{confirmCode},
+			#{confirmReq},
+			#{confirmResp}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE log_third_party SET 	
+			request_no = #{requestNo},
+			service = #{service},
+			req_content = #{reqContent},
+			req_dt = #{reqDt},
+			resp_content = #{respContent},
+			resp_code = #{respCode},
+			resp_dt = #{respDt},
+			notify_content = #{notifyContent},
+			notify_code = #{notifyCode},
+			notify_dt = #{notifyDt},
+			query_dt = #{queryDt},
+			query_req = #{queryReq},
+			query_resp = #{queryResp},
+			query_code = #{queryCode}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM log_third_party
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateWithCallback">
+		UPDATE log_third_party SET
+			resp_content = #{respContent},
+			resp_code = #{respCode},
+			resp_dt = #{respDt}
+		WHERE request_no = #{requestNo}
+	</update>
+	
+	<update id="updateWithNotify">
+		UPDATE log_third_party SET
+			notify_content = #{notifyContent},
+			notify_code = #{notifyCode},
+			notify_dt = #{notifyDt}
+		WHERE request_no = #{requestNo}
+	</update>
+	
+	<select id="getByRequestNo" resultType="LogThirdParty">
+		select * from log_third_party where request_no = #{requestNo} limit 1
+	</select>
+	
+	<select id="getByRequestNoAndService" resultType="LogThirdParty">
+		SELECT 
+			<include refid="logThirdPartyColumns"/>
+		FROM log_third_party a
+		<include refid="logThirdPartyJoins"/>
+		WHERE a.request_no = #{requestNo}
+		AND   a.service in (${service})
+	</select>
+	
+	<select id="getByPlatformUserNoAndService" resultType="LogThirdParty">
+		SELECT 
+			a.id AS "id",
+			a.request_no AS "requestNo",
+			a.service AS "service",
+			a.resp_code AS "respCode"
+		FROM log_third_party a
+		WHERE a.req_content like concat('%',#{platformUserNo},'%')
+		AND   a.service = #{service}
+		AND   a.resp_code = '1' limit 1
+	</select>
+	
+	<update id="updateWithConfirm">
+		update log_third_party SET
+		confirm_dt=#{confirmDt},
+		confirm_code=#{confirmCode},
+		confirm_req=#{confirmReq},
+		confirm_resp=#{confirmResp}
+		where request_no = #{requestNo}
+	</update>
+	
+	<update id="updateWithQuery">
+		update log_third_party SET
+		query_dt=#{queryDt},
+		query_code=#{queryCode},
+		query_req=#{queryReq},
+		query_resp=#{queryResp}
+		where request_no = #{requestNo}
+	</update>
+</mapper>

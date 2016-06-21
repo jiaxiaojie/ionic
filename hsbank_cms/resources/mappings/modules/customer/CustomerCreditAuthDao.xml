@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerCreditAuthDao">
+    
+	<sql id="customerCreditAuthColumns">
+		a.id AS "id",
+		a.person_credit_auth_code AS "personCreditAuthCode",
+		a.person_credit_auth_remark AS "personCreditAuthRemark",
+		a.person_score AS "personScore",
+		a.identity_credit_auth_code AS "identityCreditAuthCode",
+		a.identity_credit_auth_remark AS "identityCreditAuthRemark",
+		a.identity_score AS "identityScore",
+		a.income_credit_auth_code AS "incomeCreditAuthCode",
+		a.income_credit_auth_remark AS "incomeCreditAuthRemark",
+		a.income_score AS "incomeScore",
+		a.credit_auth_code AS "creditAuthCode",
+		a.credit_auth_remark AS "creditAuthRemark",
+		a.credit_card_score AS "creditCardScore",
+		a.housing_credit_auth_code AS "housingCreditAuthCode",
+		a.housing_credit_auth_remark AS "housingCreditAuthRemark",
+		a.housing_score AS "housingScore",
+		a.car_credit_auth_code AS "carCreditAuthCode",
+		a.car_credit_auth_remark AS "carCreditAuthRemark",
+		a.car_score AS "carScore",
+		a.address_credit_auth_code AS "addressCreditAuthCode",
+		a.address_credit_auth_remark AS "addressCreditAuthRemark",
+		a.address_score AS "addressScore",
+		a.education_credit_auth_code AS "educationCreditAuthCode",
+		a.education_credit_auth_remark AS "educationCreditAuthRemark",
+		a.education_score AS "educationScore",
+		a.credit_level AS "creditLevel",
+		a.credit_score AS "creditScore",
+		a.credit_limit AS "creditLimit",
+		a.credit_report_auth_code AS "creditReportAuthCode",
+		a.credit_report_auth_remark AS "creditReportAuthRemark",
+		a.credit_report_score AS "creditReportScore",
+		a.remark AS "remark",
+		c.customer_id AS "customerId",
+		c.customer_name AS "customerName",
+		c.mobile AS "mobile",
+		b.account_id AS "accountId",
+		b.account_name AS "accountName"
+	</sql>
+	
+	<sql id="customerCreditAuthJoins">
+		RIGHT JOIN customer_base c ON c.customer_id=a.customer_id
+		RIGHT JOIN customer_account b ON b.account_id=c.account_id
+	</sql>
+    
+	<select id="get" resultType="CustomerCreditAuth">
+		SELECT 
+			<include refid="customerCreditAuthColumns"/>
+		FROM customer_credit_auth a
+		<include refid="customerCreditAuthJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getByAccountId" resultType="CustomerCreditAuth">
+		SELECT 
+			<include refid="customerCreditAuthColumns"/>
+		FROM customer_credit_auth a
+		<include refid="customerCreditAuthJoins"/>
+		WHERE b.account_id = #{accountId} limit 1
+	</select>
+	
+	<select id="findList" resultType="CustomerCreditAuth">
+		SELECT 
+			<include refid="customerCreditAuthColumns"/>
+		FROM customer_credit_auth a
+			LEFT JOIN customer_base c ON c.customer_id=a.customer_id
+			LEFT JOIN customer_account b ON b.account_id=c.account_id
+		<where>
+			
+			<if test="accountName != null and accountName != ''">
+				AND b.account_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{accountName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{accountName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{accountName},'%')</if>
+			</if>
+			<if test="customerName != null and customerName != ''">
+				AND c.customer_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{customerName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{customerName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{customerName},'%')</if>
+			</if>
+			<if test="mobile != null and mobile != ''">
+				AND c.mobile = #{mobile}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY field(a.person_credit_auth_code,'0','-1','2','1') desc,
+					field(a.identity_credit_auth_code,'0','-1','2','1') desc,
+					field(a.education_credit_auth_code,'0','-1','2','1') desc,
+					field(a.address_credit_auth_code,'0','-1','2','1') desc,
+					field(a.income_credit_auth_code,'0','-1','2','1') desc,
+					field(a.housing_credit_auth_code,'0','-1','2','1') desc,
+					field(a.car_credit_auth_code,'0','-1','2','1') desc,
+					field(a.credit_auth_code,'0','-1','2','1') desc,
+					field(a.credit_report_auth_code,'0','-1','2','1') desc,b.register_dt desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerCreditAuth">
+		SELECT 
+			<include refid="customerCreditAuthColumns"/>
+		FROM customer_credit_auth a
+		<include refid="customerCreditAuthJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_credit_auth(
+			customer_id,
+			person_credit_auth_code,
+			person_credit_auth_remark,
+			person_score,
+			identity_credit_auth_code,
+			identity_credit_auth_remark,
+			identity_score,
+			income_credit_auth_code,
+			income_credit_auth_remark,
+			income_score,
+			credit_auth_code,
+			credit_auth_remark,
+			credit_card_score,
+			housing_credit_auth_code,
+			housing_credit_auth_remark,
+			housing_score,
+			car_credit_auth_code,
+			car_credit_auth_remark,
+			car_score,
+			address_credit_auth_code,
+			address_credit_auth_remark,
+			address_score,
+			education_credit_auth_code,
+			education_credit_auth_remark,
+			education_score,
+			credit_report_auth_code,
+			credit_report_auth_remark,
+			credit_report_score,
+			credit_level,
+			credit_score,
+			credit_limit,
+			remark
+		) VALUES (
+			#{customerId},
+			#{personCreditAuthCode},
+			#{personCreditAuthRemark},
+			#{personScore},
+			#{identityCreditAuthCode},
+			#{identityCreditAuthRemark},
+			#{identityScore},
+			#{incomeCreditAuthCode},
+			#{incomeCreditAuthRemark},
+			#{incomeScore},
+			#{creditAuthCode},
+			#{creditAuthRemark},
+			#{creditCardScore},
+			#{housingCreditAuthCode},
+			#{housingCreditAuthRemark},
+			#{housingScore},
+			#{carCreditAuthCode},
+			#{carCreditAuthRemark},
+			#{carScore},
+			#{addressCreditAuthCode},
+			#{addressCreditAuthRemark},
+			#{addressScore},
+			#{educationCreditAuthCode},
+			#{educationCreditAuthRemark},
+			#{educationScore},
+			#{creditReportAuthCode},
+			#{creditReportAuthRemark},
+			#{creditReportScore},
+			#{creditLevel},
+			#{creditScore},
+			#{creditLimit},
+			#{remark}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_credit_auth SET 	
+			person_credit_auth_code = #{personCreditAuthCode},
+			person_credit_auth_remark = #{personCreditAuthRemark},
+			person_score = #{personScore},
+			identity_credit_auth_code = #{identityCreditAuthCode},
+			identity_credit_auth_remark = #{identityCreditAuthRemark},
+			identity_score = #{identityScore},
+			income_credit_auth_code = #{incomeCreditAuthCode},
+			income_credit_auth_remark = #{incomeCreditAuthRemark},
+			income_score = #{incomeScore},
+			credit_auth_code = #{creditAuthCode},
+			credit_auth_remark = #{creditAuthRemark},
+			credit_card_score = #{creditCardScore},
+			housing_credit_auth_code = #{housingCreditAuthCode},
+			housing_credit_auth_remark = #{housingCreditAuthRemark},
+			housing_score = #{housingScore},
+			car_credit_auth_code = #{carCreditAuthCode},
+			car_credit_auth_remark = #{carCreditAuthRemark},
+			car_score = #{carScore},
+			address_credit_auth_code = #{addressCreditAuthCode},
+			address_credit_auth_remark = #{addressCreditAuthRemark},
+			address_score = #{addressScore},
+			education_credit_auth_code = #{educationCreditAuthCode},
+			education_credit_auth_remark = #{educationCreditAuthRemark},
+			education_score = #{educationScore},
+			credit_report_auth_code = #{creditReportAuthCode},
+			credit_report_auth_remark = #{creditReportAuthRemark},
+			credit_report_score = #{creditReportScore},
+			credit_level = #{creditLevel},
+			credit_score = #{creditScore},
+			credit_limit = #{creditLimit},
+			remark = #{remark}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_credit_auth
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

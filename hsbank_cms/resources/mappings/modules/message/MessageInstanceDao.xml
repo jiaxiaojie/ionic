@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.message.dao.MessageInstanceDao">
+    
+	<sql id="messageInstanceColumns">
+		a.id AS "id",
+		a.message_id AS "messageId",
+		a.message_channel AS "messageChannel",
+		a.create_dt AS "createDt",
+		a.send_dt AS "sendDt",
+		a.read_dt AS "readDt",
+		a.delete_dt AS "deleteDt",
+		a.status AS "status",
+		b.title AS "title",
+		b.content AS "content",
+		b.type AS "type"
+	</sql>
+	
+	<sql id="messageInstanceJoins">
+		JOIN message b ON b.id=a.message_id
+	</sql>
+    
+	<select id="get" resultType="MessageInstance">
+		SELECT 
+			<include refid="messageInstanceColumns"/>
+		FROM message_instance a
+		<include refid="messageInstanceJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MessageInstance">
+		SELECT 
+			<include refid="messageInstanceColumns"/>
+		FROM message_instance a
+		<include refid="messageInstanceJoins"/>
+		<where>
+			
+			<if test="messageId != null and messageId != ''">
+				AND a.message_id = #{messageId}
+			</if>
+			<if test="messageChannel != null and messageChannel != ''">
+				AND a.message_channel = #{messageChannel}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	<select id="selectMessageNum" resultType="map">
+		select a.account_id from customer_base a
+            LEFT JOIN message b on b.account_id=a.account_id
+            LEFT JOIN message_instance c on c.id=b.id
+		<where> 
+		       c.status='1'
+		    <if test="type != null and type != ''">
+				AND b.type = #{type}
+			</if>
+		    <if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if> 
+			<if test="beginOpDt != null  and beginOpDt != ''">
+				AND c.send_dt >= #{beginOpDt}
+			</if>
+			<if test="endOpDt != null and endOpDt != ''">
+				AND #{endOpDt} >=c.send_dt
+			</if>
+			<if test="customerName != null and customerName != ''">
+				AND a.customer_name = #{customerName}
+			</if>
+		</where>
+		ORDER BY c.send_dt desc
+		
+	</select>
+	
+	
+	<select id="searchPageList" resultType="MessageInstance">
+		SELECT 
+			a.id AS "id",
+			a.message_id AS "messageId",
+			a.message_channel AS "messageChannel",
+			a.create_dt AS "createDt",
+			a.send_dt AS "sendDt",
+			a.read_dt AS "readDt",
+			a.delete_dt AS "deleteDt",
+			a.status AS "status",
+			b.title AS "title",
+			b.content AS "content",
+			b.type AS "type",
+			cb.customer_name AS "customerName",
+			cb.mobile AS "mobile"
+			FROM message_instance a
+			JOIN message b ON b.id=a.message_id
+			LEFT JOIN customer_base cb ON cb.account_id=b.account_id
+		<where>
+			<if test="type != null and type != ''">
+				AND b.type = #{type}
+			</if>
+			<if test="content != null and content != ''">
+				AND b.content LIKE 
+				<if test="dbName == 'oracle'">'%'||#{content}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{content}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{content},'%')</if>
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="mobile != null and mobile != ''">
+				AND cb.mobile = #{mobile}
+			</if>
+			<if test="customerName != null and customerName != ''">
+				AND cb.customer_name = #{customerName}
+			</if>
+			<if test="accountId != null and accountId != ''">
+				AND cb.account_id = #{accountId}
+			</if>
+			<if test="messageChannel != null and messageChannel != ''">
+				AND a.message_channel = #{messageChannel}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY b.from_id desc, a.create_dt desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="searchMyMessagePageList" resultType="MessageInstance">
+		SELECT 
+			<include refid="messageInstanceColumns"/>
+		FROM message_instance a
+		<include refid="messageInstanceJoins"/>
+		<where>
+				b.account_id = #{accountId} 
+				AND (a.status='0' OR a.status='1' OR a.status='2')
+				AND b.send_dt &lt;= now()
+			<if test="type != null and type != ''">
+				AND b.type = #{type}
+			</if>	
+			<if test="messageChannel != null and messageChannel != ''">
+				AND a.message_channel = #{messageChannel}
+				<if test="messageChannel =='2'.toString() or messageChannel =='3'.toString() or messageChannel =='4'.toString() or messageChannel =='5'.toString()">
+					AND (a.status='1' OR a.status='2')
+				</if>
+			</if>	
+			<if test="startDateTime != null and startDateTime != '' and endDateTime != null and endDateTime != ''">
+				AND  (a.create_dt between #{startDateTime} and #{endDateTime})
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.status,a.create_dt desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="hasRemindOfMsg" resultType="boolean">
+		SELECT 
+			case when count(1) &gt; 0 then 1 else 0 end
+		FROM message_instance a
+		JOIN message b ON b.id=a.message_id
+		<where>
+				b.account_id = #{accountId} 
+				AND (a.status='0' OR a.status='1')
+			<if test="type != null and type != ''">
+				AND b.type = #{type}
+			</if>	
+			<if test="messageChannel != null and messageChannel != ''">
+				AND a.message_channel = #{messageChannel}
+			</if>	
+			<if test="startDateTime != null and startDateTime != '' and endDateTime != null and endDateTime != ''">
+				AND  (a.create_dt between #{startDateTime} and #{endDateTime})
+				AND b.send_dt &lt;= now()
+			</if>
+		</where>
+	</select>
+	
+	<select id="getUnreadCount" resultType="Integer">
+		SELECT count(1)
+		FROM message_instance a
+		JOIN message b ON b.id=a.message_id
+		<where>
+			b.account_id = #{accountId} 
+				AND (a.status='0' OR a.status='1' OR a.status='2')
+			<if test="type != null and type != ''">
+				AND b.type = #{type}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status != #{status}
+			</if>	
+			<if test="messageChannel != null and messageChannel != ''">
+				AND a.message_channel = #{messageChannel}
+				<if test="messageChannel =='2'.toString() or messageChannel =='3'.toString() or messageChannel =='4'.toString()">
+					AND (a.status='1' OR a.status='2')
+				</if>
+			</if>	
+			<if test="startDateTime != null and startDateTime != '' and endDateTime != null and endDateTime != ''">
+				AND  (a.create_dt between #{startDateTime} and #{endDateTime})
+				AND b.send_dt &lt;= now()
+			</if>
+		</where>
+	</select>
+	
+	
+	<select id="getLatestEmergencyMessage" resultType="MessageInstance">
+		select * from ((select
+		<include refid="messageInstanceColumns"/>
+		from message_instance a
+		JOIN message b ON b.id=a.message_id
+		JOIN custom_message c ON c.id=b.from_id and b.from_type='1'
+		where a.message_channel = #{messageChannel}
+		AND b.account_id = #{accountId}
+		AND (a.status='1' OR a.status='2'  OR a.status='0')
+
+		<if test="messageChannel != null and messageChannel != ''">
+			<if test="messageChannel =='2'.toString() or messageChannel =='3'.toString()">
+				AND (a.status='1' OR a.status='2')
+			</if>
+		</if>
+
+		AND c.is_urgent='1'
+		order by a.send_dt desc limit 1)
+
+		UNION
+
+		(select
+		<include refid="messageInstanceColumns"/>
+		from message_instance a
+		JOIN message b ON b.id=a.message_id
+		JOIN message_create_rule mcr ON mcr.id=b.from_id and b.from_type='0'
+		where a.message_channel = #{messageChannel}
+		AND b.account_id = #{accountId}
+		AND (a.status='1' OR a.status='2'  OR a.status='0')
+
+		<if test="messageChannel != null and messageChannel != ''">
+			<if test="messageChannel =='2'.toString() or messageChannel =='3'.toString()">
+				AND (a.status='1' OR a.status='2')
+			</if>
+		</if>
+
+		AND mcr.is_urgent='1'
+		order by a.send_dt desc limit 1)) as tempMsg order by tempMsg.sendDt desc limit 1
+	</select>
+
+	
+	
+	<select id="findAllList" resultType="MessageInstance">
+		SELECT 
+			<include refid="messageInstanceColumns"/>
+		FROM message_instance a
+		<include refid="messageInstanceJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO message_instance(
+			message_id,
+			message_channel,
+			create_dt,
+			send_dt,
+			read_dt,
+			delete_dt,
+			status
+		) VALUES (
+			#{messageId},
+			#{messageChannel},
+			#{createDt},
+			#{sendDt},
+			#{readDt},
+			#{deleteDt},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE message_instance SET 	
+			message_id = #{messageId},
+			message_channel = #{messageChannel},
+			create_dt = #{createDt},
+			send_dt = #{sendDt},
+			read_dt = #{readDt},
+			delete_dt = #{deleteDt},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM message_instance
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findListByFromType" resultType="MessageInstance">
+		select b.account_id as "accountId",b.title as "title",b.content as "content",b.send_dt as "planSendDt",
+			b.type as "type",b.label as "label",b.from_type as "fromType",b.from_id as "fromId",
+			a.id as "id",a.message_id as "messageId",a.message_channel as "messageChannel",
+			a.create_dt as "createDt",a.send_dt as "sendDt",a.read_dt as "readDt",a.delete_dt as "deleteDt",a.status as "status",
+			c.mobile as "mobile"
+		from message_instance a,message b,customer_base c
+		where
+			b.id = a.message_id
+			<if test="messageFromType != null and messageFromType != ''">
+				and b.from_type = #{messageFromType}
+			</if>
+			<if test="messageChannel != null and messageChannel != ''">
+				and a.message_channel = #{messageChannel}
+			</if>
+			<foreach collection="statuses" index="index" item="status" open=" and (" separator=" or " close=")">
+				a.status = #{status}
+			</foreach>
+			and b.account_id = c.account_id
+		order by
+			b.from_id
+	</select>
+	
+	<select id="findAppListByStatus" resultType="MessageInstance">
+		select b.account_id as "accountId",b.title as "title",b.content as "content",b.send_dt as "planSendDt",
+			b.type as "type",b.label as "label",b.from_type as "fromType",b.from_id as "fromId",
+			a.id as "id",a.message_id as "messageId",a.message_channel as "messageChannel",
+			a.create_dt as "createDt",a.send_dt as "sendDt",a.read_dt as "readDt",a.delete_dt as "deleteDt",a.status as "status"
+		from message_instance a,message b
+		where
+			b.id = a.message_id and (a.message_channel = '2' or a.message_channel = '3') and a.status = #{status}
+		order by
+			b.from_id
+	</select>
+	
+	<update id="updateStatusBatch">
+		update message_instance set status = #{status}
+			<if test="sendDt != null">,send_dt = #{sendDt}</if>
+			<if test="readDt != null">,read_dt = #{readDt}</if>
+			<if test="deleteDt != null">,delete_dt = #{deleteDt}</if>
+		where id in
+			<foreach collection="ids" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+	</update>
+	
+	<update id="updateStatus">
+		update message_instance set status = #{status}
+			<if test="sendDt != null">,send_dt = #{sendDt}</if>
+			<if test="readDt != null">,read_dt = #{readDt}</if>
+			<if test="deleteDt != null">,delete_dt = #{deleteDt}</if>
+		where id = #{id}
+	</update>
+	
+	<select id="findListByAccountIdAndMessageChannel" resultType="MessageInstance">
+		select b.account_id as "accountId",b.title as "title",b.content as "content",b.send_dt as "planSendDt",
+			b.type as "type",b.label as "label",b.from_type as "fromType",b.from_id as "fromId",
+			a.id as "id",a.message_id as "messageId",a.message_channel as "messageChannel",
+			a.create_dt as "createDt",a.send_dt as "sendDt",a.read_dt as "readDt",a.delete_dt as "deleteDt",a.status as "status",
+			c.mobile as "mobile"
+		from message_instance a,message b,customer_base c
+		where
+			b.accountId = #{accountId} and a.message_channel = #{messageChannel} and b.id = a.message_id
+			<foreach collection="statuses" index="index" item="status" open=" and (" separator=" or " close=")">
+				a.status = #{status}
+			</foreach>
+			and b.send_dt &lt;= now() and b.account_id = c.account_id
+	</select>
+	
+
+	
+
+	<update id="expireMessageSwitch">
+					update message_instance a  LEFT JOIN message b ON b.id=a.message_id
+		 set a.status = '-2' where a.message_channel=#{messageChannel} and b.type=#{messageType} and a.status='0'
+		 <if test="accountId != null and accountId !=0">
+				and  b.account_id=#{accountId}
+			</if>
+		
+	</update>
+	
+	<select id="getCount" resultType="java.lang.Integer">
+		select count(1)
+		from message_instance a
+		left join message b on a.message_id = b.id
+		where b.send_dt &lt;= now()
+		<if test="accountId != null">
+			and b.account_id = #{accountId}
+		</if>
+		<if test="type != null">
+			and b.type = #{type}
+		</if>
+		<if test="messageChannel != null">
+			and a.message_channel = #{messageChannel}
+		</if>
+		<if test="status != null">
+			and a.status = #{status}
+		</if>
+		<if test="statuses != null and statuses != ''">
+			and a.status in
+			<foreach item="status" index="index" collection="statuses" open="(" separator="," close=")">
+				#{status}
+			</foreach>
+		</if>
+		<if test="startDateTime != null and startDateTime != '' and endDateTime != null and endDateTime != ''">
+			AND  (a.create_dt between #{startDateTime} and #{endDateTime})
+		</if>
+	</select>
+
+	<update id="updateStatusByCustomer">
+		update message_instance set status = #{status}
+		<if test="readDate != null">,read_dt = #{readDate}</if>
+		<if test="deleteDate != null">,delete_dt = #{deleteDate}</if>
+		where id in
+		(select id from
+			(select a.id
+			from message_instance a
+			left join message b on a.message_id = b.id
+			where b.account_id = #{accountId} and a.message_channel = #{messageChannel} and a.status in ("0", "1", "2")
+			<if test="ids != null">
+				and a.id in <foreach collection="ids" index="index" item="id" open="(" separator="," close=")">#{id}</foreach>
+			</if>
+			) a
+		)
+	</update>
+</mapper>

@@ -1,0 +1,23 @@
+.about_right_content .title{ padding-bottom: 10px; margin-bottom: 10px; height:40px;line-height:40px;font-weight:bold;font-size:18px; border-bottom: 1px solid #c7c7c7;}
+.about_right_content .title2{height:50px;line-height:50px;font-weight:bold;font-size:16px; color:#666;}
+.about_right_content .left_text{ margin-bottom: 16px; line-height:26px;font-weight:normal;font-size:14px;}
+.about_right_content .right_text{float:right;height:26px;line-height:26px;font-weight:normal;font-size:14px;}
+.about_right_content hr{border-top:1px solid #c7c7c7;border-bottom:0 none white;margin:5px 20px 5px 20px;}
+.about_right_content .hr_dashed{ width: 100%;border-top:1px dashed #c7c7c7;border-bottom:0 none white;margin:20px 60px 20px 0;}
+.area_001{ background:url('../../images/gywm/aboutus_01.jpg') no-repeat right 122px;}
+.area_001 .content{ padding-right:0;}
+.area_002{background:url('../../images/gywm/aboutus_02.jpg') no-repeat left 30px;}
+.area_002 .content{ margin-left:340px;padding-top:40px;}
+.area_003{ background:url('../../images/gywm/aboutus_03.jpg') no-repeat left 0;}
+.area_003 .content{ padding-left:300px; padding-right: 14px;}
+.area_004{height:400px;background:url('../../images/gywm/aboutus_04.jpg') no-repeat center 30px;}
+.area_005{height:704px;background:url('../../images/gywm/aboutus_08.jpg') no-repeat center 20px;}
+.office_environment .oe_content{ position:relative; width:676px; height:418px; background:url('../../images/util/bg_office_environment.png') no-repeat;}
+.oe_content .oe_border{ position:absolute; top:39px; left:38px; width:598px; height:338px; border:1px solid #fff; text-align:center;}
+.oe_border .icon_video{ position:relative; margin-top:122px; padding-top:50px; width:80px; height:40px; text-align:center; font-size:16px; color:#fff; display:inline-block; background:url('../../images/util/icon_video.png') no-repeat  center 0px;}
+.oe_border .icon_video em{ font-style:normal;}
+.oe_border .icon_video span{ transition: all ease-out .3s;  -o-transition: all ease-out .3s; -ms-transition: all ease-out .3s; -moz-transition: all ease-out .3s;  -webkit-transition: all ease-out .3s;}
+.oe_border .icon_video .oe_line_lt{ position:absolute; right:8px; top:74px; width:0px; height:1px; background-color:#fff;}
+.oe_border .icon_video:hover .oe_line_lt{ position:absolute; right:8px; top:74px; width:32px; height:1px; background-color:#fff;}
+.oe_border .icon_video .oe_line_rt{ position:absolute; left:8px; top:74px; width:0px; height:1px; background-color:#fff;}
+.oe_border .icon_video:hover .oe_line_rt{ position:absolute; left:8px; top:74px; width:32px; height:1px; background-color:#fff;}

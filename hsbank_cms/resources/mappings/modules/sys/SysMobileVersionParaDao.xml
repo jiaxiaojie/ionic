@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.sys.dao.SysMobileVersionParaDao">
+    
+	<sql id="sysMobileVersionParaColumns">
+		a.id AS "id",
+		a.version AS "version",
+		a.version_size AS "versionSize",
+		a.version_info AS "versionInfo",
+		a.url AS "url",
+		a.channel AS "channel",
+		a.is_forced_update AS "isForcedUpdate",
+		a.type AS "type",
+		a.mark AS "mark"
+	</sql>
+	
+	<sql id="sysMobileVersionParaJoins">
+	</sql>
+    
+	<select id="get" resultType="SysMobileVersionPara">
+		SELECT 
+			<include refid="sysMobileVersionParaColumns"/>
+		FROM sys_mobile_version_para a
+		<include refid="sysMobileVersionParaJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getSysMobileVersionPara" resultType="SysMobileVersionPara">
+		SELECT 
+			<include refid="sysMobileVersionParaColumns"/>
+		FROM sys_mobile_version_para a
+		<include refid="sysMobileVersionParaJoins"/>
+		WHERE a.type= #{type}
+		and a.mark = '1'
+		<if test="channel != null and channel != ''">
+	        and a.channel = #{channel}
+	    </if>
+	    limit 1
+	</select>
+	
+	<select id="findList" resultType="SysMobileVersionPara">
+		SELECT 
+			<include refid="sysMobileVersionParaColumns"/>
+		FROM sys_mobile_version_para a
+		<include refid="sysMobileVersionParaJoins"/>
+		<where>
+			
+			<if test="version != null and version != ''">
+				AND a.version like 
+					<if test="dbName == 'oracle'">'%'||#{version}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{version}, '%')</if>
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+			<if test="mark != null and mark != ''">
+				AND a.mark = #{mark}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SysMobileVersionPara">
+		SELECT 
+			<include refid="sysMobileVersionParaColumns"/>
+		FROM sys_mobile_version_para a
+		<include refid="sysMobileVersionParaJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO sys_mobile_version_para(
+			version,
+			version_size,
+			version_info,
+			url,
+			channel,
+			is_forced_update,
+			type,
+			mark
+		) VALUES (
+			#{version},
+			#{versionSize},
+			#{versionInfo},
+			#{url},
+			#{channel},
+			#{isForcedUpdate},
+			#{type},
+			#{mark}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_mobile_version_para SET 	
+			version = #{version},
+			version_size = #{versionSize},
+			version_info = #{versionInfo},
+			url = #{url},
+			channel = #{channel},
+			is_forced_update = #{isForcedUpdate},
+			type = #{type},
+			mark = #{mark}
+		WHERE id = #{id}
+	</update>
+	
+		<update id="updateAllMark">
+		UPDATE sys_mobile_version_para SET
+			mark = #{mark}
+		WHERE channel = #{channel}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM sys_mobile_version_para
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

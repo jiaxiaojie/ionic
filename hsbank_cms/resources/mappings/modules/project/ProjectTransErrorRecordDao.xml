@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.project.dao.ProjectTransErrorRecordDao">
+    
+	<sql id="projectTransErrorRecordColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.biz_type AS "bizType",
+		a.third_party_seq AS "thirdPartySeq",
+		a.third_party_result AS "thirdPartyResult",
+		a.status AS "status",
+		a.create_dt AS "createDt",
+		a.modify_dt AS "modifyDt",
+		ca.platform_user_no AS "ca.platformUserNo"
+	</sql>
+	
+	<sql id="projectTransErrorRecordJoins">
+		join customer_account ca on ca.account_id=a.account_id
+	</sql>
+    
+	<select id="get" resultType="ProjectTransErrorRecord">
+		SELECT 
+			<include refid="projectTransErrorRecordColumns"/>
+		FROM project_trans_error_record a
+		<include refid="projectTransErrorRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getCountByThirdPartySeq" resultType="java.lang.Integer">
+		SELECT 
+			count(1)
+		FROM project_trans_error_record a
+		WHERE a.third_party_seq = #{thirdPartySeq}
+	</select>
+	
+	<select id="findList" resultType="ProjectTransErrorRecord">
+		SELECT 
+			<include refid="projectTransErrorRecordColumns"/>
+		FROM project_trans_error_record a
+		<include refid="projectTransErrorRecordJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="thirdPartySeq != null and thirdPartySeq != ''">
+				AND a.third_party_seq = #{thirdPartySeq}
+			</if>
+			<if test="beginCreateDt != null and endCreateDt != null and beginCreateDt != '' and endCreateDt != ''">
+				AND a.create_dt BETWEEN #{beginCreateDt} AND #{endCreateDt}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			    ORDER BY create_dt DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ProjectTransErrorRecord">
+		SELECT 
+			<include refid="projectTransErrorRecordColumns"/>
+		FROM project_trans_error_record a
+		<include refid="projectTransErrorRecordJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO project_trans_error_record(
+			account_id,
+			biz_type,
+			third_party_seq,
+			third_party_result,
+			status,
+			create_dt,
+			modify_dt
+		) VALUES (
+			#{accountId},
+			#{bizType},
+			#{thirdPartySeq},
+			#{thirdPartyResult},
+			#{status},
+			#{createDt},
+			#{modifyDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE project_trans_error_record SET 	
+			account_id = #{accountId},
+			biz_type = #{bizType},
+			third_party_seq = #{thirdPartySeq},
+			third_party_result = #{thirdPartyResult},
+			status = #{status},
+			create_dt = #{createDt},
+			modify_dt = #{modifyDt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM project_trans_error_record
+		WHERE id = #{id}
+	</update>
+	
+	<update id="deleteBeforeDaysErrorRecord">
+		DELETE FROM project_trans_error_record
+		WHERE create_dt &lt; date_add(now(),interval -#{days} day)
+	</update>
+	
+</mapper>

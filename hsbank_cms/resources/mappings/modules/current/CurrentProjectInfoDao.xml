@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.current.dao.CurrentProjectInfoDao">
+    
+	<sql id="currentProjectInfoColumns">
+		a.id AS "id",
+		a.code AS "code",
+		a.name AS "name",
+		a.tips AS "tips",
+		a.rate AS "rate",
+		a.finance_money AS "financeMoney",
+		a.net_worth AS "netWorth",
+		a.starting_amount AS "startingAmount",
+		a.max_amount AS "maxAmount",
+		a.publish_dt AS "publishDt",
+		a.end_investment_dt AS "endInvestmentDt",
+		a.borrower_account_id AS "borrowerAccountId",
+		a.risk_info AS "riskInfo",
+		a.about_files AS "aboutFiles",
+		a.is_auto_repay AS "isAutoRepay",
+		a.introduce AS "introduce",
+		a.status AS "status",
+		a.create_dt AS "createDt",
+		a.create_user_id AS "createUserId",
+		a.review_dt AS "reviewDt",
+		a.review_remark AS "reviewRemark",
+		a.review_user_id AS "reviewUserId",
+		a.winding_up_status AS "windingUpStatus",
+		a.winding_up_apply_dt AS "windingUpApplyDt",
+		a.winding_up_apply_reason AS "windingUpApplyReason",
+		a.winding_up_apply_user_id AS "windingUpApplyUserId",
+		a.winding_up_review_dt AS "windingUpReviewDt",
+		a.winding_up_review_remark AS "windingUpReviewRemark",
+		a.winding_up_review_user_id AS "windingUpReviewUserId",
+		a.finish_dt AS "finishDt",
+		a.investment_scope AS "investmentScope",
+		a.buy_rule AS "buyRule",
+		a.redeem_rule AS "redeemRule",
+		a.interest_calculate_rule AS "interestCalculateRule",
+		a.safe_description AS "safeDescription",
+		a.fee_description AS "feeDescription",
+		a.duration AS "duration",
+		b.has_financed_money AS "snapshot.hasFinancedMoney",
+		b.real_principal AS "snapshot.realPrincipal",
+		b.has_repaid_money AS "snapshot.hasRepaidMoney"
+	</sql>
+	
+	<sql id="currentProjectInfoJoins">
+	    LEFT JOIN current_project_execute_snapshot b ON a.id=b.project_id
+	</sql>
+	
+	<select id="querySimpleList" resultType="CurrentProjectInfo">
+		SELECT  a.id AS "id",
+				a.code AS "code",
+				a.name AS "name"
+		FROM current_project_info a
+		<include refid="currentProjectInfoJoins"/>
+		<where>
+			
+			<if test="queryParas != null and queryParas != ''">
+				AND (a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{queryParas}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{queryParas}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{queryParas},'%')</if>
+		
+				OR a.code LIKE 
+					<if test="dbName == 'oracle'">'%'||#{queryParas}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{queryParas}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{queryParas},'%')</if>
+					)
+			</if>
+			<if test="queryParas == ''">
+				AND 1!=1
+			</if>
+		</where>
+	</select>
+    
+	<select id="get" resultType="CurrentProjectInfo">
+		SELECT 
+			<include refid="currentProjectInfoColumns"/>
+		FROM current_project_info a
+		<include refid="currentProjectInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getCurrentProjectInfoByInfo" resultType="CurrentProjectInfo">
+		SELECT 
+			a.id
+		FROM current_project_info a
+		WHERE 1=1 
+		 <if test="code != null and code != ''">
+				AND a.code = #{code}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name = #{name}
+			</if>
+			limit 1
+	</select>
+	
+	
+	
+	<select id="findList" resultType="CurrentProjectInfo">
+		SELECT 
+			<include refid="currentProjectInfoColumns"/>
+		FROM current_project_info a
+		<include refid="currentProjectInfoJoins"/>
+		<where>
+			
+			<if test="code != null and code != ''">
+				AND a.code  LIKE 
+					<if test="dbName == 'oracle'">'%'||#{code}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{code}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{code},'%')</if>
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="rate != null and rate != ''">
+				AND a.rate = #{rate}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="windingUpStatus != null and windingUpStatus != ''">
+				AND a.winding_up_status = #{windingUpStatus}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="searchList" resultType="CurrentProjectInfo">
+		SELECT 
+			<include refid="currentProjectInfoColumns"/>
+		FROM current_project_info a
+		<include refid="currentProjectInfoJoins"/>
+		<where>
+			<choose>
+				<when test="status == '1'.toString()">
+					AND a.status='3'
+				</when>
+				<when test="status == '2'.toString()">
+					AND a.status='4'
+				</when>
+				<when test="status == '3'.toString()">
+					AND a.status='5'
+				</when>
+				<otherwise>
+					AND (a.status='3' or a.status='4' or a.status='5') 
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="rate == '1'.toString()">
+					AND a.rate &lt;= 0.09
+				</when>
+				<when test="rate == '2'.toString()">
+					AND a.rate &gt; 0.09 AND a.annualized_rate &lt;= 0.1
+				</when>
+				<when test="rate == '3'.toString()">
+					AND a.rate &gt; 0.1 AND a.annualized_rate &lt;= 0.11
+				</when>
+				<when test="rate == '4'.toString()">
+					AND a.rate &gt; 0.11 AND a.annualized_rate &lt;= 0.12
+				</when>
+				<when test="rate == '5'.toString()">
+					AND a.rate &gt; 0.12
+				</when>
+			</choose>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			    ORDER BY a.status
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CurrentProjectInfo">
+		SELECT 
+			<include refid="currentProjectInfoColumns"/>
+		FROM current_project_info a
+		<include refid="currentProjectInfoJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 根据项目流水号查询融资人账户编号 -->
+		<select id="selectBorrowerAccountIdByProjectId" resultType="Long">
+		select  a.borrower_account_id
+		from current_project_info a where  a.id=#{projectId}
+	   </select>
+	
+	
+	<insert id="insert">
+		INSERT INTO current_project_info(
+			code,
+			name,
+			tips,
+			rate,
+			finance_money,
+			net_worth,
+			starting_amount,
+			max_amount,
+			publish_dt,
+			end_investment_dt,
+			borrower_account_id,
+			risk_info,
+			about_files,
+			is_auto_repay,
+			introduce,
+			status,
+			create_dt,
+			create_user_id,
+			review_dt,
+			review_remark,
+			review_user_id,
+			winding_up_status,
+			winding_up_apply_dt,
+			winding_up_apply_reason,
+			winding_up_apply_user_id,
+			winding_up_review_dt,
+			winding_up_review_remark,
+			winding_up_review_user_id,
+			finish_dt,
+			investment_scope,
+			buy_rule,
+			redeem_rule,
+			interest_calculate_rule,
+			safe_description ,
+			fee_description,
+			duration
+		) VALUES (
+			#{code},
+			#{name},
+			#{tips},
+			#{rate},
+			#{financeMoney},
+			#{netWorth},
+			#{startingAmount},
+			#{maxAmount},
+			#{publishDt},
+			#{endInvestmentDt},
+			#{borrowerAccountId},
+			#{riskInfo},
+			#{aboutFiles},
+			#{isAutoRepay},
+			#{introduce},
+			#{status},
+			#{createDt},
+			#{createUserId},
+			#{reviewDt},
+			#{reviewRemark},
+			#{reviewUserId},
+			#{windingUpStatus},
+			#{windingUpApplyDt},
+			#{windingUpApplyReason},
+			#{windingUpApplyUserId},
+			#{windingUpReviewDt},
+			#{windingUpReviewRemark},
+			#{windingUpReviewUserId},
+			#{finishDt},
+			#{investmentScope},
+			#{buyRule},
+			#{redeemRule},
+			#{interestCalculateRule},
+			#{safeDescription},
+			#{feeDescription},
+			#{duration}
+			
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE current_project_info SET 	
+			code = #{code},
+			name = #{name},
+			tips= #{tips},
+			rate = #{rate},
+			finance_money = #{financeMoney},
+			net_worth = #{netWorth},
+			starting_amount = #{startingAmount},
+			max_amount = #{maxAmount},
+			publish_dt = #{publishDt},
+			end_investment_dt = #{endInvestmentDt},
+			borrower_account_id = #{borrowerAccountId},
+			risk_info = #{riskInfo},
+			about_files = #{aboutFiles},
+			is_auto_repay = #{isAutoRepay},
+			introduce = #{introduce},
+			status = #{status},
+			create_dt = #{createDt},
+			create_user_id = #{createUserId},
+			review_dt = #{reviewDt},
+			review_remark = #{reviewRemark},
+			review_user_id = #{reviewUserId},
+			winding_up_status = #{windingUpStatus},
+			winding_up_apply_dt = #{windingUpApplyDt},
+			winding_up_apply_reason = #{windingUpApplyReason},
+			winding_up_apply_user_id = #{windingUpApplyUserId},
+			winding_up_review_dt = #{windingUpReviewDt},
+			winding_up_review_remark = #{windingUpReviewRemark},
+			winding_up_review_user_id = #{windingUpReviewUserId},
+			finish_dt = #{finishDt},
+			investment_scope = #{investmentScope},
+			buy_rule = #{buyRule},
+			redeem_rule = #{redeemRule},
+			interest_calculate_rule = #{interestCalculateRule},
+			safe_description = #{safeDescription},
+			fee_description = #{feeDescription},
+			duration = #{duration}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateStatus">
+		UPDATE current_project_info SET 	
+			status = #{status}
+		WHERE id = #{projectId}
+	</update>
+	
+	<update id="updateAutoRepay">
+		UPDATE current_project_info SET 	
+			is_auto_repay = #{isAutoRepay}
+		WHERE id = #{projectId}
+	</update>
+	
+	
+	<update id="delete">
+		DELETE FROM current_project_info
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findListByWindingUpStatus" resultType="CurrentProjectInfo">
+		select * from current_project_info where winding_up_status = #{windingUpStatus}
+	</select>
+	
+	<update id="updateByWindingUp">
+		update current_project_info set status = '5', winding_up_status = '3' where id = #{id}
+	</update>
+	
+	<update id="updateStatusToInvestmenting">
+		update current_project_info set status = '3' where status = '2' and now() &gt;= publish_dt
+	</update>
+	
+	<update id="updateStatusToInvestmentOver">
+		update current_project_info set status = '4' where status = '3' and now() &gt;= end_investment_dt
+	</update>
+</mapper>

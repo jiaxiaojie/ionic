@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerNewTaskDao">
+    
+	<sql id="customerNewTaskColumns">
+		a.id AS "id",
+		a.step AS "step",
+		a.des AS "des",
+		a.sort AS "sort",
+		a.status AS "status",
+		a.create_dt AS "createDt",
+		a.modify_dt AS "modifyDt"
+	</sql>
+	
+	<sql id="customerNewTaskJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomerNewTask">
+		SELECT 
+			<include refid="customerNewTaskColumns"/>
+		FROM customer_new_task a
+		<include refid="customerNewTaskJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerNewTask">
+		SELECT 
+			<include refid="customerNewTaskColumns"/>
+		FROM customer_new_task a
+		<include refid="customerNewTaskJoins"/>
+		<where>
+			
+			<if test="step != null and step != ''">
+				AND a.step = #{step}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="beginCreateDt != null  and beginCreateDt != ''">				AND a.create_dt >= #{beginCreateDt}			</if>			<if test="endCreateDt != null and endCreateDt != ''">				AND #{endCreateDt} >= a.create_dt			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			   ORDER BY sort
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerNewTask">
+		SELECT 
+			<include refid="customerNewTaskColumns"/>
+		FROM customer_new_task a
+		<include refid="customerNewTaskJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_new_task(
+			step,
+			des,
+			sort,
+			status,
+			create_dt,
+			modify_dt
+		) VALUES (
+			#{step},
+			#{des},
+			#{sort},
+			#{status},
+			#{createDt},
+			#{modifyDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_new_task SET 	
+			step = #{step},
+			des = #{des},
+			sort = #{sort},
+			status = #{status},
+			create_dt = #{createDt},
+			modify_dt = #{modifyDt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_new_task
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

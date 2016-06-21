@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.current.dao.CurrentProjectParameterDao">
+    
+	<sql id="currentProjectParameterColumns">
+		a.id AS "id",
+		a.max_investment_money AS "maxInvestmentMoney",
+		a.investment_fee_value AS "investmentFeeValue",
+		a.investment_fee_mode AS "investmentFeeMode",
+		a.one_day_max_redeem_money AS "oneDayMaxRedeemMoney",
+		a.redeem_fee_value AS "redeemFeeValue",
+		a.redeem_fee_mode AS "redeemFeeMode",
+		a.redeem_separate_time AS "redeemSeparateTime",
+		a.create_dt AS "createDt",
+		a.create_user_id AS "createUserId",
+		a.modify_dt AS "modifyDt",
+		a.modify_user_id AS "modifyUserId"
+	</sql>
+	
+	<sql id="currentProjectParameterJoins">
+	</sql>
+    
+	<select id="get" resultType="CurrentProjectParameter">
+		SELECT 
+			<include refid="currentProjectParameterColumns"/>
+		FROM current_project_parameter a
+		<include refid="currentProjectParameterJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CurrentProjectParameter">
+		SELECT 
+			<include refid="currentProjectParameterColumns"/>
+		FROM current_project_parameter a
+		<include refid="currentProjectParameterJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CurrentProjectParameter">
+		SELECT 
+			<include refid="currentProjectParameterColumns"/>
+		FROM current_project_parameter a
+		<include refid="currentProjectParameterJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO current_project_parameter(
+			max_investment_money,
+			investment_fee_value,
+			investment_fee_mode,
+			one_day_max_redeem_money,
+			redeem_fee_value,
+			redeem_fee_mode,
+			redeem_separate_time,
+			create_dt,
+			create_user_id,
+			modify_dt,
+			modify_user_id
+		) VALUES (
+			#{maxInvestmentMoney},
+			#{investmentFeeValue},
+			#{investmentFeeMode},
+			#{oneDayMaxRedeemMoney},
+			#{redeemFeeValue},
+			#{redeemFeeMode},
+			#{redeemSeparateTime},
+			#{createDt},
+			#{createUserId},
+			#{modifyDt},
+			#{modifyUserId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE current_project_parameter SET 	
+			max_investment_money = #{maxInvestmentMoney},
+			investment_fee_value = #{investmentFeeValue},
+			investment_fee_mode = #{investmentFeeMode},
+			one_day_max_redeem_money = #{oneDayMaxRedeemMoney},
+			redeem_fee_value = #{redeemFeeValue},
+			redeem_fee_mode = #{redeemFeeMode},
+			redeem_separate_time = #{redeemSeparateTime},
+			modify_dt = #{modifyDt},
+			modify_user_id = #{modifyUserId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM current_project_parameter
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

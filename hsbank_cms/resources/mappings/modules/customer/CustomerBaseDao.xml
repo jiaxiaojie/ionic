@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerBaseDao">
+
+	<sql id="customerBaseColumns">
+		a.customer_id AS "id",
+		a.customer_id AS "customerId",
+		a.customer_name AS "customerName",
+		a.name_auth_code AS "nameAuthCode",
+		a.nationality_code AS "nationalityCode",
+		a.cert_num AS "certNum",
+		a.cert_file AS "certFile",
+		a.age AS "age",
+		a.gender_code AS
+		"genderCode",
+		a.marriage_code AS "marriageCode",
+		a.education_code AS
+		"educationCode",
+		a.mobile AS "mobile",
+		a.mobile_auth_code AS
+		"mobileAuthCode",
+		a.address AS "address",
+		a.email AS "email",
+		a.email_auth_code AS "emailAuthCode",
+		a.credit_card_bank_code AS
+		"creditCardBankCode",
+		a.credit_card_no AS "creditCardNo",
+		a.credit_card_auth_code AS "creditCardAuthCode",
+		a.create_dt AS
+		"createDt",
+		a.last_modify_dt AS "lastModifyDt",
+		a.education_school AS
+		"educationSchool",
+		a.education_file AS "educationFile",
+		a.family_register AS "familyRegister",
+		a.family_register_file AS
+		"familyRegisterFile",
+		a.credit_card_limit AS "creditCardLimit",
+		ac.account_id AS "accountId",
+		ac.account_type AS "accountType",
+		c.customer_id AS "customerOrgExtendInfo.customerId",
+		c.org_code AS
+		"customerOrgExtendInfo.orgCode",
+		c.org_business_license AS
+		"customerOrgExtendInfo.orgBusinessLicense",
+		c.org_tax_registration AS
+		"customerOrgExtendInfo.orgTaxRegistration",
+		c.registered_ife AS
+		"customerOrgExtendInfo.registeredIfe",
+		c.registered_capital AS
+		"customerOrgExtendInfo.registeredCapital",
+		c.net_worth AS
+		"customerOrgExtendInfo.netWorth",
+		c.cash_inflows AS
+		"customerOrgExtendInfo.cashInflows",
+		c.industry AS
+		"customerOrgExtendInfo.industry",
+		c.business_activities
+		"customerOrgExtendInfo.businessActivities",
+		c.litigation_situatio AS
+		"customerOrgExtendInfo.litigationSituatio",
+		c.credit_record AS
+		"customerOrgExtendInfo.creditRecord",
+		c.create_user_id AS
+		"customerOrgExtendInfo.createUserId",
+		c.modify_user_id AS
+		"customerOrgExtendInfo.modifyUserId",
+		c.status AS
+		"customerOrgExtendInfo.status"
+	</sql>
+
+	<sql id="customerBaseJoins">
+		RIGHT JOIN customer_account ac ON
+		ac.account_id=a.account_id
+		LEFT JOIN customer_org_extend_info c ON
+		c.customer_id=a.customer_id
+	</sql>
+
+
+
+<select id="findMobileList" resultType="CustomerBase">
+		SELECT
+		<include refid="customerBaseColumns" />
+		FROM customer_base a
+		<include refid="customerBaseJoins" />
+		
+		WHERE a.customer_id = #{accountId}
+	</select>
+
+
+	<select id="get" resultType="CustomerBase">
+		SELECT
+		<include refid="customerBaseColumns" />
+		FROM customer_base a
+		<include refid="customerBaseJoins" />
+		WHERE a.customer_id = #{id}
+	</select>
+
+	<select id="getByAccountId" resultType="CustomerBase">
+		SELECT
+		<include refid="customerBaseColumns" />
+		FROM customer_base a
+		<include refid="customerBaseJoins" />
+		WHERE ac.account_id = #{accountId}
+	</select>
+	<select id="getMobileById" resultType="java.lang.String">
+	select mobile   FROM customer_base 
+	</select>
+
+	<select id="findList" resultType="CustomerBase">
+		SELECT
+		<include refid="customerBaseColumns" />
+		FROM customer_base a
+		<include refid="customerBaseJoins" />
+		<where>
+
+			<if test="customerName != null and customerName != ''">
+				AND a.customer_name = #{customerName}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findAllList" resultType="CustomerBase">
+		SELECT
+		<include refid="customerBaseColumns" />
+		FROM customer_base a
+		<include refid="customerBaseJoins" />
+		<where>
+
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="selectCoustmerMoboile" resultType="map">
+		select distinct a.mobile as mobile from customer_base a
+		LEFT JOIN 
+		customer_account b on b.account_id=a.account_id
+		LEFT JOIN
+		customer_bank_card c ON c.account_id=b.account_id
+		LEFT JOIN
+		project_investment_record d ON d.investment_user_id=c.account_id
+		<where>  
+		     length(a.mobile)=11
+		     <!--已注册  -->
+		   <if test="userStatus==0">
+		   </if>
+		   <!--已开通第三方账号  -->
+		   <if test="userStatus==1">
+		  and  b.has_open_third_account='1'
+		   </if>
+		   <!-- 已绑卡-->
+		   <if test="userStatus==2">
+		   and c.card_no is not null
+		   </if>
+		   <!-- 已投资 -->
+		   <if test="userStatus==3">
+		    and  d.status='0' or d.status='3'
+		   </if>
+		   <!-- 注册时间 -->
+			<if test="beginRegisterDt != null  and beginRegisterDt != '' ">
+				AND b.register_dt >= #{beginRegisterDt}
+			</if>
+			<if test="endRegisterDt != null and endRegisterDt != ''">
+				AND #{endRegisterDt} >= b.register_dt
+			</if>
+			<!-- 投资时间 -->
+		   <if test="beginOpDt != null  and beginOpDt != ''">
+				AND d.op_dt >= #{beginOpDt}
+			</if>
+			<if test="endOpDt != null and endOpDt != ''">
+				AND #{endOpDt} >= d.op_dt
+			</if>
+			
+		</where>
+	</select>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="customerId">
+		INSERT
+		INTO customer_base(
+		account_id,
+		customer_name,
+		name_auth_code,
+		nationality_code,
+		cert_num,
+		cert_file,
+		age,
+		gender_code,
+		marriage_code,
+		education_code,
+		mobile,
+		mobile_auth_code,
+		address,
+		email,
+		email_auth_code,
+		credit_card_bank_code,
+		credit_card_no,
+		credit_card_auth_code,
+		education_school,
+		education_file,
+		family_register,
+		family_register_file,
+		credit_card_limit,
+		create_dt
+		) VALUES (
+		#{accountId},
+		#{customerName},
+		#{nameAuthCode},
+		#{nationalityCode},
+		#{certNum},
+		#{certFile},
+		#{age},
+		#{genderCode},
+		#{marriageCode},
+		#{educationCode},
+		#{mobile},
+		#{mobileAuthCode},
+		#{address},
+		#{email},
+		#{emailAuthCode},
+		#{creditCardBankCode},
+		#{creditCardNo},
+		#{creditCardAuthCode},
+		#{educationSchool},
+		#{educationFile},
+		#{familyRegister},
+		#{familyRegisterFile},
+		#{creditCardLimit},
+		#{createDt}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE customer_base SET
+		customer_name =
+		#{customerName},
+		name_auth_code = #{nameAuthCode},
+		nationality_code =
+		#{nationalityCode},
+		cert_num = #{certNum},
+		cert_file = #{certFile},
+		age =
+		#{age},
+		gender_code = #{genderCode},
+		marriage_code = #{marriageCode},
+		education_code = #{educationCode},
+		mobile = #{mobile},
+		mobile_auth_code
+		= #{mobileAuthCode},
+		address = #{address},
+		email = #{email},
+		email_auth_code = #{emailAuthCode},
+		credit_card_bank_code =
+		#{creditCardBankCode},
+		credit_card_no = #{creditCardNo},
+		credit_card_auth_code = #{creditCardAuthCode},
+		education_school =
+		#{educationSchool},
+		education_file = #{educationFile},
+		family_register =
+		#{familyRegister},
+		family_register_file = #{familyRegisterFile},
+		credit_card_limit = #{creditCardLimit},
+		last_modify_dt =
+		#{lastModifyDt}
+		WHERE customer_id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM customer_base
+		WHERE account_id = #{id}
+	</update>
+
+	<select id="getByMobile" resultType="CustomerBase">
+		SELECT
+		<include refid="customerBaseColumns" />
+		FROM customer_base a
+		<include refid="customerBaseJoins" />
+		WHERE a.mobile = #{mobile} and ac.status_code='0' limit 1
+	</select>
+	
+	<select id="getCountByMobile" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM customer_base a WHERE a.mobile = #{mobile} 
+	</select>
+
+	<select id="getByEmail" resultType="CustomerBase">
+		SELECT
+		<include refid="customerBaseColumns" />
+		FROM customer_base a
+		<include refid="customerBaseJoins" />
+		WHERE a.email = #{email} limit 1
+	</select>
+	<update id="updateNameAndCertNum">
+		update customer_base set customer_name =
+		#{customerName}, cert_num = #{certNum} where account_id = #{accountId}
+	</update>
+
+	<select id="getCustomerNameByAccountId" resultType="java.lang.String">
+		select
+		customer_name from customer_base where account_id = #{accountId}
+	</select>
+
+	<update id="customerChangeHisInfo">
+		update customer_base set gender_code = #{genderCode},
+		marriage_code = #{marriageCode}, address = #{address}, education_code
+		= #{educationCode}, education_school = #{educationSchool}
+		where
+		customer_id = #{customerId}
+	</update>
+
+	<update id="updateMobileByPlatformUserNo">
+		update customer_base set mobile=#{mobile} where
+		account_id = (select account_id from customer_account where
+		platform_user_no = #{platformUserNo})
+	</update>
+
+	<update id="updateCustomerBaseByAccountIdSelective"
+		parameterType="com.thinkgem.jeesite.modules.entity.CustomerBase">
+		UPDATE customer_base
+		<set>
+			<if test="email != null">
+				email = #{email},
+			</if>
+			<if test="emailAuthCode != null">
+				email_auth_code = #{emailAuthCode}
+			</if>
+			<if test="mobile != null">
+				mobile = #{mobile}
+			</if>
+		</set>
+		<where>
+			account_id = #{accountId}
+		</where>
+	</update>
+
+	<update id="updateNameAuthCodeByAccountId">
+		update customer_base set name_auth_code =
+		#{nameAuthCode} where account_id = #{accountId}
+	</update>
+</mapper>

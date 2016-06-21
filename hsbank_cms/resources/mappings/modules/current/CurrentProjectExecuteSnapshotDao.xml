@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.current.dao.CurrentProjectExecuteSnapshotDao">
+    
+	<sql id="currentProjectExecuteSnapshotColumns">
+		a.id AS "id",
+		a.project_id AS "projectId",
+		a.has_financed_money AS "hasFinancedMoney",
+		a.real_principal AS "realPrincipal",
+		a.has_repaid_money AS "hasRepaidMoney",
+		a.has_redeem_interest AS "hasRedeemInterest"
+	</sql>
+	
+	<sql id="currentProjectExecuteSnapshotJoins">
+	</sql>
+    
+	<select id="get" resultType="CurrentProjectExecuteSnapshot">
+		SELECT 
+			<include refid="currentProjectExecuteSnapshotColumns"/>
+		FROM current_project_execute_snapshot a
+		<include refid="currentProjectExecuteSnapshotJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getStatRealPrincipal" resultType="java.lang.Double">
+		select sum(t.real_principal) AS realPrincipal from
+		current_project_execute_snapshot t ,current_project_info p where
+		t.project_id=p.id and p.winding_up_status !='3'
+	</select>
+	
+	<select id="getStatRepaidMoney" resultType="java.lang.Double">
+		select sum(t.has_repaid_money) from current_project_execute_snapshot t
+	</select>
+	
+	<select id="getByProjectId" resultType="CurrentProjectExecuteSnapshot">
+		SELECT 
+			<include refid="currentProjectExecuteSnapshotColumns"/>
+		FROM current_project_execute_snapshot a
+		<include refid="currentProjectExecuteSnapshotJoins"/>
+		WHERE a.project_id = #{projectId}
+	</select>
+	
+	<update id="updateFinancedMoneyAndRealPrincipal">
+		UPDATE current_project_execute_snapshot SET 	
+			has_financed_money = has_financed_money + #{amount},
+			real_principal = real_principal + #{amount}
+		WHERE project_id = #{projectId}
+	</update>
+	
+	<select id="findList" resultType="CurrentProjectExecuteSnapshot">
+		SELECT 
+			<include refid="currentProjectExecuteSnapshotColumns"/>
+		FROM current_project_execute_snapshot a
+		<include refid="currentProjectExecuteSnapshotJoins"/>
+		<where>
+			
+			<if test="projectId != null and projectId != ''">
+				AND a.project_id = #{projectId}
+			</if>
+			<if test="beginHasFinancedMoney != null  and beginHasFinancedMoney != ''">				AND a.has_financed_money >= #{beginHasFinancedMoney}			</if>			<if test="endHasFinancedMoney != null and endHasFinancedMoney != ''">				AND #{endHasFinancedMoney} >= a.has_financed_money			</if>
+			<if test="realPrincipal != null and realPrincipal != ''">
+				AND a.real_principal = #{realPrincipal}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CurrentProjectExecuteSnapshot">
+		SELECT 
+			<include refid="currentProjectExecuteSnapshotColumns"/>
+		FROM current_project_execute_snapshot a
+		<include refid="currentProjectExecuteSnapshotJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO current_project_execute_snapshot(
+			project_id,
+			has_financed_money,
+			real_principal,
+			has_repaid_money,
+			has_redeem_interest
+		) VALUES (
+			#{projectId},
+			#{hasFinancedMoney},
+			#{realPrincipal},
+			#{hasRepaidMoney},
+			#{hasRedeemInterest}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE current_project_execute_snapshot SET 	
+			project_id = #{projectId},
+			has_financed_money = #{hasFinancedMoney},
+			real_principal = #{realPrincipal},
+			has_repaid_money = #{hasRepaidMoney},
+			has_redeem_interest = #{hasRedeemInterest}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM current_project_execute_snapshot
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateByRepay">
+		update current_project_execute_snapshot set has_repaid_money = has_repaid_money + #{repayInterest} where project_id = #{projectId}
+	</update>
+	
+	<update id="updateByPayRedeem">
+		update current_project_execute_snapshot set real_principal = real_principal - #{redeemPrincipal} where project_id = #{projectId}
+	</update>
+	
+	<update id="updateByPollInterest">
+		update current_project_execute_snapshot set has_redeem_interest = has_redeem_interest + #{pollInterest} where project_id = #{projectId}
+	</update>
+</mapper>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerRestPwdLogDao">
+    
+	<sql id="customerRestPwdLogColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.reset_dt AS "resetDt",
+		a.reset_type AS "resetType",
+		a.status AS "status",
+		b.account_name AS "accountName"
+	</sql>
+	
+	<sql id="customerRestPwdLogJoins">
+		LEFT JOIN customer_account b ON b.account_id=a.account_id
+	</sql>
+    
+	<select id="get" resultType="CustomerRestPwdLog">
+		SELECT 
+			<include refid="customerRestPwdLogColumns"/>
+		FROM customer_rest_pwd_log a
+		<include refid="customerRestPwdLogJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerRestPwdLog">
+		SELECT 
+			<include refid="customerRestPwdLogColumns"/>
+		FROM customer_rest_pwd_log a
+		<include refid="customerRestPwdLogJoins"/>
+		<where>
+			<choose>
+				<when test="accountName != null and accountName != ''">
+					AND b.account_name=#{accountName}
+				</when>
+				<otherwise>
+					AND false
+				</otherwise>
+			</choose>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerRestPwdLog">
+		SELECT 
+			<include refid="customerRestPwdLogColumns"/>
+		FROM customer_rest_pwd_log a
+		<include refid="customerRestPwdLogJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_rest_pwd_log(
+			account_id,
+			reset_dt,
+			reset_type,
+			status
+		) VALUES (
+			#{accountId},
+			#{resetDt},
+			#{resetType},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_rest_pwd_log SET 	
+			reset_dt = #{resetDt},
+			reset_type = #{resetType},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_rest_pwd_log
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

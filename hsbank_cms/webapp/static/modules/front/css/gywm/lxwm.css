@@ -1,0 +1,51 @@
+.about_right_content{width: auto;overflow:hidden;padding:30px 30px 30px 30px;}
+.about_right_content .title{ padding-bottom: 10px; margin-bottom: 10px; height:40px;line-height:40px;font-weight:bold;font-size:18px; border-bottom: 1px solid #c7c7c7;}
+.about_right_content .span_text{overflow:hidden}
+.about_right_content hr{border-top:1px solid #c7c7c7;border-bottom:0 none white;margin:5px 20px 5px 20px;}
+.main{ margin:20px 0;}
+.main .nav{height:30px; padding:20px 0 0;float:right}
+.main .nav a, a:hover, a:focus, a:active{color:#b2b2b2; text-decoration:none}
+.main .subTit{height:50px; padding:10px 0 0}
+.main h2{padding:20px 0 10px 60px; color:#58646e;font-family:"Microsoft Yahei",Helvetica, Arial,"微软雅黑", STXihei, "华文细黑", sans-serif;font-weight:normal;}\
+.main hr{height:1px;border:none;border-top:1px solid #555555;}
+.main .date{padding:10px 0 10px 250px; color:#58646e;font-family:"Microsoft Yahei",Helvetica, Arial,"微软雅黑", STXihei, "华文细黑", sans-serif;font-weight:normal;}
+.main .postion{padding-left:20px;font-weight:bold;background:url('../../images/gywm/icon_joinus_01.png') no-repeat 0 2px;}
+.main .subTitle{color:#c98950;}
+.mt5{margin-top:5px}
+.mt10{margin-top:10px}
+.mt15{margin-top:15px}
+.mt20{margin-top:20px}
+.mt25{margin-top:25px}
+.mt30{margin-top:30px}
+.mt35{margin-top:35px}
+.mt40{margin-top:40px}
+.mt45{margin-top:45px}
+.mt50{margin-top:50px}
+.mt55{margin-top:55px}
+.mt60{margin-top:60px}
+.mt100{margin-top:100px}
+.f11{font-size:11px}
+.f12{font-size:12px}
+.f16{color:#444; font-size:16px}
+.bold{font-weight:bold}
+.letter{letter-spacing:-1px;}
+.buildA{position:relative; height:73px; padding:30px 0 6px;}
+.buildA ul {position:absolute; top:30px; left:113px;}
+.buildS1Top {width:695px;height:24px;background:url('../../images/gywm/bg_joinus_01.jpg') no-repeat 0 0;}
+.buildS1 {width:695px;background:url('../../images/gywm/bg_joinus_02.jpg') repeat-y 0 0;}
+.buildS1Bottom {padding-bottom:20px;width:695px;height:29px;background:url('../../images/gywm/bg_joinus_03.jpg') no-repeat 0 0;}
+.buildS1 div {padding-left:20px;}
+.buildS1 div p{font-size:13px; padding:0 0 20px;}
+.buildS1 div ul{padding-bottom:20px;}
+.buildS1 div ul li {padding:0 55px 2px 28px; line-height:18px;}
+.buildS1 .buildF {position:relative;}
+.buildS1 .buildF ul + p {position:absolute; top:28px; right:38px;}
+.company_name{ padding:20px 0; font-size:18px; color:#ae7a52;}
+.company_address{ margin:20px 0;}
+.company_address ul{}
+.company_address ul li{ margin-bottom:10px; height:100px; line-height:100px; border:1px solid #f1f1f1; border-radius:3px; -o-border-radius:3px; -ms-border-radius:3px; -moz-border-radius:3px; -webkit-border-radius:3px;}
+.company_address ul li .fl{ width:200px; text-align:center; border-right:1px solid #f1f1f1; font-size:18px; background-color:#f4f4f4;}
+.company_address ul li .fr{ padding-left:40px; width:440px; font-size:14px;}
+.postalcode{ margin:0 0 20px 0; font-size:14px;}
+.phone_number{ font-size:14px;}
+.phone_number p span{ font-size:24px;}

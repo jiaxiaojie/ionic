@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerLoginLogDao">
+    
+	<sql id="customerLoginLogColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.login_dt AS "loginDt",
+		a.term_code AS "termCode",
+		a.remark AS "remark",
+		a.equipment_specification AS "equipmentSpecification"
+	</sql>
+	
+	<sql id="customerLoginLogJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomerLoginLog">
+		SELECT 
+			<include refid="customerLoginLogColumns"/>
+		FROM customer_login_log a
+		<include refid="customerLoginLogJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerLoginLog">
+		SELECT 
+			<include refid="customerLoginLogColumns"/>
+		FROM customer_login_log a
+		<include refid="customerLoginLogJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerLoginLog">
+		SELECT 
+			<include refid="customerLoginLogColumns"/>
+		FROM customer_login_log a
+		<include refid="customerLoginLogJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_login_log(
+			account_id,
+			login_dt,
+			term_code,
+			remark,
+			equipment_specification
+		) VALUES (
+			#{accountId},
+			#{loginDt},
+			#{termCode},
+			#{remark},
+			#{equipmentSpecification}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_login_log SET 	
+			login_dt = #{loginDt},
+			term_code = #{termCode},
+			remark = #{remark},
+			equipment_specification = #{equipmentSpecification}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_login_log
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

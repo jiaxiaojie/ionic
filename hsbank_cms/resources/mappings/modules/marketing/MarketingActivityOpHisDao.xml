@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.marketing.dao.MarketingActivityOpHisDao">
+    
+	<sql id="marketingActivityOpHisColumns">
+		a.id AS "id",
+		a.acticity_id AS "acticityId",
+		a.behavior_code AS "behaviorCode",
+		a.account_id AS "accountId",
+		a.channel_id AS "channelId",
+		a.op_dt AS "opDt",
+		a.in_para AS "inPara",
+		a.out_para AS "outPara",
+		a.result_code AS "resultCode",
+		b.behavior_name AS "behaviorName",
+		c.customer_name AS "customerName"
+	</sql>
+	
+	<sql id="marketingActivityOpHisJoins">
+	    left join marketing_behavior_type b on a.behavior_code=b.behavior_code
+	    left join customer_base c on a.account_id=c.account_id 
+	</sql>
+    
+	<select id="get" resultType="MarketingActivityOpHis">
+		SELECT 
+			<include refid="marketingActivityOpHisColumns"/>
+		FROM marketing_activity_op_his a
+		<include refid="marketingActivityOpHisJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MarketingActivityOpHis">
+		SELECT 
+			<include refid="marketingActivityOpHisColumns"/>
+		FROM marketing_activity_op_his a
+		<include refid="marketingActivityOpHisJoins"/>
+		<where>
+			
+			<if test="acticityId != null and acticityId != ''">
+				AND a.acticity_id = #{acticityId}
+			</if>
+			<if test="behaviorCode != null and behaviorCode != ''">
+				AND a.behavior_code = #{behaviorCode}
+			</if>
+			<if test="customerName != null and customerName != ''">
+				AND c.customer_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{customerName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{customerName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{customerName},'%')</if>
+			</if>
+			<if test="beginOpDt != null  and beginOpDt != ''">				AND a.op_dt >= #{beginOpDt}			</if>			<if test="endOpDt != null and endOpDt != ''">				AND #{endOpDt} >= a.op_dt			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			    ORDER BY a.id
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MarketingActivityOpHis">
+		SELECT 
+			<include refid="marketingActivityOpHisColumns"/>
+		FROM marketing_activity_op_his a
+		<include refid="marketingActivityOpHisJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO marketing_activity_op_his(
+			acticity_id,
+			behavior_code,
+			account_id,
+			channel_id,
+			op_dt,
+			in_para,
+			out_para,
+			result_code
+		) VALUES (
+			#{acticityId},
+			#{behaviorCode},
+			#{accountId},
+			#{channelId},
+			#{opDt},
+			#{inPara},
+			#{outPara},
+			#{resultCode}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE marketing_activity_op_his SET 	
+			acticity_id = #{acticityId},
+			behavior_code = #{behaviorCode},
+			account_id = #{accountId},
+			channel_id = #{channelId},
+			op_dt = #{opDt},
+			in_para = #{inPara},
+			out_para = #{outPara},
+			result_code = #{resultCode}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM marketing_activity_op_his
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<types>
+
+    <type>
+        <name>int</name>
+        <javaType>java.lang.Integer</javaType>
+        <expression>this</expression>
+    </type>
+
+    <type>
+        <name>string</name>
+        <javaType>java.lang.String</javaType>
+        <expression>this</expression>
+    </type>
+
+    <type>
+        <name>number</name>
+        <javaType>java.lang.Double</javaType>
+        <expression>this</expression>
+    </type>
+
+    <type>
+        <name>long</name>
+        <javaType>java.lang.Double</javaType>
+        <expression>this</expression>
+    </type>
+
+</types>

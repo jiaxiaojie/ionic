@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.personal.dao.PersonalTailorDao">
+    
+	<sql id="personalTailorColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.code AS "code",
+		a.type AS "type",
+		a.amount AS "amount",
+		a.duration AS "duration",
+		a.desc_pic AS "descPic",
+		a.state AS "state",
+		a.rate AS "rate",
+		a.deadline AS "deadline",
+		a.publish_time AS "publishTime",
+		a.starting_amount AS "startingAmount",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks"
+	</sql>
+
+	<sql id="personalTailorJoins">
+	</sql>
+    
+	<select id="get" resultType="PersonalTailor">
+		SELECT 
+			<include refid="personalTailorColumns"/>
+		FROM project_personal_tailor a
+		<include refid="personalTailorJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PersonalTailor">
+		SELECT 
+			<include refid="personalTailorColumns"/>
+		FROM project_personal_tailor a
+		<include refid="personalTailorJoins"/>
+		<where>
+			
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+			<if test="state != null and state != ''">
+				AND a.state = #{state}
+			</if>
+			<if test="publishTime != null and publishTime != ''">
+				AND a.publish_time = #{publishTime}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PersonalTailor">
+		SELECT 
+			<include refid="personalTailorColumns"/>
+		FROM project_personal_tailor a
+		<include refid="personalTailorJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO project_personal_tailor(
+			name,
+			code,
+			type,
+			amount,
+			duration,
+			desc_pic,
+		    <if test="state != null and state != ''">
+			state,
+		    </if>
+			rate,
+			deadline,
+			publish_time,
+			starting_amount,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks
+		) VALUES (
+			#{name},
+			#{code},
+			#{type},
+			#{amount},
+			#{duration},
+			#{descPic},
+		    <if test="state != null and state != ''">
+			#{state},
+		    </if>
+			#{rate},
+			#{deadline},
+			#{publishTime},
+			#{startingAmount},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE project_personal_tailor SET 	
+			name = #{name},
+			code = #{code},
+			type = #{type},
+			state = #{state},
+			amount = #{amount},
+			duration = #{duration},
+			desc_pic = #{descPic},
+			rate = #{rate},
+			deadline = #{deadline},
+			publish_time = #{publishTime},
+			starting_amount = #{startingAmount},
+			remarks = #{remarks},
+			update_by =#{updateBy.id},
+			update_date=#{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM project_personal_tailor
+		WHERE id = #{id}
+	</update>
+
+	<!--私人订制 分页列表 前端接口-->
+	<select id="queryPersonalList" resultType="com.thinkgem.jeesite.modules.api.to.PersonalTailorResp">
+     SELECT
+		a.id AS "id",
+		a.name AS "name",
+		a.type AS "type",
+		a.amount AS "amount",
+		a.duration AS "duration",
+		a.desc_pic AS "descPic",
+		a.state AS "state",
+		a.rate AS "rate",
+		a.deadline AS "deadline",
+		a.publish_time AS "publishTime",
+		a.starting_amount AS "startingAmount"
+		from project_personal_tailor a
+		where a.state =2 and NOW() BETWEEN a.publish_time and a.deadline
+		order by a.publish_time desc
+		limit #{pageSize},#{pageNumber}
+	</select>
+	<!--统计总数-->
+	<select id="countPersonalList" resultType="java.lang.Integer">
+		SELECT
+		 count(*)
+		from project_personal_tailor a
+		where a.state in (2,3)
+	</select>
+	<!--查看详情-->
+	<select id="findByPersonalId" resultType="com.thinkgem.jeesite.modules.api.to.PersonalTailorResp">
+		SELECT
+		a.id AS "id",
+		a.name AS "name",
+		a.type AS "type",
+		a.amount AS "amount",
+		a.duration AS "duration",
+		a.desc_pic AS "descPic",
+		a.state AS "state",
+		a.rate AS "rate",
+		a.deadline AS "deadline",
+		a.publish_time AS "publishTime",
+		a.starting_amount AS "startingAmount"
+		from project_personal_tailor a
+		where a.state in (2,3)
+		and a.id=#{id}
+	</select>
+	
+	<select id="queryByState" resultType="PersonalTailor">
+		SELECT
+		<include refid="personalTailorColumns"/>
+		FROM project_personal_tailor a
+		WHERE a.id = #{id}
+		and a.state=${state}  and NOW() BETWEEN a.publish_time and a.deadline
+	</select>
+
+	<select id="getCanInvestmentCount" resultType="java.lang.Integer">
+		select count(1) from project_personal_tailor where state = '2' and now() between publish_time and deadline
+	</select>
+	
+	<select id="gePersonalTailorByName" resultType="PersonalTailor">
+	     SELECT
+		<include refid="personalTailorColumns"/>
+		FROM project_personal_tailor a
+		where a.name= #{name} and a.state in (1,2)
+	</select>
+</mapper>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.message.dao.MessageCreateRuleChannelDao">
+    
+	<sql id="messageCreateRuleChannelColumns">
+		a.id AS "id",
+		a.rule_id AS "ruleId",
+		a.message_channel AS "messageChannel"
+	</sql>
+	
+	<sql id="messageCreateRuleChannelJoins">
+	</sql>
+    
+	<select id="get" resultType="MessageCreateRuleChannel">
+		SELECT 
+			<include refid="messageCreateRuleChannelColumns"/>
+		FROM message_create_rule_channel a
+		<include refid="messageCreateRuleChannelJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MessageCreateRuleChannel">
+		SELECT 
+			<include refid="messageCreateRuleChannelColumns"/>
+		FROM message_create_rule_channel a
+		<include refid="messageCreateRuleChannelJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MessageCreateRuleChannel">
+		SELECT 
+			<include refid="messageCreateRuleChannelColumns"/>
+		FROM message_create_rule_channel a
+		<include refid="messageCreateRuleChannelJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO message_create_rule_channel(
+			rule_id,
+			message_channel
+		) VALUES (
+			#{ruleId},
+			#{messageChannel}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE message_create_rule_channel SET 	
+			rule_id = #{ruleId},
+			message_channel = #{messageChannel}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM message_create_rule_channel
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findMessageChannelListByRuleId" resultType="java.lang.String">
+		select message_channel from message_create_rule_channel where rule_id = #{ruleId}
+	</select>
+	
+	<delete id="deleteByRuleId">
+		delete from message_create_rule_channel where rule_id = #{ruleId}
+	</delete>
+</mapper>

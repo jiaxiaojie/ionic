@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apis basePath = "${frontPath}/api/address"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="../../config/api.xsd">
+    <api path="pageList">
+        <data>
+            <foramt>
+			{
+                code:{
+				   description:"状态代码（0表示成功，1表示token无效，其它值表示失败）",
+				   type:"int",
+				   optional:"FALSE"   },
+				text:{
+				   description:"状态描述",
+				   type:"String",
+				   optional:"FALSE"   },
+				data:{
+                  count:{
+                     description:"记录总数",
+                     type:"int",
+                     optional:"FALSE"     },
+                  resultList:[
+                    {
+                      accountId:{
+                         description:"用户编号",
+                         type:"String",
+                         optional:"FALSE",         },
+                      addressId:{
+                         description:"记录Id",
+                         type:"String",
+                         optional:"FALSE",
+                         dataColumn:"id"         },
+                      showName:{
+                         description:"收件人名称",
+                         type:"String",
+                         optional:"FALSE"         },
+                      mobile:{
+                         description:"收件人手机号码",
+                         type:"String",
+                         optional:"FALSE"         },
+                      provinceId:{
+                         description:"省份Id",
+                         type:"String",
+                         optional:"FALSE",
+                         dataColumn:"province.id"         },
+                      provinceName:{
+                         description:"省份名称",
+                         type:"String",
+                         optional:"FALSE",
+                         dataColumn:"province.name"         },
+                      cityId:{
+                         description:"城市Id",
+                         type:"String",
+                         optional:"FALSE",
+                         dataColumn:"city.id"         },
+                      cityName:{
+                         description:"城市名称",
+                         type:"String",
+                         optional:"FALSE",
+                         dataColumn:"city.name"         },
+                      districtId:{
+                         description:"区、县Id",
+                         type:"String",
+                         optional:"FALSE",
+                         dataColumn:"district.id"          },
+                      districtName:{
+                         description:"区、县名称",
+                         type:"String",
+                         optional:"FALSE",
+                         dataColumn:"district.name"         },
+                      address:{
+                         description:"收件人地址",
+                         type:"String",
+                         optional:"FALSE"         },
+                      postCode:{
+                         description:"收件人邮编",
+                         type:"String",
+                         optional:"FALSE"         },
+                      isDefault:{
+                         description:"是否缺省收件地址(0是，1不是)",
+                         type:"String",
+                         optional:"FALSE"         },
+                      createDt:{
+                         description:"创建时间",
+                         type:"String",
+                         optional:"FALSE"         }
+                    }
+                  ]
+                }
+			}
+            </foramt>
+        </data>
+    </api>
+
+</apis>

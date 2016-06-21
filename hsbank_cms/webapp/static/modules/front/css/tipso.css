@@ -1,0 +1,61 @@
+/* Tipso Bubble Styles */
+.tipso_bubble, .tipso_bubble > .tipso_arrow{
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing:    border-box;
+	box-sizing:         border-box;
+}
+.tipso_bubble {
+    position: absolute;
+	text-align: center;
+	border-radius: 6px;
+	border:1px solid #ffac4c;
+	z-index: 9999;
+	padding: 10px;
+}
+.tipso_content{
+	display:inline-block;
+	text-align:left;
+	margin:0 auto;
+}
+.tipso_style{
+	/*cursor: help;
+	border-bottom: 1px dotted;*/
+}
+
+/* Tipso Bubble Div */
+.tipso_bubble > .tipso_arrow{
+	position: absolute;
+	width: 0; height: 0;
+	pointer-events: none;
+}
+.tipso_bubble.top > .tipso_arrow {
+    top: 100%;
+    left: 50%;
+    margin-left: -8px;
+}
+
+.tipso_bubble.top > .tipso_arrow em{ position:absolute; left:0; top:-9px; font-size:20px; color:#ffac4c; font-style:normal; font-family:simsun;}
+.tipso_bubble.top > .tipso_arrow i{ position:absolute; left:0; top:-11px; font-size:20px; color:#fffaf2; font-style:normal; font-family:simsun;}
+
+.tipso_bubble.bottom > .tipso_arrow {
+    bottom: 100%;
+    left: 50%;
+    margin-left: -8px;
+}
+.tipso_bubble.bottom > .tipso_arrow em{ position:absolute; left:0; top:-11px; font-size:20px; color:#ffac4c; font-style:normal; font-family:simsun;}
+.tipso_bubble.bottom > .tipso_arrow i{ position:absolute; left:0; top:-9px; font-size:20px; color:#fffaf2; font-style:normal; font-family:simsun;}
+
+.tipso_bubble.left > .tipso_arrow {
+    top: 50%;
+	left: 100%;
+	margin-top: -8px;
+}
+.tipso_bubble.right > .tipso_arrow {
+    border-right-color: #000;
+	border-top-color: transparent;
+	border-bottom-color: transparent;
+	border-left-color: transparent;
+    top: 50%;
+	right: 100%;
+	margin-top: -8px;
+}

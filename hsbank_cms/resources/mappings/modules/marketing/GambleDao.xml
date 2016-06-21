@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.marketing.dao.GambleDao">
+    
+	<sql id="gambleColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.activity_id AS "activityId",
+		a.choice_side AS "choiceSide",
+		a.op_dt AS "opDt",
+		a.op_term as "opTerm",
+		a.right_side AS "rightSide",
+		a.award_dt AS "awardDt"
+	</sql>
+	
+	<sql id="gambleJoins">
+	</sql>
+	<select id="get" resultType="Gamble">
+		SELECT 
+			<include refid="gambleColumns"/>
+		FROM gamble a
+		<include refid="gambleJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findListByActivityIdAndAccountId" resultType="Gamble">
+		select * from gamble where activity_id = #{activityId} and account_id = #{accountId} 
+		<if test="opDt != null">
+			and date(op_dt) = date(#{opDt})
+		</if>
+		order by op_dt desc
+	</select>
+	
+	<select id="findList" resultType="Gamble">
+		SELECT 
+			<include refid="gambleColumns"/>
+		FROM gamble a
+		<include refid="gambleJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="activityId != null and activityId != ''">
+				AND a.activity_id = #{activityId}
+			</if>
+			<if test="choiceSide != null and choiceSide != ''">
+				AND a.choice_side = #{choiceSide}
+			</if>
+			<if test="opDt != null and opDt != ''">
+				AND a.op_dt = #{opDt}
+			</if>
+				<if test="opTerm != null and opTerm != ''">
+				AND a.op_term = #{opTerm}
+			</if>
+			
+			<if test="rightSide != null and rightSide != ''">
+				AND a.right_side = #{rightSide}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Gamble">
+		SELECT 
+			<include refid="gambleColumns"/>
+		FROM gamble a
+		<include refid="gambleJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO gamble(
+			account_id,
+			activity_id,
+			choice_side,
+			op_dt,
+			op_term,
+			right_side,
+			award_dt
+		) VALUES (
+			#{accountId},
+			#{activityId},
+			#{choiceSide},
+			#{opDt},
+			#{opTerm},
+			#{rightSide},
+			#{awardDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE gamble SET 	
+			account_id = #{accountId},
+			activity_id = #{activityId},
+			choice_side = #{choiceSide},
+			op_dt = #{opDt},
+			op_term=#{opTerm},
+			right_side = #{rightSide},
+			award_dt = #{awardDt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM gamble
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getByActivityIdAndAccountIdAndOpDate" resultType="Gamble">
+		select * from gamble where activity_id = #{activityId} and account_id = #{accountId} and date(op_dt) = date(#{opDt}) limit 1
+	</select>
+	
+	<update id="updateRightSideByActivityIdAndOpDt">
+		update gamble set right_side = #{rightSide} where activity_id = #{activityId} and date(op_dt) = date(#{opDt})
+	</update>
+	
+	<update id="updateAwardDtById">
+		update gamble set award_dt = #{awardDt} where id = #{id}
+	</update>
+</mapper>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.marketing.dao.MarketingActivityChannelLimitDao">
+    
+	<sql id="marketingActivityChannelLimitColumns">
+		a.id AS "id",
+		a.activity_id AS "activityId",
+		a.channel_id AS "channelId"
+	</sql>
+	
+	<sql id="marketingActivityChannelLimitJoins">
+	</sql>
+    
+	<select id="get" resultType="MarketingActivityChannelLimit">
+		SELECT 
+			<include refid="marketingActivityChannelLimitColumns"/>
+		FROM marketing_activity_channel_limit a
+		<include refid="marketingActivityChannelLimitJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MarketingActivityChannelLimit">
+		SELECT 
+			<include refid="marketingActivityChannelLimitColumns"/>
+		FROM marketing_activity_channel_limit a
+		<include refid="marketingActivityChannelLimitJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findListByActivityId" resultType="MarketingActivityChannelLimit">
+		SELECT 
+			<include refid="marketingActivityChannelLimitColumns"/>
+		FROM marketing_activity_channel_limit a
+		<include refid="marketingActivityChannelLimitJoins"/>
+		<where>
+			a.activity_id = #{activityId}
+		</where>
+	</select>
+	
+	<select id="findAllList" resultType="MarketingActivityChannelLimit">
+		SELECT 
+			<include refid="marketingActivityChannelLimitColumns"/>
+		FROM marketing_activity_channel_limit a
+		<include refid="marketingActivityChannelLimitJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO marketing_activity_channel_limit(
+			activity_id,
+			channel_id
+		) VALUES (
+			#{activityId},
+			#{channelId}
+		)
+	</insert>
+	
+	<insert id="insertBatch">
+        INSERT INTO marketing_activity_channel_limit(activity_id,channel_id)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.activityId},#{item.channelId})
+        </foreach>
+    </insert>
+	
+	<update id="update">
+		UPDATE marketing_activity_channel_limit SET 	
+			activity_id = #{activityId},
+			channel_id = #{channelId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM marketing_activity_channel_limit
+		WHERE id = #{id}
+	</update>
+	
+	<update id="deleteByActivityId">
+		DELETE FROM marketing_activity_channel_limit
+		WHERE activity_id = #{activityId}
+	</update>
+	
+</mapper>

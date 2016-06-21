@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.integral.dao.IntegralMallProductPriceDao">
+    
+	<sql id="integralMallProductPriceColumns">
+		a.id AS "id",
+		a.product_id AS "productId",
+		a.price_type AS "priceType",
+		a.market_new_price AS "marketNewPrice",
+		a.market_discount AS "marketDiscount",
+		a.begin_dt AS "beginDt",
+		a.end_dt AS "endDt",
+		a.status AS "status",
+		a.create_user_id AS "createUserId",
+		a.create_dt AS "createDt"
+	</sql>
+	
+	<sql id="integralMallProductPriceJoins">
+	</sql>
+    
+	<select id="get" resultType="IntegralMallProductPrice">
+		SELECT 
+			<include refid="integralMallProductPriceColumns"/>
+		FROM integral_mall_product_price a
+		<include refid="integralMallProductPriceJoins"/>
+		<where>
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="productId != null and productId != ''">
+				AND a.product_id = #{productId}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findList" resultType="IntegralMallProductPrice">
+		SELECT 
+			<include refid="integralMallProductPriceColumns"/>
+		FROM integral_mall_product_price a
+		<include refid="integralMallProductPriceJoins"/>
+		<where>
+			<if test="productId != null and productId != ''">
+				AND a.product_id = #{productId}
+			</if>
+			<if test="priceType != null and priceType != ''">
+				AND a.price_type = #{priceType}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	<select id="getListByProductId" resultType="IntegralMallProductPrice">
+		SELECT 
+			<include refid="integralMallProductPriceColumns"/>
+		FROM integral_mall_product_price a
+		<include refid="integralMallProductPriceJoins"/>
+		<where>
+			a.status = 1 and (now() between a.begin_dt and a.end_dt)
+			<if test="productId != null and productId != ''">
+				AND a.product_id = #{productId}
+			</if>
+		</where>
+		<choose>
+			<when test="1==1">
+				order by create_dt desc
+			</when>
+			<otherwise>
+			</otherwise>
+			
+		</choose>
+	</select>
+	<select id="findAllList" resultType="IntegralMallProductPrice">
+		SELECT 
+			<include refid="integralMallProductPriceColumns"/>
+		FROM integral_mall_product_price a
+		<include refid="integralMallProductPriceJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO integral_mall_product_price(
+			product_id,
+			price_type,
+			market_new_price,
+			market_discount,
+			begin_dt,
+			end_dt,
+			status,
+			create_user_id,
+			create_dt
+		) VALUES (
+			#{productId},
+			#{priceType},
+			#{marketNewPrice},
+			#{marketDiscount},
+			#{beginDt},
+			#{endDt},
+			#{status},
+			#{createUserId},
+			#{createDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE integral_mall_product_price SET 	
+			product_id = #{productId},
+			price_type = #{priceType},
+			market_new_price = #{marketNewPrice},
+			market_discount = #{marketDiscount},
+			begin_dt = #{beginDt},
+			end_dt = #{endDt},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM integral_mall_product_price
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

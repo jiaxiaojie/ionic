@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.marketing.dao.SachetRecordDao">
+    
+	<sql id="sachetRecordColumns">
+		a.id AS "id",
+		a.activity_id AS "activityId",
+		a.account_id AS "accountId",
+		a.change_value AS "changeValue",
+		a.change_reason AS "changeReason",
+		a.op_term AS "opTerm",
+		a.op_dt AS "opDt",
+		a.prize AS "prize"
+	</sql>
+	
+	<sql id="sachetRecordJoins">
+	</sql>
+    
+	<select id="get" resultType="SachetRecord">
+		SELECT 
+			<include refid="sachetRecordColumns"/>
+		FROM sachet_record a
+		<include refid="sachetRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="SachetRecord">
+		SELECT 
+			<include refid="sachetRecordColumns"/>
+		FROM sachet_record a
+		<include refid="sachetRecordJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SachetRecord">
+		SELECT 
+			<include refid="sachetRecordColumns"/>
+		FROM sachet_record a
+		<include refid="sachetRecordJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO sachet_record(
+			activity_id,
+			account_id,
+			change_value,
+			change_reason,
+			op_term,
+			op_dt,
+			prize
+		) VALUES (
+			#{activityId},
+			#{accountId},
+			#{changeValue},
+			#{changeReason},
+			#{opTerm},
+			#{opDt},
+			#{prize}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sachet_record SET 	
+			activity_id = #{activityId},
+			account_id = #{accountId},
+			change_value = #{changeValue},
+			change_reason = #{changeReason},
+			op_term = #{opTerm},
+			op_dt = #{opDt},
+			prize = #{prize}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM sachet_record
+		WHERE id = #{id}
+	</update>
+
+	<select id="getGetSachetCountByAccountIdAndDate" resultType="java.lang.Integer">
+		select count(1) from sachet_record where activity_id = #{activityId} and account_id = #{accountId} and date(op_dt) = date(#{date}) and change_value > 0
+	</select>
+
+	<select id="getSachetCountByAccountId" resultType="java.lang.Integer">
+		select ifnull(sum(change_value), 0) from sachet_record where activity_id = #{activityId} and account_id = #{accountId}
+	</select>
+
+	<select id="findGetPrizeList" resultType="java.util.Map">
+		select b.mobile,a.amount
+		from project_investment_record a
+		left join customer_base b on a.investment_user_id = b.account_id
+		left join project_base c on a.project_id = c.project_id
+		where a.status in ('0','3') and date(a.op_dt) between date(#{startDate}) and date(#{endDate})
+			and c.is_new_user = '1' and a.amount &gt;= #{amount}
+		order by a.id desc limit 10
+	</select>
+</mapper>

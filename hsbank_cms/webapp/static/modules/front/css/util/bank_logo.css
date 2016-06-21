@@ -1,0 +1,226 @@
+.bankLogo,.bankLogo_max,.bankLogo_min {
+	background-image: url('../../images/util/bank_logo.png');
+	display: inline-block;
+	vertical-align: middle;
+	background-position: 10000px 10000px;
+	background-repeat: no-repeat
+}
+
+.bankLogo {
+	width: 106px;
+	height: 31px
+}
+
+.bankLogo_max {
+	width: 227px;
+	height: 35px
+}
+
+.bankLogo_min {
+	width: 86px;
+	height: 16px
+}
+
+.bank_ecitic_max {
+	background-position: -1px -1px
+}
+
+.bank_ecitic {
+	background-position: -232px -1px
+}
+
+.bank_ecitic_min {
+	background-position: -342px -1px
+}
+
+.bank_ccb_max {
+	background-position: -1px -39px
+}
+
+.bank_ccb {
+	background-position: -232px -39px
+}
+
+.bank_ccb_min {
+	background-position: -342px -39px
+}
+
+.bank_abc_max {
+	background-position: -1px -77px
+}
+
+.bank_abc {
+	background-position: -232px -77px
+}
+
+.bank_abc_min {
+	background-position: -342px -77px
+}
+
+.bank_cmbc_max {
+	background-position: -1px -115px
+}
+
+.bank_cmbc {
+	background-position: -232px -115px
+}
+
+.bank_cmbc_min {
+	background-position: -342px -115px
+}
+
+.bank_cmb_max {
+	background-position: -1px -153px
+}
+
+.bank_cmb {
+	background-position: -232px -153px
+}
+
+.bank_cmb_min {
+	background-position: -342px -153px
+}
+
+.bank_boc_max {
+	background-position: -1px -191px
+}
+
+.bank_boc {
+	background-position: -232px -191px
+}
+
+.bank_boc_min {
+	background-position: -342px -191px
+}
+
+.bank_icbc_max {
+	background-position: -1px -229px
+}
+
+.bank_icbc {
+	background-position: -232px -229px
+}
+
+.bank_icbc_min {
+	background-position: -342px -229px
+}
+
+.bank_sdb_max {
+	background-position: -1px -267px
+}
+
+.bank_sdb {
+	background-position: -232px -267px
+}
+
+.bank_sdb_min {
+	background-position: -342px -267px
+}
+
+.bank_paic_max {
+	background-position: -1px -305px
+}
+
+.bank_paic {
+	background-position: -232px -305px
+}
+
+.bank_paic_min {
+	background-position: -342px -305px
+}
+
+.bank_alipay_max {
+	background-position: -1px -343px
+}
+
+.bank_alipay {
+	background-position: -232px -343px
+}
+
+.bank_alipay_min {
+	background-position: -342px -343px
+}
+
+.bank_everbright_max {
+	background-position: -1px -381px
+}
+
+.bank_everbright {
+	background-position: -232px -381px
+}
+
+.bank_everbright_min {
+	background-position: -342px -381px
+}
+
+.bank_comm_max {
+	background-position: -1px -419px
+}
+
+.bank_comm {
+	background-position: -232px -419px
+}
+
+.bank_comm_min {
+	background-position: -342px -419px
+}
+
+.bank_psbc_max {
+	background-position: -1px -457px
+}
+
+.bank_psbc {
+	background-position: -232px -457px
+}
+
+.bank_psbc_min {
+	background-position: -342px -457px
+}
+
+.bank_spdb_max {
+	background-position: -1px -495px
+}
+
+.bank_spdb {
+	background-position: -232px -495px
+}
+
+.bank_spdb_min {
+	background-position: -342px -495px
+}
+
+.bank_cgb_max {
+	background-position: -1px -533px
+}
+
+.bank_cgb {
+	background-position: -232px -533px
+}
+
+.bank_cgb_min {
+	background-position: -342px -533px
+}
+
+.bank_hxb_max {
+	background-position: -1px -571px
+}
+
+.bank_hxb {
+	background-position: -232px -571px
+}
+
+.bank_hxb_min {
+	background-position: -342px -571px
+}
+
+.bank_bea_max {
+	background-position: -1px -609px
+}
+
+.bank_bea {
+	background-position: -232px -611px
+}
+
+.bank_bea_min {
+	background-position: -342px -616px
+}

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.message.dao.ReceiveMessageSwitchDao">
+    
+	<sql id="receiveMessageSwitchColumns">
+		a.id AS "id",
+		a.message_type AS "messageType",
+		a.message_channel AS "messageChannel",
+		a.account_id AS "accountId",
+		a.is_receive AS "isReceive"
+	</sql>
+	
+	<sql id="receiveMessageSwitchJoins">
+	</sql>
+    
+	<select id="get" resultType="ReceiveMessageSwitch">
+		SELECT 
+			<include refid="receiveMessageSwitchColumns"/>
+		FROM receive_message_switch a
+		<include refid="receiveMessageSwitchJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ReceiveMessageSwitch">
+		SELECT 
+			<include refid="receiveMessageSwitchColumns"/>
+		FROM receive_message_switch a
+		<include refid="receiveMessageSwitchJoins"/>
+		<where>
+			
+			<if test="messageType != null and messageType != ''">
+				AND a.message_type = #{messageType}
+			</if>
+			<if test="messageChannel != null and messageChannel != ''">
+				AND a.message_channel = #{messageChannel}
+			</if>
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="isReceive != null and isReceive != ''">
+				AND a.is_receive = #{isReceive}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	
+	<select id="findCustomerSwitchList" resultType="map">
+		
+		
+		<choose>
+			<when test="accountId != null">
+
+SELECT `message_type` AS messageType,
+       GROUP_CONCAT(concat('chn_',message_channel,':',is_receive) SEPARATOR ',') AS isReceives,
+       GROUP_CONCAT(concat('chn_',message_channel,':',id) SEPARATOR ',') AS switchIds
+FROM (
+        (SELECT `id`,
+                `message_type`,
+                `message_channel`,
+                `account_id`,
+                `is_receive`
+         FROM receive_message_switch
+         WHERE account_id =#{accountId})
+      UNION
+        (SELECT `id`,
+                `message_type`,
+                `message_channel`,
+                `account_id`,
+                `is_receive`
+         FROM
+           (SELECT *,
+                   concat(message_type,';',message_channel,';') AS typeChannel
+            FROM receive_message_switch
+            WHERE account_id =0) t
+         WHERE typeChannel NOT IN
+             (SELECT concat(message_type,';',message_channel,';') AS typeChannel
+              FROM receive_message_switch
+              WHERE account_id =#{accountId}))) sw
+
+		<where>
+			<if test="messageChannels != null">
+				AND sw.message_channel in 
+				<foreach item="item" index="index" collection="messageChannels" open="(" separator="," close=")">  
+				 #{item}  
+				</foreach> 
+				
+				
+			</if>
+			<if test="messageType != null and messageType != ''">
+				AND sw.message_type = #{messageType}
+			</if>
+		</where>
+GROUP BY message_type ORDER BY message_type asc
+			</when>
+			<otherwise>
+				select * from receive_message_switch where 1=2
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ReceiveMessageSwitch">
+		SELECT 
+			<include refid="receiveMessageSwitchColumns"/>
+		FROM receive_message_switch a
+		<include refid="receiveMessageSwitchJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+    <select id="getIsRecives" resultType="java.lang.String">
+		select is_receive from receive_message_switch
+		where account_id = #{accountId} and message_channel = #{messageChannel} and message_type = #{messageType}
+		limit 1
+	</select>
+	
+	
+	<insert id="insert">
+		INSERT INTO receive_message_switch(
+		  message_type, message_channel, account_id, 
+		  is_receive
+		) 
+		SELECT 
+		  #{messageType}, #{messageChannel}, #{accountId}, #{isReceive}
+		FROM 
+		  receive_message_switch 
+		WHERE 
+		  NOT EXISTS (
+		    SELECT 
+		      * 
+		    FROM 
+		      receive_message_switch 
+		    WHERE 
+		      message_type = #{messageType} and message_channel = #{messageChannel} and account_id = #{accountId}) LIMIT 1
+	</insert>
+	
+	<update id="update">
+		UPDATE receive_message_switch SET 	
+			message_type = #{messageType},
+			message_channel = #{messageChannel},
+			account_id = #{accountId},
+			is_receive = #{isReceive}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM receive_message_switch
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getIsReceive" resultType="java.lang.String">
+		select is_receive from receive_message_switch
+		where account_id = #{accountId} and message_channel = #{messageChannel} and message_type = #{messageType}
+		limit 1
+	</select>
+
+	<delete id="deleteSwitch">
+		delete from receive_message_switch
+		where message_type = #{messageType} and message_channel = #{messageChannel} and account_id = #{accountId}
+	</delete>
+</mapper>

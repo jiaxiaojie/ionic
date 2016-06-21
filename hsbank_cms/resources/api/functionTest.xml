@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<functions
+           >
+
+
+
+
+
+    <function>
+        <class>com.thinkgem.jeesite.common.utils.DateUtils</class>
+        <method>getDate</method>
+        <params>
+            <type>java.lang.String</type>
+        </params>
+        <return>java.lang.String</return>
+    </function>
+
+    <function>
+        <class>com.thinkgem.jeesite.common.utils.DateUtils</class>
+        <method>parseDate</method>
+        <params>
+            <type>java.lang.Object</type>
+        </params>
+        <return>java.util.Date</return>
+    </function>
+
+    <function>
+        <class>com.thinkgem.jeesite.common.utils.DateUtils</class>
+        <method>formatDateByPattern</method>
+        <params>
+            <type>java.util.Date</type>
+            <type>java.lang.String</type>
+        </params>
+        <return>java.util.Date</return>
+    </function>
+
+</functions>

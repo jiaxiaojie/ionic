@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerWithdrawProcessDao">
+    
+	<sql id="customerWithdrawProcessColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.create_dt AS "createDt",
+		a.amount AS "amount",
+		a.service_money AS "serviceMoney",
+		a.ticket_amount AS "ticketMoney",
+		a.apply_dt AS "applyDt",
+		a.apply_status AS "applyStatus",
+		a.apply_user_id AS "applyUserId",
+		a.third_party_req AS "thirdPartyReq",
+		a.third_party_result AS "thirdPartyResult"
+	</sql>
+	
+	<sql id="customerWithdrawProcessJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomerWithdrawProcess">
+		SELECT 
+			<include refid="customerWithdrawProcessColumns"/>
+		FROM customer_withdraw_process a
+		<include refid="customerWithdrawProcessJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerWithdrawProcess">
+		SELECT 
+			<include refid="customerWithdrawProcessColumns"/>
+		FROM customer_withdraw_process a
+		<include refid="customerWithdrawProcessJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id LIKE 
+					<if test="dbName == 'oracle'">'%'||#{accountId}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{accountId}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{accountId},'%')</if>
+			</if>
+			<if test="beginCreateDt != null  and beginCreateDt != ''">				AND a.create_dt >= #{beginCreateDt}			</if>			<if test="endCreateDt != null and endCreateDt != ''">				AND #{endCreateDt} >= a.create_dt			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerWithdrawProcess">
+		SELECT 
+			<include refid="customerWithdrawProcessColumns"/>
+		FROM customer_withdraw_process a
+		<include refid="customerWithdrawProcessJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_withdraw_process(
+			account_id,
+			create_dt,
+			amount,
+			service_money,
+			ticket_amount,
+			apply_dt,
+			apply_status,
+			apply_user_id,
+			third_party_req,
+			third_party_result
+		) VALUES (
+			#{accountId},
+			#{createDt},
+			#{amount},
+			#{serviceMoney},
+			#{ticketMoney},
+			#{applyDt},
+			#{applyStatus},
+			#{applyUserId},
+			#{thirdPartyReq},
+			#{thirdPartyResult}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_withdraw_process SET 	
+			account_id = #{accountId},
+			create_dt = #{createDt},
+			amount = #{amount},
+			service_money = #{serviceMoney},
+			ticket_amount = #{ticketMoney},
+			apply_dt = #{applyDt},
+			apply_status = #{applyStatus},
+			apply_user_id = #{applyUserId},
+			third_party_req = #{thirdPartyReq},
+			third_party_result = #{thirdPartyResult}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_withdraw_process
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

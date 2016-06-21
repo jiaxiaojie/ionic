@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.message.dao.ReceiveSmsMessageTimeDao">
+    
+	<sql id="receiveSmsMessageTimeColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.start_time AS "startTime",
+		a.end_time AS "endTime"
+	</sql>
+	
+	<sql id="receiveSmsMessageTimeJoins">
+	</sql>
+    
+	<select id="get" resultType="ReceiveSmsMessageTime">
+		SELECT 
+			<include refid="receiveSmsMessageTimeColumns"/>
+		FROM receive_sms_message_time a
+		<include refid="receiveSmsMessageTimeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ReceiveSmsMessageTime">
+		SELECT 
+			<include refid="receiveSmsMessageTimeColumns"/>
+		FROM receive_sms_message_time a
+		<include refid="receiveSmsMessageTimeJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="startTime != null and startTime != ''">
+				AND a.start_time = #{startTime}
+			</if>
+			<if test="endTime != null and endTime != ''">
+				AND a.end_time = #{endTime}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ReceiveSmsMessageTime">
+		SELECT 
+			<include refid="receiveSmsMessageTimeColumns"/>
+		FROM receive_sms_message_time a
+		<include refid="receiveSmsMessageTimeJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO receive_sms_message_time(
+			account_id,
+			start_time,
+			end_time
+		) VALUES (
+			#{accountId},
+			#{startTime},
+			#{endTime}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE receive_sms_message_time SET 	
+			account_id = #{accountId},
+			start_time = #{startTime},
+			end_time = #{endTime}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM receive_sms_message_time
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getByAccountId" resultType="ReceiveSmsMessageTime">
+		select * from receive_sms_message_time where account_id = #{accountId} limit 1
+	</select>
+</mapper>

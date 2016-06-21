@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerHousingDao">
+    
+	<sql id="customerHousingColumns">
+		a.id AS "id",
+		a.housing_address AS "housingAddress",
+		a.housing_file AS "housingFile",
+		a.loan_year AS "loanYear",
+		a.loan_value AS "loanValue",
+		b.customer_id AS "customerId",
+		b.account_id as "accountId",
+		c.account_type AS "accountType"
+	</sql>
+	
+	<sql id="customerHousingJoins">
+		RIGHT JOIN customer_base b ON b.customer_id=a.customer_id
+		LEFT JOIN customer_account c ON c.account_id=b.account_id
+	</sql>
+    
+	<select id="get" resultType="CustomerHousing">
+		SELECT 
+			<include refid="customerHousingColumns"/>
+		FROM customer_housing a
+		<include refid="customerHousingJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getByCustomerId" resultType="CustomerHousing">
+		SELECT 
+			<include refid="customerHousingColumns"/>
+		FROM customer_housing a
+		<include refid="customerHousingJoins"/>
+		WHERE b.customer_id = #{customerId} limit 1
+	</select>
+	
+	<select id="findList" resultType="CustomerHousing">
+		SELECT 
+			<include refid="customerHousingColumns"/>
+		FROM customer_housing a
+		<include refid="customerHousingJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerHousing">
+		SELECT 
+			<include refid="customerHousingColumns"/>
+		FROM customer_housing a
+		<include refid="customerHousingJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_housing(
+			customer_id,
+			housing_address,
+			housing_file,
+			loan_year,
+			loan_value
+		) VALUES (
+			#{customerId},
+			#{housingAddress},
+			#{housingFile},
+			#{loanYear},
+			#{loanValue}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_housing SET 	
+			housing_address = #{housingAddress},
+			housing_file = #{housingFile},
+			loan_year = #{loanYear},
+			loan_value = #{loanValue}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_housing
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

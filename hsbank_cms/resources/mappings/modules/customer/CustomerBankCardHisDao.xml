@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerBankCardHisDao">
+    
+	<sql id="customerBankCardHisColumns">
+		a.account_id AS "accountId",
+		a.code AS "code",
+		a.card_no AS "cardNo",
+		a.card_status_code AS "cardStatusCode",
+		a.bank_code AS "bankCode",
+		a.message AS "message",
+		a.request_no AS "requestNo",
+		a.credit_report_file AS "creditReportFile",
+		a.op_dt AS "opDt",
+		a.service_code AS "serviceCode",
+		b.account_name AS "accountName"
+	</sql>
+	
+	<sql id="customerBankCardHisJoins">
+		LEFT JOIN customer_account b ON b.account_id=a.account_id
+	</sql>
+    
+	<select id="get" resultType="CustomerBankCardHis">
+		SELECT 
+			<include refid="customerBankCardHisColumns"/>
+		FROM customer_bank_card_his a
+		<include refid="customerBankCardHisJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerBankCardHis">
+		SELECT 
+			<include refid="customerBankCardHisColumns"/>
+		FROM customer_bank_card_his a
+		<include refid="customerBankCardHisJoins"/>
+		<where>
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id=#{accountId}
+			</if>
+			
+			<if test="beginChangeDt != null  and beginChangeDt != ''">
+				AND a.change_dt >= #{beginChangeDt}
+			</if>
+			<if test="endChangeDt != null and endChangeDt != ''">
+				AND #{endChangeDt} >= a.change_dt
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerBankCardHis">
+		SELECT 
+			<include refid="customerBankCardHisColumns"/>
+		FROM customer_bank_card_his a
+		<include refid="customerBankCardHisJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_bank_card_his(
+			account_id,
+			code,
+			card_no,
+			card_status_code,
+			bank_code,
+			message,
+			request_no,
+			op_dt,
+			service_code,
+			credit_report_file,
+			op_term_code,
+			change_dt
+		) VALUES (
+			#{accountId},
+			#{code},
+			#{cardNo},
+			#{cardStatusCode},
+			#{bankCode},
+			#{message},
+			#{requestNo},
+			#{opDt},
+			#{serviceCode},
+			#{creditReportFile},
+			#{opTermCode},
+			#{changeDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_bank_card_his SET 	
+			card_num = #{cardNum},
+			create_dt = #{createDt},
+			card_type = #{cardType},
+			bank_info = #{bankInfo},
+			currency_type = #{currencyType},
+			auth_code = #{authCode},
+			last_modify_dt = #{lastModifyDt},
+			op_term_type = #{opTermType},
+			credit_report_file = #{creditReportFile},
+			op_dt = #{opDt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_bank_card_his
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateInfoWithRequestNo">
+		update customer_bank_card_his set card_no = #{cardNo},card_status_code = #{cardStatusCode},bank_code = #{bankCode},message = #{message} where request_no = #{requestNo}
+	</update>
+</mapper>

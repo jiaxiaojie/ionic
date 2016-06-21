@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apis basePath = "${frontPath}/api/myInvestment"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="../../config/api.xsd">
+    <api path="regular">
+        <data>
+            <foramt>
+             {
+				code:{
+				   description:"状态代码（0表示成功，1表示token无效，其它值表示失败）",
+				   type:"int",
+				   optional:"FALSE"   },
+				text:{
+				   description:"状态描述",
+				   type:"String",
+				   optional:"FALSE"   },
+				data:{
+				  count:{
+					 description:"记录总数",
+					 type:"int",
+					 optional:"FALSE"     },
+				  resultList:[
+					{
+					  recordId:{
+						 description:"记录Id",
+						 type:"string",
+						 optional:"FALSE",
+						 value:"pir.id"          },
+					  projectId:{
+						 description:"项目Id",
+						 type:"long",
+						 optional:"FALSE"         },
+					  projectName:{
+						 description:"项目名称",
+						 type:"string",
+						 optional:"FALSE"         },
+				      projectType:{
+						 description:"项目类型",
+						 type:"int",
+						 optional:"FALSE",
+				         dataColumn:"projectTypeCode"         },
+					  projectTypeName:{
+						 description:"项目类型名称",
+						 type:"string",
+						 optional:"FALSE",
+					     value:"getDictLabel(projectTypeCode, 'project_type_dict', '')"         },
+					  amount:{
+						 description:"投资金额(元)",
+						 type:"number",
+						 optional:"FALSE",
+                         dataColumn:"pir.amount"         },
+				      willProfit:{
+				         description:"待收收益(元)",
+				         type:"number",
+				         optional:"FALSE",
+					     dataColumn:"pir.willProfit"         },
+					  annualizedRate:{
+						 description:"年化利率",
+						 type:"number",
+						 optional:"FALSE"         },
+					  repaymentMode:{
+						 description:"还款方式",
+						 type:"int",
+						 optional:"FALSE"         },
+					  repaymentModeName:{
+						 description:"还款方式名称",
+						 type:"String",
+						 optional:"FALSE",
+                         value:"getDictLabel(repaymentMode, 'project_repayment_mode_dict', '')"         },
+					  opDate:{
+						 description:"投资日期",
+						 type:"String",
+						 optional:"FALSE",
+                         dataColumn:"pir.opDt"         },
+					  remainingDays:{
+						 description:"剩余天数(天)",
+						 type:"int",
+						 optional:"FALSE"         }
+					}
+				  ]
+				}
+			}
+            </foramt>
+        </data>
+    </api>
+</apis>

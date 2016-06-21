@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>我的活花生</title>
+
+<script src="../../../../../static/jquery/jquery-1.8.3.min.js" type="text/javascript"></script>
+<script src="../../../../../static/bootstrap/2.3.2/js/bootstrap.js" type="text/javascript"></script>
+<script src="../../../../../static/jquery-select2/3.4/select2.min.js" type="text/javascript"></script>
+<script src="../../../../../static/jquery-validation/1.11.0/jquery.validate.js" type="text/javascript"></script>
+<script src="../../../../../static/jquery-slidejs/jquery.slides.min.js" type="text/javascript"></script>
+<script src="../../../../../static/jquery-jbox/2.3/jquery.jBox-2.3.js" type="text/javascript"></script>
+<script src="../../../../../static/My97DatePicker/WdatePicker.js" type="text/javascript"></script>
+<script src="../../../../../static/modules/front/js/util.js" type="text/javascript"></script>
+<script src="../../../../../static/modules/front/js/scrollbar.js" type="text/javascript"></script>
+<script src="../../../../../static/modules/front/js/amount.js" type="text/javascript"></script>
+<script src="../../../../../static/modules/front/js/peanut.js" type="text/javascript"></script><!--添加签到时撒落花生的JS效果-->
+<script src="../../../../../static/common/dateUtils.js" type="text/javascript"></script>
+
+<link href="../../../../../static/bootstrap/2.3.2/css_cerulean/bootstrap.css" rel="stylesheet"/>
+<link href="../../../../../static/modules/front/css/util/util.css" rel="stylesheet"/>
+<link href="../../../../../static/modules/front/css/layouts/my_account.css" rel="stylesheet"/>
+<link href="../../../../../static/modules/front/css/wdzh/rzgl_wdjk.css" rel="stylesheet"/>
+
+</head>
+<body>
+<div class="div_bg_001" style="overflow:hidden; margin:0 auto;">
+  <div id="div_header_top" class="div_width_1080">
+    <div class="div_left"><img id="logo" class="logo" src="../../../../../static/modules/front/images/util/logo.png"/></div>
+    <div class="div_right">
+      <ul class="top_menu">
+        <li class="client"> 
+          
+          <div class="popup width272" style=" width:144px; margin-left:-72px">
+            <div class="popup_arrow"></div>
+            <div class="popup_content">
+              <p><img src="../../../../../static/modules/front/images/util/img_app_tdc.png"><span>扫一扫下载<br>
+                花生金服客户端</span></p>
+            </div>
+          </div>
+          <i class="icon_phone"></i> <a href="/fuding_p2p/f/downloadApp">手机客户端</a> </li>
+        <li class="line"></li>
+        <li class="follow">关注：</li>
+        <li class="follow ml0">
+          <div class="popup" style=" width:144px; left:50%; margin-left:-72px">
+            <div class="popup_arrow"></div>
+            <div class="popup_content">
+              <p><img src="../../../../../static/modules/front/images/util/img_tdc.png"><span>扫一扫关注<br>
+                花生金服微信</span></p>
+            </div>
+          </div>
+          <a href="javascript:;" class="icon_wechat"></a> </li>
+        <li class="follow">
+          <div class="popup" style=" width:144px; left:50%; margin-left:-72px">
+            <div class="popup_arrow"></div>
+            <div class="popup_content">
+              <p>点击关注花生金服微博<a href="http://weibo.com/hsbank360" target="_blank" class="btn_text_gold"><br>
+                @花生金服</a></p>
+            </div>
+          </div>
+          <a href="http://weibo.com/hsbank360" target="_blank" class="icon_weibo"></a> </li>
+        <li class="line"></li>
+        <li class="help"><a href="/fuding_p2p/f/xszy">新手指引</a></li>
+        <li class="line"></li>
+        <li class="help"><i class="icon_hot"></i><a href="/fuding_p2p/f/help/wytz_xsbd">帮助中心</a></li>
+        <li class="line"></li>
+        <li class="help"><i class="icon_new"></i><a href="/fuding_p2p/f/integralMall/index">花生乐园</a></li>
+        <li class="line"></li>
+        <li class="logged" ><a
+								href="/fuding_p2p/f/customer/summary" class="btn_text_black mr10 username"> <span title='gghufgh'>gghufgh</span> </a> <a href="javascript:;" class="btn_text_black mr10" style="display: none;">消息<span class="info_tip">9</span></a> <a id="sign" href="javascript:;" class="signed mr10">已签到</a> <a href="/fuding_p2p/f/logout" class="btn_text_black logout">退出</a></li>
+      </ul>
+      <div class="service_hotline">服务热线：400-969-6599 (工作日9:00~18:00)</div>
+    </div>
+  </div>
+  <!-- 主菜单 -->
+  <div id="div_main_menu" class="div_width_1080">
+    <ul id="menu_bar">
+      <li class="wytz"><a href="/fuding_p2p/f/wytz"></a></li>
+      <li class="wyrz"><a href="/fuding_p2p/f/willloan/willloan"></a></li>
+      <li class="zxhd"><a href="/fuding_p2p/f/zxhd"></a></li>
+      <li class="xszy"><a href="/fuding_p2p/f/xszq"></a></li>
+      <li class="gywm"><a href="/fuding_p2p/f/gywm/index"></a></li>
+      <li class="selected wdzh_selected"><a href="/fuding_p2p/f/customer/summary"></a></li>
+    </ul>
+    <div class="clearfix"></div>
+  </div>
+  
+  
+  
+  <div id="juanzhou">
+    <div class="juanzhou_top"></div>
+    <div class="juanzhou_middle">
+      <div class="nav_row">
+        <div class="left"><a href='/fuding_p2p/f/index'>首页</a>&nbsp;&gt;&nbsp;<a href='/fuding_p2p/f/customer/summary'>我的账户</a>&nbsp;&gt;&nbsp;投资管理&nbsp;&gt;&nbsp;<a href='#'>我的活花生</a></div>
+        <div class="right">上次登录：2015-12-23 10:48:50&nbsp;&nbsp;</div>
+      </div>
+      <div id="content">
+      
+      	
+        <div class="left">
+          <div class="top"></div>
+          <div class="one_menu"> <a href="/fuding_p2p/f/customer/summary"> <span class="zhzl"></span> <span class="span_text">账户总览</span> </a> </div>
+          <div id="one_menu_zjgl" class="one_menu"> <span class="zjgl"></span> <span class="span_text">资金管理</span> </div>
+          <div id="one_menu_sub_list_zjgl" class="two_menu_list hide">
+            <div class="two_menu"> <a href="/fuding_p2p/f/customer/capital/record">&nbsp;&nbsp;&nbsp;交易记录</a> </div>
+            <div class="two_menu"> <a href="/fuding_p2p/f/customer/capital/recharge">&nbsp;&nbsp;&nbsp;充值&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a> </div>
+            <div class="two_menu"> <a href="/fuding_p2p/f/customer/capital/withdraw">&nbsp;&nbsp;&nbsp;提现&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a> </div>
+          </div>
+          <div id="one_menu_tzgl" class="one_menu_selected"> <span class="tzgl"></span> <span class="span_text">投资管理</span> </div>
+          <div id="one_menu_sub_list_tzgl" class="two_menu_list show">
+            <div class="two_menu"> <a href="/fuding_p2p/f/customer/investment/tongji">&nbsp;&nbsp;&nbsp;投资统计</a> </div>
+            <div class="two_menu_selected"> <a href="#">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我的活花生</a> </div>
+            <div class="two_menu"> <a href="/fuding_p2p/f/customer/investment/project_cyz">&nbsp;&nbsp;&nbsp;我的债权</a> </div>
+            <div class="two_menu"> <a href="/fuding_p2p/f/customer/investment/detailUnReceiveMoney">&nbsp;&nbsp;&nbsp;收款明细</a> </div>
+          </div>
+          <div id="one_menu_rzgl" class="one_menu"> <span class="rzgl"></span> <span class="span_text">融资管理</span> </div>
+          <div id="one_menu_sub_list_rzgl" class="two_menu_list hide">
+            <div class="two_menu"> <a href="/fuding_p2p/f/customer/loan/tongji">&nbsp;&nbsp;&nbsp;融资统计</a> </div>
+            <div class="two_menu"> <a href="/fuding_p2p/f/customer/loan/myFundingProject">&nbsp;&nbsp;&nbsp;我的融资</a> </div>
+            <div class="two_menu"> <a href="/fuding_p2p/f/customer/loan/applyForQuery">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;融资申请查询</a> </div>
+          </div>
+          <div id="one_menu_zhgl" class="one_menu"> <span class="zhgl"></span> <span class="span_text">账户管理</span> </div>
+          <div id="one_menu_sub_list_zhgl" class="two_menu_list hide">
+            <div class="two_menu"> <a href="/fuding_p2p/f/customer/account/baseInfo">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;个人基础信息</a> </div>
+            <div class="two_menu"> <a href="/fuding_p2p/f/customer/account/safeCenter">&nbsp;&nbsp;&nbsp;安全中心</a> </div>
+            <div class="two_menu"> <a href="/fuding_p2p/f/customer/account/change_avatar">&nbsp;&nbsp;&nbsp;更换头像</a> </div>
+            <div class="two_menu"> <a href="/fuding_p2p/f/customer/account/authInfo">&nbsp;&nbsp;&nbsp;认证信息</a> </div>
+            <div class="two_menu"> <a href="/fuding_p2p/f/customer/account/bankCard">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;银行卡管理</a> </div>
+          </div>
+          <div class="one_menu"> <a href="/fuding_p2p/f/customer/ticket/my"> <span class="wdyhj"></span> <span class="span_text">我的现金券</span> </a> </div>
+          <div class="one_menu"> <a href="/fuding_p2p/f/customer/withdrawTicket"> <span class="wdyhj"></span> <span class="span_text">我的提现券</span> </a> </div>
+          <div id="one_menu_wdjf"  class="one_menu"> <span class="wdjf"></span> <span class="span_text">我的花生豆</span> </div>
+          <div id="one_menu_sub_list_wdjf" class="two_menu_list hide">
+            <div class="two_menu"> <a href="/fuding_p2p/f/customer/integral/summary">&nbsp;&nbsp;&nbsp;花生豆概况</a> </div>
+            <div class="two_menu"> <a href="/fuding_p2p/f/customer/integral/detail">&nbsp;&nbsp;&nbsp;收支明细</a> </div>
+          </div>
+          <div class="one_menu"> <a href="/fuding_p2p/f/customer/inviteFriends/myFriends"> <span class="yqhy"></span> <span class="span_text">邀请好友</span> </a> </div>
+
+          <div class="bottom"></div>
+        </div>
+        
+        
+        
+        <div class="right">
+        
+          <div class="statistics">
+            <div class="s_top"></div>
+            <div class="s_middle column_2 clearfix">
+              <dl class="one border_right">
+                <dt class=""><strong>昨日收益</strong></dt>
+                <dd class="font_color_red"><strong>3.00元</strong></dd>
+              </dl>
+              <dl class="two">
+                <dt class="">累计收益</dt>
+                <dd class="font_color_red">100.00元</dd>
+              </dl>
+            </div>
+            <div class="s_bottom"></div>
+          </div>
+          
+          
+          <div class="div_height_10"></div>
+          <div class="bg_789_top"></div>
+          <div id="content_center" class="bg_789_middle">
+            
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th width="20%">项目名称</th>
+                        <th width="20%">原始投资金额（元）</th>
+                        <th width="20%">累计收益（元）</th>
+                        <th width="14%">年化利率</th>
+                        <th width="26%">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><a href="#" class="brown-text">活花生-001</a></td>
+                        <td>100，000</td>
+                        <td>100，32</td>
+                        <td>8%</td>
+                        <td><a href="#" class="blue-text">投资</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="blue-text">赎回本金</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="blue-text">提取收益</a></td>
+                    </tr>
+                    <tr>
+                        <td><a href="#" class="brown-text">活花生-002</a></td>
+                        <td>100，000</td>
+                        <td>100，32</td>
+                        <td>8%</td>
+                        <td><a href="#" class="blue-text">查看</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="blue-text">赎回本金</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="blue-text">提取收益</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="div_height_50"></div>
+            
+            <div class="buttom-tips">
+                <div class="tips-top"></div>
+                <div class="tips-center">
+                    <dl>
+                        <dt>温馨提示</dt>
+                        <dd></dd>
+                        <dd>1.活花生的收益每日结算，转入当日开始计息，每日利息在次日结算。</dd>
+                        <dd>2.活花生支持随时发起赎回，每日不限赎回次数，但是赎回金额必须为1元的整数倍，赎回的资金当日没有利息。</dd>
+                        <dd>3.申请赎回的资金资金预计于1个工作日内（节假日顺延）入账您的账户。</dd>
+                        <dd>4.每日凌晨系统结算时间（0:00-3:00）为不可赎回时间，具体时间点见网站通知 。</dd>
+                        <dd>5.若遇巨额赎回情况，花生金服有权拒绝客户当日的转出申请，您可以次日继续申请转出，具体以公司通知为准。</dd>
+                        <dd>6.用户每日的收益在每日凌晨00:00计算，随后会显示在可提取收益位置，只要可提取收益大于0元时都可以发起提取收益，不受时间限制。</dd>
+                    </dl>
+                </div>
+                <div class="tips-bottom"></div>
+            </div>
+            
+            <div class="bottom"></div>
+          </div>
+          <div class="bg_789_bottom"></div>
+        </div>
+      </div>
+    </div>
+    <div class="juanzhou_bottom"></div>
+  </div>
+</div>
+
+<!-- 版权申明区域 -->
+<div id="footer_area" class="footer_area">
+  <div class="footer_menu"> <span class=""><a href="/fuding_p2p/f/gywm/index">关于我们</a></span> <span class="line">|</span> <span class=""><a href="/fuding_p2p/f/gywm/jrwm">加入我们</a></span> <span class="line">|</span> <span class=""><a href="/fuding_p2p/f/gywm/lxwm">联系我们</a></span> <span class="line">|</span> <span class=""><a href="/fuding_p2p/f/index#cooperationAgency">友情链接</a></span> <span class="line">|</span> <span class=""><a href="javascript:void(0);">网站地图</a></span> <span class="line">|</span> <span class=""><a href="javascript:void(0);">法律声明</a></span> <span class="line">|</span> <span class=""><a href="javascript:void(0);">黑名单</a></span> </div>
+  <div class="div_height_20"></div>
+  <div class="footer_text"> <span>客服邮箱：service@fdjf.net</span>&nbsp;&nbsp;&nbsp;&nbsp; <span>服务热线：<b class="font_size_18">400-969-6599</b>&nbsp;(工作日9:00~18:00)</span> </div>
+  <div class="div_height_10"></div>
+  <div class="footer_text">©2015上海富定金融信息服务股份有限公司&nbsp;&nbsp;All right reserved.&nbsp;&nbsp;沪ICP备15025483号</div>
+  <div class="div_height_20"></div>
+  <div class="footer_logo"> 
+    <!-- <a href="javascript:void(0);" class="logo_kx"></a> --> 
+    <!-- <a href="javascript:void(0);" class="logo_aq"></a> --> 
+    <!-- <a href="javascript:void(0);" class="logo_x"></a> --> 
+    <a href="javascript:void(0);" class="logo_gs"></a> <a href="javascript:void(0);" class="logo_nt"></a> <a href="javascript:void(0);" class="logo_jc"></a> </div>
+</div>
+</body>
+</html>

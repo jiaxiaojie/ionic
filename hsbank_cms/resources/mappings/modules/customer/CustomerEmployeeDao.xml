@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerEmployeeDao">
+    
+	<sql id="customerEmployeeColumns">
+		a.employee_id AS "employeeId",
+		a.name AS "name",
+		a.mobile AS "mobile",
+		a.position AS "position",
+		a.remark AS "remark"
+	</sql>
+	
+	<sql id="customerEmployeeJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomerEmployee">
+		SELECT 
+			<include refid="customerEmployeeColumns"/>
+		FROM customer_employee a
+		<include refid="customerEmployeeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerEmployee">
+		SELECT 
+			<include refid="customerEmployeeColumns"/>
+		FROM customer_employee a
+		<include refid="customerEmployeeJoins"/>
+		<where>
+			
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerEmployee">
+		SELECT 
+			<include refid="customerEmployeeColumns"/>
+		FROM customer_employee a
+		<include refid="customerEmployeeJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_employee(
+			employee_id,
+			name,
+			mobile,
+			position,
+			remark
+		) VALUES (
+			#{employeeId},
+			#{name},
+			#{mobile},
+			#{position},
+			#{remark}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_employee SET 	
+			employee_id = #{employeeId},
+			name = #{name},
+			mobile = #{mobile},
+			position = #{position},
+			remark = #{remark}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_employee
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getByMobile" resultType="CustomerEmployee">
+		select * from customer_employee where mobile = #{mobile} limit 1
+	</select>
+</mapper>

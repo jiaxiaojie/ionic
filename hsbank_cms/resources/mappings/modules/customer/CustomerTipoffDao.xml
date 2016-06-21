@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerTipoffDao">
+    
+	<sql id="customerTipoffColumns">
+		a.id AS "id",
+		a.informants_name AS "informantsName",
+		a.create_dt AS "createDt",
+		a.informants_email AS "informantsEmail",
+		a.informants_mobile AS "informantsMobile",
+		a.content AS "content",
+		a.attr1 AS "attr1",
+		a.attr2 AS "attr2",
+		a.attr3 AS "attr3",
+		a.verify_name AS "verifyName",
+		a.verify_reply AS "verifyReply",
+		a.reply_dt AS "replyDt",
+		a.status AS "status"
+	</sql>
+	
+	<sql id="customerTipoffJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomerTipoff">
+		SELECT 
+			<include refid="customerTipoffColumns"/>
+		FROM customer_tipoff a
+		<include refid="customerTipoffJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerTipoff">
+		SELECT 
+			<include refid="customerTipoffColumns"/>
+		FROM customer_tipoff a
+		<include refid="customerTipoffJoins"/>
+		<where>
+			
+			<if test="informantsName != null and informantsName != ''">
+				AND a.informants_name = #{informantsName}
+			</if>
+			<if test="beginCreateDt != null  and beginCreateDt != ''">				AND a.create_dt >= #{beginCreateDt}			</if>			<if test="endCreateDt != null and endCreateDt != ''">				AND #{endCreateDt} >= a.create_dt			</if>
+			<if test="verifyName != null and verifyName != ''">
+				AND a.verify_name = #{verifyName}
+			</if>
+			<if test="beginReplyDt != null  and beginReplyDt != ''">				AND a.reply_dt >= #{beginReplyDt}			</if>			<if test="endReplyDt != null and endReplyDt != ''">				AND #{endReplyDt} >= a.reply_dt			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerTipoff">
+		SELECT 
+			<include refid="customerTipoffColumns"/>
+		FROM customer_tipoff a
+		<include refid="customerTipoffJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_tipoff(
+			informants_name,
+			create_dt,
+			informants_email,
+			informants_mobile,
+			content,
+			attr1,
+			attr2,
+			attr3,
+			verify_name,
+			verify_reply,
+			reply_dt,
+			status
+		) VALUES (
+			#{informantsName},
+			#{createDt},
+			#{informantsEmail},
+			#{informantsMobile},
+			#{content},
+			#{attr1},
+			#{attr2},
+			#{attr3},
+			#{verifyName},
+			#{verifyReply},
+			#{replyDt},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_tipoff SET 	
+			informants_name = #{informantsName},
+			create_dt = #{createDt},
+			informants_email = #{informantsEmail},
+			informants_mobile = #{informantsMobile},
+			content = #{content},
+			attr1 = #{attr1},
+			attr2 = #{attr2},
+			attr3 = #{attr3},
+			verify_name = #{verifyName},
+			verify_reply = #{verifyReply},
+			reply_dt = #{replyDt},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_tipoff
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

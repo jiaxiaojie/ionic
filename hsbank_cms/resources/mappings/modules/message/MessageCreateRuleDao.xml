@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.message.dao.MessageCreateRuleDao">
+    
+	<sql id="messageCreateRuleColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.behavior_code AS "behaviorCode",
+		a.message_title AS "messageTitle",
+		a.message_content AS "messageContent",
+		a.message_type AS "messageType",
+		a.label AS "label",
+		a.status AS "status",
+		a.class_name AS "className",
+		a.start_date AS "startDate",
+		a.end_date AS "endDate",
+		a.start_time AS "startTime",
+		a.end_time AS "endTime",
+		a.create_dt AS "createDt",
+		a.creator AS "creator",
+		a.review_dt AS "reviewDt",
+		a.reviewer AS "reviewer",
+		
+		a.is_urgent AS "isUrgent",
+		a.target_type AS "targetType",
+		a.target AS "target",
+		a.is_click AS "isClick"
+	</sql>
+	
+	<sql id="messageCreateRuleJoins">
+	</sql>
+    
+	<select id="get" resultType="MessageCreateRule">
+		SELECT 
+			<include refid="messageCreateRuleColumns"/>
+		FROM message_create_rule a
+		<include refid="messageCreateRuleJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	
+	
+		<select id="querySimpleList" resultType="MessageCreateRule">
+		SELECT  a.id AS "id",
+				a.name AS "name"
+		FROM message_create_rule a
+		<include refid="messageCreateRuleJoins"/>
+		<where>
+			
+			<if test="queryParas != null and queryParas != ''">
+				AND (a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{queryParas}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{queryParas}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{queryParas},'%')</if>
+		
+				
+					)
+			</if>
+			<if test="queryParas == ''">
+				AND 1!=1
+			</if>
+		</where>
+	</select>
+	
+	<select id="findList" resultType="MessageCreateRule">
+		SELECT 
+			<include refid="messageCreateRuleColumns"/>
+		FROM message_create_rule a
+		<include refid="messageCreateRuleJoins"/>
+		<where>
+			
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="messageType != null and messageType != ''">
+				AND a.message_type = #{messageType}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getByMessageId" resultType="MessageCreateRule">
+		SELECT 
+			<include refid="messageCreateRuleColumns"/>
+		FROM message_create_rule a
+		left JOIN message m ON a.id=m.from_id
+		WHERE m.id = #{messageId}
+			limit 1
+	</select>
+	
+	<select id="findAllList" resultType="MessageCreateRule">
+		SELECT 
+			<include refid="messageCreateRuleColumns"/>
+		FROM message_create_rule a
+		<include refid="messageCreateRuleJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO message_create_rule(
+			name,
+			behavior_code,
+			message_title,
+			message_content,
+			message_type,
+			label,
+			status,
+			class_name,
+			start_date,
+			end_date,
+			start_time,
+			end_time,
+			create_dt,
+			creator,
+			review_dt,
+			reviewer
+		) VALUES (
+			#{name},
+			#{behaviorCode},
+			#{messageTitle},
+			#{messageContent},
+			#{messageType},
+			#{label},
+			#{status},
+			#{className},
+			#{startDate},
+			#{endDate},
+			#{startTime},
+			#{endTime},
+			#{createDt},
+			#{creator},
+			#{reviewDt},
+			#{reviewer}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE message_create_rule SET 	
+			name = #{name},
+			behavior_code = #{behaviorCode},
+			message_title = #{messageTitle},
+			message_content = #{messageContent},
+			message_type = #{messageType},
+			label = #{label},
+			status = #{status},
+			class_name = #{className},
+			start_date = #{startDate},
+			end_date = #{endDate},
+			start_time = #{startTime},
+			end_time = #{endTime},
+			create_dt = #{createDt},
+			creator = #{creator},
+			review_dt = #{reviewDt},
+			reviewer = #{reviewer}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM message_create_rule
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findListByStatus" resultType="MessageCreateRule">
+		select * from message_create_rule where status = #{status}
+		<if test="dateTime != null">
+			and start_date &lt;= date(#{dateTime}) and end_date &gt;= date(#{dateTime})
+			and start_time &lt;= date_format(#{dateTime}, '%T') and end_time &gt;= date_format(#{dateTime}, '%T')
+		</if>
+	</select>
+	
+	<update id="review">
+		update message_create_rule set status = #{status},review_dt = now(),reviewer = #{reviewer} where id = #{id}
+	</update>
+	
+	<select id="getByClassName" resultType="MessageCreateRule">
+		select * from message_create_rule where class_name = #{className}
+	</select>
+</mapper>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.operation.dao.DataQueryMenuDao">
+    
+	<sql id="dataQueryMenuColumns">
+		a.id AS "id",
+		a.query_id AS "queryId",
+		a.menu_id AS "menuId",
+		a.title AS "title",
+		a.exportable AS "exportable"
+	</sql>
+	
+	<sql id="dataQueryMenuJoins">
+	</sql>
+    
+	<select id="get" resultType="DataQueryMenu">
+		SELECT 
+			<include refid="dataQueryMenuColumns"/>
+		FROM data_query_menu a
+		<include refid="dataQueryMenuJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="DataQueryMenu">
+		SELECT 
+			<include refid="dataQueryMenuColumns"/>
+		FROM data_query_menu a
+		<include refid="dataQueryMenuJoins"/>
+		<where>
+			
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DataQueryMenu">
+		SELECT 
+			<include refid="dataQueryMenuColumns"/>
+		FROM data_query_menu a
+		<include refid="dataQueryMenuJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO data_query_menu(
+			query_id,
+			menu_id,
+			title,
+			exportable
+		) VALUES (
+			#{queryId},
+			#{menuId},
+			#{title},
+			#{exportable}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE data_query_menu SET 	
+			query_id = #{queryId},
+			menu_id = #{menuId},
+			title = #{title},
+			exportable = #{exportable}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM data_query_menu
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getListByQueryId" resultType="DataQueryMenu">
+		select * from data_query_menu where query_id = #{queryId}
+	</select>
+	
+	<delete id="deleteByQueryId">
+		delete from data_query_menu where query_id = #{queryId}
+	</delete>
+</mapper>

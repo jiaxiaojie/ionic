@@ -1,0 +1,742 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper  namespace="com.thinkgem.jeesite.modules.project.dao.ProjectRepaymentSplitRecordDao">
+	<sql id="projectRepaymentSplitRecordColumns">
+		a.split_record_id AS "splitRecordId",
+		a.record_id AS
+		"recordId",
+		a.project_id AS "projectId",
+		a.repayment_user_id AS
+		"repaymentUserId",
+		a.investment_record_id AS "investmentRecordId",
+		a.repayment_account AS "repaymentAccount",
+		a.payee_user_id AS
+		"payeeUserId",
+		a.payee_account AS "payeeAccount",
+		a.money AS "money",
+		a.repay_type AS "repayType",
+		a.sum_interest AS "sumInterest",
+		a.pre_penalty_money AS "prePenaltyMoney",
+		a.late_penalty_money AS
+		"latePenaltyMoney",
+		a.principal AS "principal",
+		a.interest AS "interest",
+		a.rate_ticket_interest AS "rateTicketInterest",
+		a.remained_principal AS "remainedPrincipal",
+		a.repayment_dt
+		AS "repaymentDt",
+		a.actual_repayment_dt AS "actualRepaymentDt",
+		a.third_party_order AS "thirdPartyOrder",
+		a.repay_result AS
+		"repayResult",
+		a.status AS "status",
+		a.create_dt AS "createDt",
+		a.modify_dt AS "modifyDt",
+		a.modify_remark AS "modifyRemark"
+	</sql>
+
+	<sql id="projectRepaymentSplitRecordJoins">
+	</sql>
+
+	<select id="get" resultType="ProjectRepaymentSplitRecord">
+		SELECT
+		<include refid="projectRepaymentSplitRecordColumns" />
+		FROM project_repayment_split_record a
+		<include refid="projectRepaymentSplitRecordJoins" />
+		WHERE a.split_record_id = #{id}
+	</select>
+
+	<select id="findList" resultType="ProjectRepaymentSplitRecord">
+		SELECT
+		<include refid="projectRepaymentSplitRecordColumns" />
+		FROM project_repayment_split_record a
+		<include refid="projectRepaymentSplitRecordJoins" />
+		<where>
+
+			<if test="recordId != null and recordId != ''">
+				AND a.record_id = #{recordId}
+			</if>
+			<if test="projectId != null and projectId != ''">
+				AND a.project_id = #{projectId}
+			</if>
+			<if test="repaymentUserId != null and repaymentUserId != ''">
+				AND a.repayment_user_id = #{repaymentUserId}
+			</if>
+			<if test="investmentRecordId != null and investmentRecordId != ''">
+				AND a.investment_record_id = #{investmentRecordId}
+			</if>
+			<if test="payeeUserId != null and payeeUserId != ''">
+				AND a.payee_user_id = #{payeeUserId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findAllList" resultType="ProjectRepaymentSplitRecord">
+		SELECT
+		<include refid="projectRepaymentSplitRecordColumns" />
+		FROM project_repayment_split_record a
+		<include refid="projectRepaymentSplitRecordJoins" />
+		<where>
+
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findSumPrincipalAndSumInterest" resultType="map">
+	SELECT
+	ifnull(sum(a.principal),0) AS sumPrincipal,ifnull(sum(a.interest),0) AS sumInterest
+   FROM
+	project_repayment_split_record a 
+	<where>
+		(a.status = '0' OR a.status = '1')
+	    <if test = "projectId != null and projectId != ''" >
+       AND a.project_id = #{projectId}
+       </if> 
+    </where>
+	</select>
+	
+	
+	<select id="selectSumPrincipalAndSumInterest" resultType="map">
+		SELECT
+	         sum(a.principal) as AllPrincipal,sum(a.interest) as allInterest,a.repayment_dt as repaymentDt,a.status AS status
+        FROM
+	         project_repayment_split_record a
+	    <where>
+	    (a.status = '0' OR a.status = '1')
+	    <if test="projectId !=null and projectId !=''">
+	     and  a.project_id =#{projectId}
+	    </if>
+	    </where>
+	    <choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			  GROUP BY a.repayment_dt
+			</otherwise>
+		</choose>
+    
+	</select>
+	
+	
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="splitRecordId">
+		INSERT INTO project_repayment_split_record(
+		record_id,
+		project_id,
+		repayment_user_id,
+		investment_record_id,
+		repayment_account,
+		payee_user_id,
+		payee_account,
+		money,
+		repay_type,
+		sum_interest,
+		pre_penalty_money,
+		late_penalty_money,
+		principal,
+		interest,
+		rate_ticket_interest,
+		remained_principal,
+		repayment_dt,
+		actual_repayment_dt,
+		third_party_order,
+		repay_result,
+		status,
+		create_dt,
+		modify_dt,
+		modify_remark
+		) VALUES (
+		#{recordId},
+		#{projectId},
+		#{repaymentUserId},
+		#{investmentRecordId},
+		#{repaymentAccount},
+		#{payeeUserId},
+		#{payeeAccount},
+		#{money},
+		#{repayType},
+		#{sumInterest},
+		#{prePenaltyMoney},
+		#{latePenaltyMoney},
+		#{principal},
+		#{interest},
+		#{rateTicketInterest},
+		#{remainedPrincipal},
+		#{repaymentDt},
+		#{actualRepaymentDt},
+		#{thirdPartyOrder},
+		#{repayResult},
+		#{status},
+		#{createDt},
+		#{modifyDt},
+		#{modifyRemark}
+		)
+	</insert>
+	<select id="getSumProfitInRunningProjectByAccountId" resultType="Float"
+		parameterType="java.lang.Long">
+		select
+		sum(b.pre_penalty_money+b.late_penalty_money+b.interest)
+		from
+		project_base a,project_repayment_split_record b
+		where
+		b.project_id=a.project_id and a.project_status=5 and
+		b.payee_user_id=#{accountId} and b.status=1
+	</select>
+
+	<select id="getSumLoanInRunningProjectByAccountId" resultType="Float"
+		parameterType="java.lang.Long">
+		select sum(b.money)
+		from project_base
+		a,project_repayment_split_record b
+		where
+		b.project_id=a.project_id and
+		a.project_status=5 and
+		b.repayment_user_id=#{accountId} and b.status=0
+	</select>
+
+
+	<select id="getLoanListInRunningProjectByAccountId" resultType="ProjectRepaymentSplitRecord"
+		parameterType="java.lang.Long">
+		select a.project_id AS
+		"projectBaseInfo.projectId",a.project_name AS
+		"projectBaseInfo.projectName", sum(b.principal) AS "sumPrincipalShow",
+		sum(b.interest) AS "sumInterestShow",
+		sum(b.pre_penalty_money+b.late_penalty_money) AS "sumPenaltyMoneyShow"
+		from project_base a,project_repayment_split_record b
+		where
+		b.project_id=a.project_id and a.project_status=5 and
+		b.repayment_user_id=#{accountId} and b.status=0
+		group by
+		a.project_id,a.project_name
+	</select>
+
+	<select id="getRepaymentListByInvestmentRecord" resultType="ProjectRepaymentSplitRecord">
+		select a.project_id AS "projectBaseInfo.projectId",a.repayment_mode AS "projectBaseInfo.repaymentMode",a.project_name AS
+		"projectBaseInfo.projectName",a.duration_type AS "projectBaseInfo.durationType",a.project_duration AS "projectBaseInfo.projectDuration",
+		b.money AS "money",b.principal AS "principal", b.remained_principal AS "remainedPrincipal", b.interest
+		AS "interest",b.rate_ticket_interest AS "rateTicketInterest",b.repayment_dt AS "repaymentDt", b.actual_repayment_dt
+		AS "actualRepaymentDt",b.split_record_id AS splitRecordId
+		from project_base
+		a,project_repayment_split_record b
+		where
+		b.project_id=a.project_id and
+		a.project_status=5 and
+		b.investment_record_id=#{investmentRecordId}
+		and b.status=#{status}
+		order by b.repayment_dt
+	</select>
+	<select id="getRepaymentListByProjectAndUser" resultType="ProjectRepaymentSplitRecord">
+		select
+		* from project_repayment_split_record where project_id=#{projectId}
+		and payee_user_id=#{userId} and status=0
+	</select>
+	
+	<select id="getRepaymentListByProjectAndccountId" resultType="ProjectRepaymentSplitRecord">
+		select
+		<include refid="projectRepaymentSplitRecordColumns" />
+		FROM project_repayment_split_record a
+		<include refid="projectRepaymentSplitRecordJoins" /> 
+		where a.project_id=#{projectId}
+		and a.payee_user_id=#{accountId} 
+		and a.investment_record_id=#{recordId}
+		and (a.status='0' or a.status='1')
+		order by a.repayment_dt desc
+	</select>
+	
+	<select id="getRepaymentListByAccountIdAndStatus" resultType="ProjectRepaymentSplitRecord">
+		select a.project_id AS "projectBaseInfo.projectId",a.project_name AS
+		"projectBaseInfo.projectName", b.money AS "money",b.principal AS
+		"principal", b.interest AS "interest",b.repayment_dt AS "repaymentDt",
+		b.actual_repayment_dt AS "actualRepaymentDt"
+		from project_base
+		a,project_repayment_split_record b
+		where b.project_id=a.project_id and
+		a.project_status=5 and b.repayment_user_id=#{accountId} and
+		b.status=#{status}
+		<if test="status=='0'">
+			AND a.repayment_dt BETWEEN #{startDate} AND #{endDate}
+		</if>
+		<if test="status=='1'">
+			AND a.actualRepaymentDt BETWEEN #{startDate} AND
+			#{startDate}
+		</if>
+		order by b.repayment_dt desc
+	</select>
+
+	<select id="getProjectRepaymentInfoList" resultType="ProjectRepaymentSplitRecord">
+		select b.project_id AS "projectBaseInfo.projectId",b.project_name AS
+		"projectBaseInfo.projectName",b.annualized_rate AS "projectBaseInfo.annualizedRate",a.money AS "money",a.principal AS
+		"principal", a.interest AS "interest",a.repayment_dt AS "repaymentDt",
+		a.actual_repayment_dt AS "actualRepaymentDt",c.amount AS "investmentRecord.amount",c.op_dt AS "investmentRecord.opDt"
+		from project_repayment_split_record a,
+		project_base b,project_investment_record c
+		where b.project_id=a.project_id and a.investment_record_id=c.id
+		and a.payee_user_id=#{accountId} and
+		a.status=#{status}
+		<if test="startDate !=null and startDate !='' and endDate !=null and endDate !=''">
+			AND date(a.repayment_dt) BETWEEN #{startDate} AND #{endDate}
+		</if>
+		order by a.repayment_dt asc
+	</select>
+
+	<select id="getSumProjectRepaymentInfo" resultType="java.util.Map">
+		select sum(a.principal) AS  sumPrincipal,
+		sum(a.interest) AS sumInterest
+		from project_repayment_split_record a,
+		project_base b,project_investment_record c
+		where b.project_id=a.project_id and a.investment_record_id=c.id
+		and a.payee_user_id=#{accountId} and
+		a.status=#{status}
+		<if test="startDate !=null and startDate !='' and endDate !=null and endDate !=''">
+			AND date(a.repayment_dt) BETWEEN #{startDate} AND #{endDate}
+		</if>
+	</select>
+
+    <select id="searchList" resultType="ProjectRepaymentSplitRecord">
+		select a.project_id AS "projectBaseInfo.projectId",a.project_name AS
+		"projectBaseInfo.projectName", b.money AS "money",b.principal AS
+		"principal", b.interest AS "interest",b.repayment_dt AS "repaymentDt",
+		b.actual_repayment_dt AS "actualRepaymentDt"
+		from project_base
+		a,project_repayment_split_record b,project_investment_record c
+		where b.project_id=a.project_id and b.investment_record_id = c.id and (c.`status`='0' or c.`status`='3') and 
+		(a.project_status ='3' or a.project_status ='4' or a.project_status ='5' or a.project_status ='6' or a.project_status ='7') and b.payee_user_id=#{accountId} and
+		b.status=#{status}
+		and b.money>0
+		<if test="status == 0 ">
+			AND b.repayment_dt BETWEEN #{startDateTime} AND #{endDateTime}
+		</if>
+		<if test="status == 1 ">
+			AND b.actual_repayment_dt BETWEEN #{startDateTime} AND #{endDateTime}
+		</if>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			    <if test="status == 0 ">
+			       order by b.repayment_dt desc
+			    </if>
+			    <if test="status == 1 ">
+			       order by b.actual_repayment_dt desc
+			    </if>
+			</otherwise>
+		</choose>
+		
+	</select>
+	
+	<select id="getRepaymentPayeeUserListByProjectAndDate"
+		resultType="java.lang.String">
+		select distinct(payee_user_id) from
+		project_repayment_split_record where status=0 and
+		project_id=#{projectId} and
+		date_format(repayment_dt,'%Y-%m-%d')=#{theDate}
+	</select>
+	<select id="ProjectRepaymentSplitRecord" parameterType="String">
+		<include refid="projectRepaymentSplitRecordColumns" />
+		FROM project_repayment_split_record
+		where status=0 and
+		project_id=#{projectId} and payee_user_id=#{userId}
+		order by
+		repayment_dt
+	</select>
+	<update id="update">
+		UPDATE project_repayment_split_record SET
+		record_id =
+		#{recordId},
+		project_id = #{projectId},
+		repayment_user_id =
+		#{repaymentUserId},
+		investment_record_id = #{investmentRecordId},
+		repayment_account = #{repaymentAccount},
+		payee_user_id =
+		#{payeeUserId},
+		payee_account = #{payeeAccount},
+		money = #{money},
+		repay_type=#{repayType},
+		sum_interest=#{sumInterest},
+		pre_penalty_money=#{prePenaltyMoney},
+		late_penalty_money=#{latePenaltyMoney},
+		principal = #{principal},
+		interest = #{interest},
+		rate_ticket_interest = #{rateTicketInterest},
+		remained_principal = #{remainedPrincipal},
+		repayment_dt = #{repaymentDt},
+		actual_repayment_dt=#{actualRepaymentDt},
+		third_party_order =
+		#{thirdPartyOrder},
+		repay_result = #{repayResult},
+		status = #{status},
+		create_dt = #{createDt},
+		modify_dt = #{modifyDt},
+		modify_remark =
+		#{modifyRemark}
+		WHERE split_record_id = #{splitRecordId}
+	</update>
+
+	<update id="delete">
+		DELETE FROM project_repayment_split_record
+		WHERE
+		split_record_id = #{splitRecordId}
+	</update>
+
+	<update id="updateStatusByInvestmentRecordId">
+		UPDATE project_repayment_split_record
+		<set>
+			<if test="status != null and status != ''">
+				status = #{status}
+			</if>
+		</set>
+		WHERE investment_record_id = #{investmentRecordId}
+	</update>
+
+	<update id="updateStatusById">
+		UPDATE project_repayment_split_record
+		<set>
+			<if test="status != null and status != ''">
+				status = #{status}
+			</if>
+		</set>
+		WHERE split_record_id = #{id}
+	</update>
+
+	<select id="getRepaymentListByRecordId" parameterType="String"
+		resultType="ProjectRepaymentSplitRecord">
+		select a.split_record_id AS "splitRecordId",
+		a.record_id AS "recordId",
+		a.project_id AS "projectId",
+		a.repayment_user_id AS "repaymentUserId",
+		a.investment_record_id AS "investmentRecordId",
+		a.repayment_account AS
+		"repaymentAccount",
+		a.payee_user_id AS "payeeUserId",
+		a.payee_account AS
+		"payeeAccount",
+		a.money AS "money",
+		a.repay_type AS "repayType",
+		a.sum_interest AS "sumInterest",
+		a.pre_penalty_money AS
+		"perPenaltyMoney",
+		a.late_penalty_money AS "latePenaltyMoney",
+		a.principal AS "principal",
+		a.interest AS "interest",
+		a.rate_ticket_interest AS "rateTicketInterest",
+		a.remained_principal AS "remainedPrincipal",
+		a.repayment_dt AS
+		"repaymentDt",
+		a.actual_repayment_dt AS "actualRepaymentDt",
+		a.third_party_order AS "thirdPartyOrder",
+		a.repay_result AS
+		"repayResult",
+		a.status AS "status",
+		a.create_dt AS "createDt",
+		a.modify_dt AS "modifyDt",
+		a.modify_remark AS "modifyRemark",
+		b.label AS
+		"statusShow"
+		from project_repayment_split_record a,sys_dict b
+		where
+		a.investment_record_id=#{recordId}
+		and
+		b.type='project_repay_status_dict'
+		and b.value=a.status
+		<if test="status != null and status != ''">
+			AND a.status in (${status})
+		</if>
+
+		order by repayment_dt
+	</select>
+
+	<select id="getRepaymentListBySumRecordId" parameterType="String"
+		resultType="ProjectRepaymentSplitRecord">
+		select a.split_record_id AS "splitRecordId",
+		a.record_id AS "recordId",
+		a.project_id AS "projectId",
+		a.repayment_user_id AS "repaymentUserId",
+		a.investment_record_id AS "investmentRecordId",
+		a.repayment_account AS
+		"repaymentAccount",
+		a.payee_user_id AS "payeeUserId",
+		a.payee_account AS
+		"payeeAccount",
+		a.money AS "money",
+		a.repay_type AS "repayType",
+		a.sum_interest AS "sumInterest",
+		a.pre_penalty_money AS
+		"perPenaltyMoney",
+		a.late_penalty_money AS "latePenaltyMoney",
+		a.principal AS "principal",
+		a.interest AS "interest",
+		a.rate_ticket_interest AS "rateTicketInterest",
+		a.remained_principal AS "remainedPrincipal",
+		a.repayment_dt AS
+		"repaymentDt",
+		a.actual_repayment_dt AS "actualRepaymentDt",
+		a.third_party_order AS "thirdPartyOrder",
+		a.repay_result AS
+		"repayResult",
+		a.status AS "status",
+		a.create_dt AS "createDt",
+		a.modify_dt AS "modifyDt",
+		a.modify_remark AS "modifyRemark"
+		from
+		project_repayment_split_record a
+		where
+		a.record_id=#{recordId}
+		<if test="status != null and status != ''">
+			AND a.status = #{status}
+		</if>
+		order by repayment_dt
+	</select>
+
+	<select id="getNextRepayRecord" resultType="ProjectRepaymentSplitRecord">
+		SELECT
+		<include refid="projectRepaymentSplitRecordColumns" />
+		FROM project_repayment_split_record a
+		<include refid="projectRepaymentSplitRecordJoins" />
+		WHERE a.project_id = #{projectId}
+		AND a.repayment_dt <![CDATA[ >= #{theDate} ]]>
+		AND a.status='0'
+		ORDER BY a.repayment_dt
+	</select>
+	<select id="getOldRepayRecord" resultType="ProjectRepaymentSplitRecord">
+		SELECT
+		<include refid="projectRepaymentSplitRecordColumns" />
+		FROM project_repayment_split_record a
+		<include refid="projectRepaymentSplitRecordJoins" />
+		WHERE a.project_id = #{projectId}
+		AND a.repayment_dt <![CDATA[ <= #{theDate} ]]>
+		AND a.status='0'
+		ORDER BY a.repayment_dt DESC
+	</select>
+
+	<select id="getWillRepayPrincipal" resultType="Double">
+		select sum(principal) from project_repayment_split_record
+		where
+		project_id = #{projectId}
+		AND repayment_dt <![CDATA[ >= #{theDate} ]]>
+		AND status='0'
+	</select>
+
+	<select id="getWillRepayInterest" resultType="Double">
+		select sum(interest) from project_repayment_split_record
+		where
+		project_id = #{projectId}
+		AND repayment_dt <![CDATA[ >= #{theDate} ]]>
+		AND status='0'
+	</select>
+
+	<select id="getWillReapyInfoOfTheTerm" resultType="ProjectRepaymentSplitRecord">
+		select
+		sum(principal) AS "sumPrincipalShow",sum(interest) AS
+		"sumInterestShow",sum(money) AS "sumMoneyShow" from
+		project_repayment_split_record
+		where project_id = #{projectId}
+		AND
+		date_format(repayment_dt,'%Y-%m-%d') = #{theDate}
+		AND status='0'
+	</select>
+	<select id="getRepaymentListByProjectAndDate" resultType="ProjectRepaymentSplitRecord">
+		SELECT
+		<include refid="projectRepaymentSplitRecordColumns" />
+		FROM project_repayment_split_record a
+		<include refid="projectRepaymentSplitRecordJoins" />
+		WHERE a.project_id = #{projectId}
+		AND
+		date_format(a.repayment_dt,'%Y-%m-%d') = #{theDate}
+		AND a.status='0'
+	</select>
+
+	<select id="getAfterTheDayRecordCount" resultType="Integer">
+		select count(1) from project_repayment_split_record where project_id =
+		#{projectId}
+		AND repayment_dt <![CDATA[ >= #{theDate} ]]>
+		AND status='0'
+	</select>
+
+	<select id="getNormalRepayProjectListOfToday" resultType="ProjectRepaymentSplitRecord">
+		select
+		distinct(a.project_id) AS "projectId" from
+		project_repayment_split_record a,project_base
+		b,project_execute_snapshot c
+		where a.project_id = b.project_id and
+		b.project_id=c.project_id and c.transfer_project_id=0 and
+		b.project_status='5' and c.status='0'
+		AND
+		date_format(a.repayment_dt,'%Y-%m-%d') = #{theDate}
+		AND a.status='0'
+	</select>
+
+	<select id="getSplitRecordListOfTodayOverdueRepayProject"
+		resultType="ProjectRepaymentSplitRecord">
+		select
+		<include refid="projectRepaymentSplitRecordColumns" />
+		from project_repayment_split_record a,project_base
+		b,project_execute_snapshot c
+		where a.project_id = b.project_id and
+		b.project_id=c.project_id and c.transfer_project_id=0 and
+		b.project_status='5' and c.status='1'
+		AND a.repayment_dt <![CDATA[ <= #{theDate} ]]>
+		AND a.status='0'
+	</select>
+
+	<select id="getTremMoneyListOfOverdueProject" resultType="ProjectRepaymentSplitRecord">
+		select date_format(a.repayment_dt,'%Y-%m-%d') AS
+		"repaymentDt",sum(money+late_penalty_money) AS
+		"sumMoneyShow",sum(principal) AS "sumPrincipalShow",sum(interest) AS
+		"sumInterestShow",sum(late_penalty_money) AS "sumPenaltyMoneyShow"
+		from project_repayment_split_record a
+		where a.project_id=#{projectId}
+		and a.status='0' and a.repayment_dt <![CDATA[ < #{theDate} ]]>
+		group by date_format(a.repayment_dt,'%Y-%m-%d')
+	</select>
+
+	<select id="getTremSplitListOfProjectAndDate" resultType="ProjectRepaymentSplitRecord">
+		select
+		<include refid="projectRepaymentSplitRecordColumns" />
+		from project_repayment_split_record a
+		where a.project_id=#{projectId}
+		and a.status='0' and
+		date_format(a.repayment_dt,'%Y-%m-%d')=#{theDate}
+	</select>
+	<select id="getNotRapayCountByInvestmentRecordId" resultType="Integer">
+		select count(1) from project_repayment_split_record where investment_record_id =#{investmentRecordId}  AND status='0'
+	</select>
+	<update id="updateToFreeze">
+		update project_repayment_split_record set status=3
+		where split_record_id = #{recordId}
+	</update>
+	<select id="getWillReapyListByInvestmentRecordId" resultType="ProjectRepaymentSplitRecord">
+		select
+		<include refid="projectRepaymentSplitRecordColumns" />
+		from project_repayment_split_record a
+		where
+		a.investment_record_id=#{recordId} and a.status='0' order by
+		repayment_dt
+	</select>
+	
+	<select id="getRepaymentCalendarList" resultType="ProjectRepaymentSplitRecord">
+		select sum(t.money) AS "money",day(t.repayment_dt) AS "day",t.status AS "status",t.repayment_dt AS "repaymentDt"
+		from project_repayment_split_record t
+		left join project_base b on t.project_id=b.project_id
+		where 
+		t.payee_user_id=#{accountId}   
+		and year(t.repayment_dt)=#{year}  
+		and month(t.repayment_dt)=#{month} 
+		and (t.status='0' or t.status='1') 
+		and (b.project_status='5' or b.project_status='6')
+		group by t.repayment_dt
+	</select>
+	
+	<select id="getRepaymentCalendarDetailList" resultType="ProjectRepaymentSplitRecord">
+		select
+		<include refid="projectRepaymentSplitRecordColumns" />
+		,b.project_name AS "projectBaseInfo.projectName"
+		from project_repayment_split_record a 
+		left join project_base b on a.project_id=b.project_id
+		where
+		a.payee_user_id=#{accountId}  
+		and year(a.repayment_dt)=#{year}  
+		and month(a.repayment_dt)=#{month}
+		and (a.status='0' or a.status='1') 
+		and (b.project_status='5' or b.project_status='6')
+	</select>
+	
+	<select id="getUnReceivedMoneySummaryByAccountId" resultType="java.util.Map">
+		SELECT
+			sum(a.money) money,
+			sum(a.principal) principal,
+			sum(a.interest) interest
+		FROM
+			project_repayment_split_record a,
+			project_base b,
+			project_investment_record c
+		WHERE
+			a.project_id = b.project_id
+		AND a.investment_record_id = c.id
+		AND (b.project_status='3' or b.project_status='4' or b.project_status='5' or b.project_status='6' or b.project_status='7') 
+		AND c.`status` = '0'
+		AND a.payee_user_id = #{accountId}
+		AND a.`status` = '0'
+	</select>
+	
+	<select id="getReceivedMoneySummaryByAccountId" resultType="java.util.Map">
+		SELECT
+			sum(a.money) money,
+			sum(a.principal) principal,
+			sum(a.interest) interest
+		FROM
+			project_repayment_split_record a,
+			project_base b,
+			project_investment_record c
+		WHERE
+			a.project_id = b.project_id
+		AND a.investment_record_id = c.id
+		and (b.project_status='3' or b.project_status='4' or b.project_status='5' or b.project_status='6' or b.project_status='7') 
+		and (c.`status` = '0' or c.`status` = '3')
+		AND a.payee_user_id = #{accountId}
+		AND a.`status` = '1'
+	</select>
+	
+		<select id="findProjectRepayPlanList" resultType="java.util.Map">
+		select date(a.repayment_dt) date, sum(a.principal) principal, sum(a.interest) interest, sum(a.money) amount 
+		from project_repayment_split_record a, project_base b, project_execute_snapshot c, project_investment_record d
+			<where>
+		 a.project_id = b.project_id and b.project_id = c.project_id and a.investment_record_id = d.id 
+		and (a.`status`='0' or a.`status`='1')  and (b.project_status='5' or b.project_status='6' or b.project_status='7')  and c.transfer_project_id = 0 and (d.status='0' or d.status='3') 
+		
+		<if test="platformUserNo != null and platformUserNo !=''">
+				AND a.repayment_account= #{platformUserNo}
+		</if>
+		
+		<if test="startDate != null">
+				AND date(a.repayment_dt) &gt;= date(#{startDate})
+		</if>
+		<if test="endDate != null">
+				AND date(a.repayment_dt) &lt;= date(#{endDate})
+		</if>
+		</where>
+		group by date(a.repayment_dt) order by date
+	</select>
+	
+	<select id="amountStatistics" resultType="java.lang.Double">
+		select case when sum(a.money) is null then 0 else sum(a.money) end as amount
+		from project_repayment_split_record a, project_base b, project_execute_snapshot c, project_investment_record d,customer_account e
+		<where>
+		a.project_id = b.project_id and b.project_id = c.project_id and a.investment_record_id = d.id and a.repayment_user_id=e.account_id
+		and (a.status='0' or a.status='1')  and (b.project_status='5' or b.project_status='6' or b.project_status='7')  and c.transfer_project_id = 0 and (d.status='0' or d.status='3') 
+		
+		<if test="platformUserNo != null and platformUserNo !=''">
+				AND a.repayment_account= #{platformUserNo}
+		</if>
+		<if test="startDate != null">
+				AND date(a.repayment_dt) &gt;= date(#{startDate})
+		</if>
+		<if test="endDate != null">
+				AND date(a.repayment_dt) &lt;= date(#{endDate})
+		</if>
+		</where> 
+	</select>
+	
+	<select id="findProjectRepayPlanListByDate" resultType="java.util.Map">
+		select b.project_name projectName, sum(a.principal) principal, sum(a.interest) interest, sum(a.money) amount
+		from project_repayment_split_record a, project_base b, project_execute_snapshot c, project_investment_record d
+		where a.project_id = b.project_id and b.project_id = c.project_id and a.investment_record_id = d.id
+		and (a.`status`='0' or a.`status`='1') and (b.project_status='5' or b.project_status='6' or b.project_status='7') and c.transfer_project_id = 0 and (d.status='0' or d.status='3') 
+		and date(a.repayment_dt) = date(#{date}) group by b.project_id
+	</select>
+</mapper>

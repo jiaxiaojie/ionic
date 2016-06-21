@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.credit.dao.CreditMachineAccountDao">
+    
+    <resultMap type="com.thinkgem.jeesite.modules.entity.CreditMachineAccount" id="CreditMachineAccount">
+	    <result property="id" column="id"/>
+	    <result property="contractNo" column="contract_no"/>
+	    <result property="investMoney" column="invest_money"/>
+	    <result property="interestRate" column="interest_rate"/>
+	    <result property="interestCalculation" column="interest_calculation"/>
+	    <result property="valueDate" column="value_date"/>
+	    <result property="investmentHorizon" column="investment_horizon"/>
+	    <result property="expiringDate" column="expiring_date"/>
+	    <result property="financialManager" column="financial_manager"/>
+	    <result property="businessManager" column="business_manager"/>
+	    <result property="paymentMethod" column="payment_method"/>
+	    <result property="commissionCharge" column="commission_charge"/>
+	    <result property="contractAddress" column="contract_address"/>
+	    <result property="relevantDocument" column="relevant_document"/>
+	    
+	    <result property="giftRecipients" column="gift_recipients"/>
+	    <result property="aheadRedemptive" column="ahead_redemptive"/>
+	    <result property="remark" column="remark"/>
+	    <result property="creditInvestUserId" column="credit_invest_user_id"/>
+	    <result property="creditId" column="credit_id"/>
+	    
+	    <result property="procedureDocuments" column="procedure_documents" typeHandler="com.thinkgem.jeesite.modules.cms.handler.ArrayTypeHandler"/>
+	    
+	</resultMap>
+	
+	<sql id="creditMachineAccountColumns">
+		a.id AS "id",
+		a.contract_no AS "contractNo",
+		a.invest_money AS "investMoney",
+		a.interest_rate AS "interestRate",
+		a.interest_calculation AS "interestCalculation",
+		a.value_date AS "valueDate",
+		a.investment_horizon AS "investmentHorizon",
+		a.expiring_date AS "expiringDate",
+		a.financial_manager AS "financialManager",
+		a.business_manager AS "businessManager",
+		a.payment_method AS "paymentMethod",
+		a.commission_charge AS "commissionCharge",
+		a.contract_address AS "contractAddress",
+		a.relevant_document AS "relevantDocument",
+		a.gift_recipients AS "giftRecipients",
+		a.ahead_redemptive AS "aheadRedemptive",
+		a.remark AS "remark",
+		a.credit_invest_user_id AS "creditInvestUserId",
+		
+		a.credit_id AS "creditId",
+		a.procedure_documents AS "procedureDocuments",
+		a.create_date AS "createDate",
+		cbi.credit_name AS "creditBaseInfo.creditName"
+	</sql>
+	
+
+	
+	<sql id="creditMachineAccountJoins">
+	JOIN credit_base_info cbi ON cbi.id=a.credit_id
+	</sql>
+    
+	<select id="get" resultMap="CreditMachineAccount">
+		SELECT 
+			*
+		FROM credit_machine_account a
+		<include refid="creditMachineAccountJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+		<select id="getByEntity" resultType="CreditMachineAccount">
+		SELECT 
+			a.id
+		FROM credit_machine_account a
+		WHERE 1=1 
+			<if test="contractNo != null and contractNo != ''">
+				AND a.contract_no = #{contractNo}
+			</if>
+			limit 1
+	</select>
+	
+	<select id="findList" resultType="CreditMachineAccount">
+		SELECT 
+			<include refid="creditMachineAccountColumns"/>
+		FROM credit_machine_account a
+		<include refid="creditMachineAccountJoins"/>
+		<where>
+			
+			<if test="contractNo != null and contractNo != ''">
+				AND a.contract_no LIKE
+					<if test="dbName == 'oracle'">'%'||#{contractNo}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{contractNo}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{contractNo},'%')</if>
+			</if>
+			<if test="interestRate != null and interestRate != ''">
+				AND a.interest_rate = #{interestRate}
+			</if>
+			<if test="paymentMethod != null and paymentMethod != ''">
+				AND a.payment_method = #{paymentMethod}
+			</if>
+			<if test="creditId != null and creditId != ''">
+				AND a.credit_id = #{creditId}
+			</if>
+			
+			<if test="creditInvestUserId != null and creditInvestUserId != ''">
+				AND a.credit_invest_user_id = #{creditInvestUserId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CreditMachineAccount">
+		SELECT 
+			<include refid="creditMachineAccountColumns"/>
+		FROM credit_machine_account a
+		<include refid="creditMachineAccountJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		
+		INSERT INTO credit_machine_account(
+			contract_no,
+			invest_money,
+			interest_rate,
+			interest_calculation,
+			value_date,
+			investment_horizon,
+			expiring_date,
+			financial_manager,
+			business_manager,
+			payment_method,
+			commission_charge,
+			contract_address,
+			relevant_document,
+			procedure_documents,
+			gift_recipients,
+			ahead_redemptive,
+			remark,
+			credit_invest_user_id,
+			credit_id,
+			create_date
+		) VALUES (
+			#{contractNo},
+			#{investMoney},
+			#{interestRate},
+			#{interestCalculation},
+			#{valueDate},
+			#{investmentHorizon},
+			#{expiringDate},
+			#{financialManager},
+			#{businessManager},
+			#{paymentMethod},
+			#{commissionCharge},
+			#{contractAddress},
+			#{relevantDocument},
+			#{procedureDocuments, jdbcType=ARRAY, typeHandler=com.thinkgem.jeesite.modules.cms.handler.ArrayTypeHandler},
+			#{giftRecipients},
+			#{aheadRedemptive},
+			#{remark},
+			#{creditInvestUserId},
+			#{creditId},
+			#{createDate}
+		)
+	</insert>
+	
+
+	
+	<update id="update">
+		UPDATE credit_machine_account SET 	
+			contract_no = #{contractNo},
+			invest_money = #{investMoney},
+			interest_rate = #{interestRate},
+			interest_calculation = #{interestCalculation},
+			value_date = #{valueDate},
+			investment_horizon = #{investmentHorizon},
+			expiring_date = #{expiringDate},
+			financial_manager = #{financialManager},
+			business_manager = #{businessManager},
+			payment_method = #{paymentMethod},
+			commission_charge = #{commissionCharge},
+			contract_address = #{contractAddress},
+			relevant_document = #{relevantDocument},
+			procedure_documents = #{procedureDocuments , jdbcType=ARRAY, typeHandler=com.thinkgem.jeesite.modules.cms.handler.ArrayTypeHandler},
+			gift_recipients = #{giftRecipients},
+			ahead_redemptive = #{aheadRedemptive},
+			remark = #{remark},
+			credit_invest_user_id = #{creditInvestUserId},
+			credit_id=#{creditId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM credit_machine_account
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

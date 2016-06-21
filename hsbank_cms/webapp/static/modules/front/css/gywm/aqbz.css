@@ -1,0 +1,7 @@
+.about_right_content{ width:auto; overflow:hidden;padding:30px 30px 30px 30px;}
+.about_right_content .title{ padding-bottom: 10px; margin-bottom: 10px; height:40px;line-height:40px;font-weight:bold;font-size:18px; border-bottom: 1px solid #c7c7c7;}
+.about_right_content .item{ padding:40px 0; border-bottom:1px dashed #c7c7c7;}
+.about_right_content .item .aqbz_img{}
+.about_right_content .item .aqbz_text{ width:480px;}
+.item .aqbz_text .aqbz_title{ margin:20px 0 20px 0; font-size:16px; font-weight:bold;}
+.item .aqbz_text p{ line-height:24px; font-size:14px;}

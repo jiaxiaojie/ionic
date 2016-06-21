@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.current.dao.CurrentProjectNoticeDao">
+    
+	<sql id="currentProjectNoticeColumns">
+		a.id AS "id",
+		a.project_id AS "projectId",
+		a.title AS "title",
+		a.content AS "content",
+		a.publish_dt AS "publishDt",
+		a.status AS "status",
+		b.name AS "currentProjectInfo.name",
+		b.code AS "currentProjectInfo.code"
+	</sql>
+	
+	<sql id="currentProjectNoticeJoins">
+	LEFT JOIN current_project_info b ON a.project_id=b.id
+	</sql>
+    
+	<select id="get" resultType="CurrentProjectNotice">
+		SELECT 
+			<include refid="currentProjectNoticeColumns"/>
+		FROM current_project_notice a
+		<include refid="currentProjectNoticeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CurrentProjectNotice">
+		SELECT 
+			<include refid="currentProjectNoticeColumns"/>
+		FROM current_project_notice a
+		<include refid="currentProjectNoticeJoins"/>
+		<where>
+			
+			<if test="currentProjectInfo != null">
+				<if test="currentProjectInfo.name != null and currentProjectInfo.name != ''">
+					AND b.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{currentProjectInfo.name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{currentProjectInfo.name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{currentProjectInfo.name},'%')</if> 
+				</if>
+				<if test="currentProjectInfo.code != null and currentProjectInfo.code != ''">
+					AND b.code LIKE 
+					<if test="dbName == 'oracle'">'%'||#{currentProjectInfo.code}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{currentProjectInfo.code}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{currentProjectInfo.code},'%')</if> 
+				</if>
+				
+			</if>
+			<if test="beginPublishDt != null  and beginPublishDt != ''">				AND a.publish_dt >= #{beginPublishDt}			</if>			<if test="endPublishDt != null and endPublishDt != ''">				AND #{endPublishDt} >= a.publish_dt			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CurrentProjectNotice">
+		SELECT 
+			<include refid="currentProjectNoticeColumns"/>
+		FROM current_project_notice a
+		<include refid="currentProjectNoticeJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO current_project_notice(
+			project_id,
+			title,
+			content,
+			publish_dt,
+			status
+		) VALUES (
+			#{projectId},
+			#{title},
+			#{content},
+			#{publishDt},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE current_project_notice SET 	
+			project_id = #{projectId},
+			title = #{title},
+			content = #{content},
+			publish_dt = #{publishDt},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM current_project_notice
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerShakeActivityDao">
+    
+	<sql id="customerShakeActivityColumns">
+		a.id AS "id",
+		a.shake_id AS "shakeId",
+		a.mobile AS "mobile",
+		a.customer_name AS "customerName",
+		a.denomination AS "denomination",
+		a.has_gived AS "hasGived",
+		a.ip AS "ip",
+		a.shake_date AS "shakeDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate"
+	</sql>
+	
+	<sql id="customerShakeActivityJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomerShakeActivity">
+		SELECT 
+			<include refid="customerShakeActivityColumns"/>
+		FROM customer_shake_activity a
+		<include refid="customerShakeActivityJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findSuperList" resultType="CustomerShakeActivity">
+		SELECT 
+			<include refid="customerShakeActivityColumns"/>
+		FROM customer_shake_activity a
+		where a.has_gived is null and a.mobile in (select b.mobile  from customer_base b ) ORDER BY a.mobile
+	</select>
+	
+	<select id="findList" resultType="CustomerShakeActivity">
+		SELECT 
+			<include refid="customerShakeActivityColumns"/>
+		FROM customer_shake_activity a
+		<include refid="customerShakeActivityJoins"/>
+		<where>
+			
+			<if test="mobile != null and mobile != ''">
+				AND a.mobile = #{mobile}
+			</if>
+			<if test="customerName != null and customerName != ''">
+				AND a.customer_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{customerName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{customerName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{customerName},'%')</if>
+			</if>
+			<if test="hasGived != null and hasGived != ''">
+				<choose>
+					<when test="hasGived == '0'.toString()">
+				AND (a.has_gived = #{hasGived} or a.has_gived is null)
+					</when>
+					<otherwise>
+				AND a.has_gived = #{hasGived}
+					</otherwise>
+				</choose>
+			</if>
+			<if test="beginShakeDate != null  and beginShakeDate != ''">				AND a.shake_date >= #{beginShakeDate}			</if>			<if test="endShakeDate != null and endShakeDate != ''">				AND #{endShakeDate} >= a.shake_date			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.has_gived,a.shake_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerShakeActivity">
+		SELECT 
+			<include refid="customerShakeActivityColumns"/>
+		FROM customer_shake_activity a
+		<include refid="customerShakeActivityJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_shake_activity(
+			shake_id,
+			mobile,
+			customer_name
+		) VALUES (
+			#{shakeId},
+			#{mobile},
+			#{customerName}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_shake_activity SET 	
+			has_gived = #{hasGived},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_shake_activity
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

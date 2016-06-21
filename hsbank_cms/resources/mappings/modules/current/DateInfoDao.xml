@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.current.dao.DateInfoDao">
+    
+	<sql id="dateInfoColumns">
+		a.id AS "id",
+		a.date AS "date",
+		a.is_workday AS "isWorkday"
+	</sql>
+	
+	<sql id="dateInfoJoins">
+	</sql>
+    
+	<select id="get" resultType="DateInfo">
+		SELECT 
+			<include refid="dateInfoColumns"/>
+		FROM date_info a
+		<include refid="dateInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findByDate" resultType="DateInfo">
+		SELECT 
+			<include refid="dateInfoColumns"/>
+		FROM date_info a
+		<include refid="dateInfoJoins"/>
+		WHERE  a.date = #{date}
+		limit 1
+	</select>
+	
+	
+	
+	<select id="queryByDate" resultType="DateInfo">
+		SELECT 
+			<include refid="dateInfoColumns"/>
+		FROM date_info a
+		<include refid="dateInfoJoins"/>
+		
+		where 1=1 
+				AND date_format(a.date,'%Y-%m-%d') >= date_format(#{0},'%Y-%m-%d')
+			
+				AND date_format(#{1},'%Y-%m-%d') >= date_format(a.date,'%Y-%m-%d')
+		
+	</select>
+	
+	
+	<select id="findList" resultType="DateInfo">
+		SELECT 
+			<include refid="dateInfoColumns"/>
+		FROM date_info a
+		<include refid="dateInfoJoins"/>
+		<where>
+			
+			<if test="date != null and date != ''">
+				AND a.date = #{date}
+			</if>
+			<if test="isWorkday != null and isWorkday != ''">
+				AND a.is_workday = #{isWorkday}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DateInfo">
+		SELECT 
+			<include refid="dateInfoColumns"/>
+		FROM date_info a
+		<include refid="dateInfoJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO date_info(
+			date,
+			is_workday
+		) VALUES (
+			#{date},
+			#{isWorkday}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE date_info SET 	
+			date = #{date},
+			is_workday = #{isWorkday}
+		WHERE id = #{id}
+	</update>
+	
+	
+	
+	
+	<update id="delete">
+		DELETE FROM date_info
+		WHERE id = #{id}
+	</update>
+	
+	<select id="isWorkday" resultType="java.lang.Boolean">
+		select count(1) from date_info where date(date) = date(#{date}) and is_workday = '1'
+	</select>
+</mapper>

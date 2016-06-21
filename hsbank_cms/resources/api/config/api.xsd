@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<!-- 属性的定义 -->
+<xs:attribute name="basePath" type="xs:string"/>
+<xs:attribute name="path" type="xs:string"/>
+
+
+<xs:element name="foramt" type="xs:string"/>
+
+<xs:element name="data">
+ <xs:complexType>
+  <xs:sequence>
+   <xs:element ref="foramt"/>
+  </xs:sequence>
+ </xs:complexType>
+</xs:element>
+
+<!-- 复合元素的定义 -->
+<xs:element name="api">
+ <xs:complexType>
+  <xs:sequence>
+   <xs:element ref="data"/>
+  </xs:sequence>
+  <xs:attribute ref="path" use="required"/>
+ </xs:complexType>
+</xs:element>
+
+
+<xs:element name="apis">
+ <xs:complexType>
+  <xs:sequence minOccurs="0" maxOccurs="unbounded">
+   <xs:element ref="api"/>
+  </xs:sequence>
+  <xs:attribute ref="basePath" use="required"/>
+ </xs:complexType>
+</xs:element>
+
+
+</xs:schema>

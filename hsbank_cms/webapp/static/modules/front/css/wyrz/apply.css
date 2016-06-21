@@ -1,0 +1,26 @@
+@CHARSET "UTF-8";
+.apply_page{font-family: "微软雅黑";font-size:14px;background:#FFF;border:1px solid #bd9d7a;margin-bottom:20px;}
+.step_box{background:url('../../images/wyrz/top_tracery.png') no-repeat 0 0 ;  padding-top: 44px;padding-left:35px;}
+.step_img{}
+.step_text{}
+.step_text p{ padding-bottom: 40px; text-align: center; font-size: 20px; border-bottom: 1px solid #b38e64; margin-right: 40px;}
+.step_text ul{}
+.step_text ul li{float:left;margin-top:10px;}
+.step_text ul li.current{color:#b76b27;}
+.step_text ul li.one{margin-left: 40px;}
+.step_text ul li.two{margin-left: 162px;}
+.step_text ul li.three{margin-left: 177px;}
+.step_text ul li.four{margin-left: 177px;}
+.apply_form{padding-left:35px;padding-top:45px;}
+.apply_form .form_group{  line-height: 43px;}
+.apply_form .form_group label{display:block;float:left;width:110px;  text-align: right;line-height: 43px;height: 43px;margin: 0;margin-right:10px;}
+.apply_form .form_group label b{  color: red;  margin-right: 10px;}
+.apply_form .form_group>div{float:left;}
+.apply_form select,.apply_form input,.apply_form textarea{margin:0;  border-radius: 0;}
+.apply_form .money_box{width: 740px;position:relative;}
+.apply_form .money_box a{position:absolute;right: 13px;top: 2px;display: block;width: 148px;color: #05b6e9;cursor:pointer;}
+.apply_form .money_box span{color:#9a9a9a;}
+.apply_form .description{  margin-top: 10px;}
+.apply_form .description textarea{width:710px; height:210px;resize:none;border-radius:none;}
+.apply_form .submit {width:710px;text-align:right;margin-top:10px;margin-bottom:20px;}
+.apply_form .submit input{border:0; background: url(../../images/util/button/bt_brown_158x31.png) 0 0 no-repeat;width:158px;height:31px;color:#FFF;text-align:center;}

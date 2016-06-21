@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerCosuretyDao">
+    
+	<sql id="customerCosuretyColumns">
+		a.id AS "id",
+		a.cosurety_name AS "cosuretyName",
+		a.cosurety_mobile AS "cosuretyMobile",
+		a.cosurety_rel AS "cosuretyRel",
+		a.cosurety_cert_num AS "cosuretyCertNum",
+		b.customer_id AS "customerId",
+		b.account_id AS "accountId",
+		c.account_type AS "accountType"
+	</sql>
+	
+	<sql id="customerCosuretyJoins">
+		RIGHT JOIN customer_base b ON b.customer_id=a.customer_id
+		LEFT JOIN customer_account c ON c.account_id=b.account_id
+	</sql>
+    
+	<select id="get" resultType="CustomerCosurety">
+		SELECT 
+			<include refid="customerCosuretyColumns"/>
+		FROM customer_cosurety a
+		<include refid="customerCosuretyJoins"/>
+		WHERE a.id = #{id}
+	</select>
+    
+	<select id="getByCustomerId" resultType="CustomerCosurety">
+		SELECT 
+			<include refid="customerCosuretyColumns"/>
+		FROM customer_cosurety a
+		<include refid="customerCosuretyJoins"/>
+		WHERE b.customer_id = #{customerId}
+	</select>
+	
+	<select id="findList" resultType="CustomerCosurety">
+		SELECT 
+			<include refid="customerCosuretyColumns"/>
+		FROM customer_cosurety a
+		<include refid="customerCosuretyJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerCosurety">
+		SELECT 
+			<include refid="customerCosuretyColumns"/>
+		FROM customer_cosurety a
+		<include refid="customerCosuretyJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_cosurety(
+			customer_id,
+			cosurety_name,
+			cosurety_mobile,
+			cosurety_rel,
+			cosurety_cert_num
+		) VALUES (
+			#{customerId},
+			#{cosuretyName},
+			#{cosuretyMobile},
+			#{cosuretyRel},
+			#{cosuretyCertNum}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_cosurety SET 	
+			cosurety_name = #{cosuretyName},
+			cosurety_mobile = #{cosuretyMobile},
+			cosurety_rel = #{cosuretyRel},
+			cosurety_cert_num = #{cosuretyCertNum}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_cosurety
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

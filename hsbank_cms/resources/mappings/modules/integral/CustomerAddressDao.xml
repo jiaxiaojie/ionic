@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.integral.dao.CustomerAddressDao">
+    
+	<sql id="customerAddressColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.show_name AS "showName",
+		a.mobile AS "mobile",
+		a.address AS "address",
+		a.post_code AS "postCode",
+		a.is_default AS "isDefault",
+		a.create_dt AS "createDt",
+		a.status AS "status",
+		a.district_id AS "districtId"
+	</sql>
+	
+	<sql id="customerAddressJoins">
+	</sql>
+
+
+
+
+
+
+
+	<sql id="customerDetailAddressColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.show_name AS "showName",
+		a.mobile AS "mobile",
+		a.address AS "address",
+		a.post_code AS "postCode",
+		a.is_default AS "isDefault",
+		a.create_dt AS "createDt",
+		a.status AS "status",
+		a.district_id AS "districtId",
+		distr.id AS "district.id",
+		distr.name AS "district.name",
+		city.id AS "city.id",
+		city.name AS "city.name",
+		province.id AS "province.id",
+		province.name AS "province.name"
+	</sql>
+
+	<sql id="customerDetailAddressJoins">
+		left JOIN sys_area distr ON distr.id=a.district_id
+		left JOIN sys_area city ON city.id=distr.parent_id
+		left JOIN sys_area province ON province.id=city.parent_id
+	</sql>
+
+	<select id="findDetailAddressList" resultType="CustomerAddress">
+		SELECT
+		<include refid="customerDetailAddressColumns"/>
+		FROM customer_address a
+		<include refid="customerDetailAddressJoins"/>
+		<where>
+
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="showName != null and showName != ''">
+				AND a.show_name LIKE
+				<if test="dbName == 'oracle'">'%'||#{showName}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{showName}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{showName},'%')</if>
+			</if>
+			<if test="mobile != null and mobile != ''">
+				AND a.mobile = #{mobile}
+			</if>
+			<if test="address != null and address != ''">
+				AND a.address LIKE
+				<if test="dbName == 'oracle'">'%'||#{address}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{address}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{address},'%')</if>
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}, is_default desc
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+		order by a.is_default desc,a.create_dt desc
+	</select>
+
+	<select id="get" resultType="CustomerAddress">
+		SELECT 
+			<include refid="customerAddressColumns"/>
+		FROM customer_address a
+		<include refid="customerAddressJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerAddress">
+		SELECT 
+			<include refid="customerAddressColumns"/>
+		FROM customer_address a
+		<include refid="customerAddressJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="showName != null and showName != ''">
+				AND a.show_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{showName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{showName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{showName},'%')</if>
+			</if>
+			<if test="mobile != null and mobile != ''">
+				AND a.mobile = #{mobile}
+			</if>
+			<if test="address != null and address != ''">
+				AND a.address LIKE 
+					<if test="dbName == 'oracle'">'%'||#{address}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{address}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{address},'%')</if>
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+
+	</select>
+	
+	<select id="findAllList" resultType="CustomerAddress">
+		SELECT 
+			<include refid="customerAddressColumns"/>
+		FROM customer_address a
+		<include refid="customerAddressJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO customer_address(
+			account_id,
+			show_name,
+			mobile,
+			address,
+			post_code,
+			is_default,
+			create_dt,
+			status,
+			district_id
+		) VALUES (
+			#{accountId},
+			#{showName},
+			#{mobile},
+			#{address},
+			#{postCode},
+			#{isDefault},
+			#{createDt},
+			#{status},
+			#{districtId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_address SET 	
+			account_id = #{accountId},
+			show_name = #{showName},
+			mobile = #{mobile},
+			address = #{address},
+			post_code = #{postCode},
+			is_default = #{isDefault}
+			<if test="status != null and status != ''">
+				, status = #{status}
+			</if>
+			<if test="districtId != null">
+				, district_id = #{districtId}
+			</if>
+			
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_address
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findListByAccountId" resultType="CustomerAddress">
+		select * from customer_address where account_id = #{accountId} and status = #{status} order by is_default desc,create_dt desc
+	</select>
+</mapper>

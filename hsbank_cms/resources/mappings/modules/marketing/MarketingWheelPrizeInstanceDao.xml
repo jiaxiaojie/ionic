@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.marketing.dao.MarketingWheelPrizeInstanceDao">
+    
+	<sql id="marketingWheelPrizeInstanceColumns">
+		a.id AS "id",
+		a.prize_id AS "prizeId",
+		a.status AS "status"
+	</sql>
+	
+	<sql id="marketingWheelPrizeInstanceJoins">
+	</sql>
+    
+	<select id="get" resultType="MarketingWheelPrizeInstance">
+		SELECT 
+			<include refid="marketingWheelPrizeInstanceColumns"/>
+		FROM marketing_wheel_prize_instance a
+		<include refid="marketingWheelPrizeInstanceJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MarketingWheelPrizeInstance">
+		SELECT 
+			<include refid="marketingWheelPrizeInstanceColumns"/>
+		FROM marketing_wheel_prize_instance a
+		<include refid="marketingWheelPrizeInstanceJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MarketingWheelPrizeInstance">
+		SELECT 
+			<include refid="marketingWheelPrizeInstanceColumns"/>
+		FROM marketing_wheel_prize_instance a
+		<include refid="marketingWheelPrizeInstanceJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO marketing_wheel_prize_instance(
+			prize_id,
+			status
+		) VALUES (
+			#{prizeId},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE marketing_wheel_prize_instance SET 	
+			prize_id = #{prizeId},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM marketing_wheel_prize_instance
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getAllPrizeInstanceCountByActivityId" resultType="java.lang.Long">
+		select count(1) from marketing_wheel_prize_instance a,marketing_wheel_prize_info b where a.prize_id = b.id and b.activity_id = #{activityId}
+	</select>
+	
+	<insert id="insertBatch">
+		INSERT INTO marketing_wheel_prize_instance(
+			prize_id,
+			status
+		) VALUES 
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.prizeId},#{item.status})
+		</foreach>
+	</insert>
+	
+	<select id="findListByActivityIdAndStatus" resultType="MarketingWheelPrizeInstance">
+		select a.* from marketing_wheel_prize_instance a,marketing_wheel_prize_info b
+		where a.prize_id = b.id and a.status = #{status} and b.activity_id = #{activityId}
+		order by a.id
+		<if test="limit != null">
+			limit #{limit}
+		</if>
+	</select>
+	
+	<update id="updateStatus">
+		update marketing_wheel_prize_instance set status = #{status} where id = #{id}
+	</update>
+	
+	<update id="unlockInstance">
+		update marketing_wheel_prize_instance set status = '0' where id in
+		(
+			select prize_instance_id id from marketing_wheel_get_prize_record where status = '0' and invalid_dt &lt; now()
+		)
+	</update>
+	
+	<update id="updateStatusByToken">
+		update marketing_wheel_prize_instance set status = #{status} where id =
+		(
+			select prize_instance_id id from marketing_wheel_get_prize_record where token = #{token} and status = '0' and invalid_dt &gt;= now()
+		)
+	</update>
+
+	<select id="getByActivityIdAndStatus" resultType="MarketingWheelPrizeInstance">
+		select a.*,b.type as 'prizeType',b.value as 'prizeValue'
+		from marketing_wheel_prize_instance a,marketing_wheel_prize_info b
+		where a.prize_id = b.id and a.status = #{status} and b.activity_id = #{activityId}
+		order by a.id
+		limit #{index},1
+	</select>
+
+	<select id="getInfo" resultType="MarketingWheelPrizeInstance">
+		select a.*,b.type as 'prizeType',b.value as 'prizeValue'
+		from marketing_wheel_prize_instance a,marketing_wheel_prize_info b
+		where a.prize_id = b.id and a.id = #{id}
+	</select>
+</mapper>

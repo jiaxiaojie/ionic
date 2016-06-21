@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apis basePath = "${frontPath}/api/integralMall"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="../../config/api.xsd">
+    <api path="areaList">
+        <data>
+            <foramt>
+			{
+                code:{
+				   description:"状态代码（0表示成功，1表示token无效，其它值表示失败）",
+				   type:"int",
+				   optional:"FALSE"   },
+				text:{
+				   description:"状态描述",
+				   type:"String",
+				   optional:"FALSE"   },
+				data:[
+                  {
+                    areaId:{
+                       description:"区域Id",
+                       type:"String",
+                       optional:"FALSE",
+                        dataColumn:"id"       },
+                    areaName:{
+                       description:"区域名称",
+                       type:"String",
+                       optional:"FALSE",
+                        dataColumn:"name"       }
+                  }
+                ]
+			}
+            </foramt>
+        </data>
+    </api>
+    
+    <api path="productPageList">
+        <data>
+            <foramt>
+			{
+                code:{
+				   description:"状态代码（0表示成功，1表示token无效，其它值表示失败）",
+				   type:"int",
+				   optional:"FALSE"   },
+				text:{
+				   description:"状态描述",
+				   type:"String",
+				   optional:"FALSE"   },
+				data:{
+                  count:{
+                     description:"记录总数",
+                     type:"int",
+                     optional:"FALSE"     },
+                  resultList:[
+                    {
+                      productId:{
+                         description:"商品Id",
+                         type:"String",
+                         optional:"FALSE"         },
+                      productName:{
+                         description:"商品名称",
+                         type:"String",
+                         optional:"FALSE"         },
+                      typeId:{
+                         description:"商品类别Id",
+                         type:"String",
+                         optional:"FALSE",
+                         value:"productTypeId"                 },
+                      typeName:{
+                         description:"商品类别名称",
+                         type:"String",
+                         optional:"FALSE",
+                         value:"getDictLabel(productTypeId, 'marketing_product_type_dict', '')"         },
+                      logoMin:{
+                         description:"商品图片",
+                         type:"String",
+                         optional:"FALSE",
+                         value:"imageUrlConver(productLogoMin)"         },
+                      introduction:{
+                         description:"商品介绍",
+                         type:"String",
+                         optional:"FALSE",
+                         dataColumn:"productIntroduction"         },
+                      price:{
+                         description:"原价",
+                         type:"number",
+                         optional:"FALSE"         },
+                      showPrice:{
+                         description:"现价",
+                         type:"number",
+                         optional:"FALSE"         },
+                      upDt:{
+                         description:"上架时间",
+                         type:"string",
+                         optional:"FALSE"         },
+                      downDt:{
+                         description:"下架时间",
+                         type:"string",
+                         optional:"FALSE",
+                         dataColumn:"dowDt"         },
+                      productCount:{
+                         description:"上架数量",
+                         type:"int",
+                         optional:"FALSE"         },
+                      productSurplus:{
+                         description:"剩余数量",
+                         type:"int",
+                         optional:"FALSE"         },
+                      status:{
+                         description:"状态",
+                         type:"int",
+                         optional:"FALSE"         },
+                      statusName:{
+                         description:"状态名称",
+                         type:"String",
+                         optional:"FALSE",
+                          value:"getDictLabel(status, 'integral_project_status_dict', '')"                },
+                      isRecommend:{
+                         description:"是否推荐(1是，0不是)",
+                         type:"string",
+                         optional:"FALSE"         }
+                    }
+                  ]
+                }
+			}
+			</foramt>
+        </data>
+    </api>
+
+</apis>

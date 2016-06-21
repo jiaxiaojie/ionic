@@ -1,0 +1,55 @@
+
+		select a.date as 'date',
+		case when b.register_count is null then 0 else b.register_count end as 'register_count',
+		case when c.open_third_account_count is null then 0 else c.open_third_account_count end as 'open_third_account_count',
+		case when d.bind_bank_card_count is null then 0 else d.bind_bank_card_count end as 'bind_bank_card_count',
+		case when e.recharge_count is null then 0 else e.recharge_count end as 'recharge_count',
+		case when f.recharge_amount is null then 0 else f.recharge_amount end as 'recharge_amount',
+		case when g.investment_times is null then 0 else g.investment_times end as 'investment_times',
+		case when h.investment_amount is null then 0 else h.investment_amount end as 'investment_amount'
+		from
+		(select date from (
+		select date(a.register_dt) date from customer_account a
+		where a.status_code = '0' and date(a.register_dt)>='2016-01-11'
+		union
+		select date(b.req_dt) date from customer_account a, log_third_party b
+		where a.request_no = b.request_no and a.has_open_third_account = '1' and date(b.req_dt) >='2016-01-11'
+		union
+		select date(a.op_dt) date from customer_bank_card a
+		where a.card_status_code = 'VERIFIED' and date(a.op_dt) >='2016-01-11'
+		union
+		select date(a.op_dt) date from customer_balance_his a
+		where a.change_type in ('NET_B2B','NET_B2C','A_PAY','WH_NO_CARD','SWIFT') and date(a.op_dt) >='2016-01-11'
+		union
+		select date(a.op_dt) date from customer_balance_his a
+		where a.change_type in ('NORMAL','URGENT') and date(a.op_dt) >='2016-01-11'
+		union
+		select date(a.op_dt) date from project_investment_record a
+		where (a.`status` = '0' or a.`status` = '3') and date(a.op_dt) >='2016-01-11'
+		union
+		select date(a.op_dt) date from project_investment_record a
+		where (a.`status` = '0' or a.`status` = '3') and date(a.op_dt) >='2016-01-11'
+		) a
+		group by a.date) a
+		left join
+		(select date(a.register_dt) date, count(1) register_count from customer_account a
+		where a.status_code = '0' and date(a.register_dt)>='2016-01-11' and a.ad_channel_id=5 group by date(a.register_dt)) b on a.date = b.date 
+		left join
+		(select date(b.req_dt) date, count(1) open_third_account_count from customer_account a, log_third_party b
+		where a.request_no = b.request_no and a.has_open_third_account = '1' and date(b.req_dt) >='2016-01-11' and a.ad_channel_id=5  group by date(b.req_dt)) c on a.date = c.date
+		left join
+		(select date(a.op_dt) date, count(1) bind_bank_card_count from customer_bank_card a
+		where a.card_status_code = 'VERIFIED' and date(a.op_dt) >='2016-01-11' and a.account_id in (select account_id from customer_account where ad_channel_id=5 and date(register_dt)>='2016-01-11') group by date(a.op_dt)) d on a.date = d.date
+		left join
+		(select date(a.op_dt) date, count(DISTINCT(a.account_id)) recharge_count from customer_balance_his a
+		where a.change_type in ('NET_B2B','NET_B2C','A_PAY','WH_NO_CARD','SWIFT') and a.account_id in (select account_id from customer_account where ad_channel_id=5 and date(register_dt)>='2016-01-11') and date(a.op_dt) >='2016-01-11' group by date(a.op_dt)) e on a.date = e.date
+		left join
+		(select date(a.op_dt) date, sum(a.change_val)  recharge_amount from customer_balance_his a
+		where a.change_type in ('NET_B2B','NET_B2C','A_PAY','WH_NO_CARD','SWIFT') and a.account_id in (select account_id from customer_account where ad_channel_id=5 and date(register_dt)>='2016-01-11') and date(a.op_dt) >='2016-01-11' group by date(a.op_dt)) f on a.date = f.date
+		left join
+		(select date(a.op_dt) date, count(1) investment_times from project_investment_record a
+		where (a.`status` = '0' or a.`status` = '3') and date(a.op_dt) >='2016-01-11' and a.investment_user_id in (select account_id from customer_account where ad_channel_id=5 and date(register_dt)>='2016-01-11') group by date(a.op_dt)) g on a.date = g.date
+		left join
+		(select date(a.op_dt) date, sum((amount)) investment_amount from project_investment_record a
+		where (a.`status` = '0' or a.`status` = '3') and date(a.op_dt) >='2016-01-11' and a.investment_user_id in (select account_id from customer_account where ad_channel_id=5 and date(register_dt)>='2016-01-11') GROUP BY date(a.op_dt)) h ON a.date = h.date 
+		ORDER BY date

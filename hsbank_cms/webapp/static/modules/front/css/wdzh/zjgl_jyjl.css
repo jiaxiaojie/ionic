@@ -1,0 +1,33 @@
+#content_top {width:789px;height:216px;}
+#content_top .left{float:left;width:150px;height:145px;margin-right:30px;margin-top:20px;}
+#content_top .left .title{width:150px;height:30px;margin-top:40px;margin-left:auto;margin-right:auto;text-align:right;color:black;font-size:20px;}
+#content_top .left .content{width:150px;height:30px;margin:10px auto;text-align:center;}
+#content_top .left .spanText{float:right;width: -moz-fit-content;width:-webkit-fit-content;width:fit-content;margin:auto;color:#dc525f;font-size:20px;;text-align:center;}
+#content_top .left .spanUnit{float:right;color:black;font-size:12px;width:20px;margin-left:0;}
+#content_top .center{float:left;width:330px;height:145px;padding-top:45px;}
+#content_top .center .row{width:330px;height:30px;margin:0 0 0 50px;}
+#content_top .center .column_1{float:left;width:40%;}
+#content_top .center .column_2{float:left;width:60%;}
+#content_top .right{float:left;width:150px;height:145px;padding-top:55px;}
+#content_top .vline{float:left;width:1px;height:145px;background:#c1a576;margin-left:30px;margin-right:10px;margin-top:30px;}
+#content_center{overflow:hidden;width:789px;}
+#content_center .line_01{height:40px;line-height:40px;margin-right:10px;}
+#content_center .line_01 .span_text_1{float:left;font-size:12px;}
+#content_center .line_01 .span_text_2{float:left;font-size:12px;margin-left:10px;}
+#content_center .line_01 .select{float:left;font-size:12px;width:150px;margin-top:6px;margin-left:10px;}
+#content_center .line_01 .input{float:left;font-size:12px;width:68px;margin-top:6px;margin-left:10px;}
+#content_center .line_01 a{cursor:pointer;float:right;margin-left:10px;color:#68a7e4;text-decoration:underline;}
+#content_center .line_02{height:30px;line-height:30px;font-size:12px;margin-left:10px;margin-right:20px;}
+#content_center .line_02 .span_text{width:90px;font-size:12px;margin-left:10px;}
+#content_center .line_03{height:30px;line-height:30px;font-size:12px;margin-right:10px;}
+#content_center .line_03 a{cursor:pointer;float:right;margin-left:10px;color:#68a7e4;text-decoration:underline;}
+#content_center hr{border-top:1px solid #d1b181;border-bottom:0 none white;margin-left:20px;margin-right:20px;}
+#content_center .hr_dashed{border-top:1px dashed #c7c7c7;border-bottom:0 none white;margin:5px 10px 5px 10px;}
+#content_center .bottom{margin-left:auto;margin-right:auto;margin-top:30px;width:789px;height:44px;background:url('../../images/wdzh/right_bg_bottom.png') no-repeat center;}
+
+#content_bottom{overflow:hidden;width:789px;}
+#content_bottom .line_01{height:40px;line-height:40px;font-size:12px;margin-left:20px;margin-right:20px;}
+#content_bottom .line_01 .span_text_1{font-size:16px;margin-left:20px;color:#9a6a34;}
+#content_bottom .hr_dashed{margin:0;border-top:1px dashed #c7c7c7;border-bottom:0 none white;margin-left:30px;margin-right:30px;}
+#content_bottom .line_02{height:30px;line-height:30px;font-size:12px;margin-left:20px;margin-right:20px;}
+#content_bottom .line_02 .span_text{width:100px;font-size:12px;margin-left:20px;}

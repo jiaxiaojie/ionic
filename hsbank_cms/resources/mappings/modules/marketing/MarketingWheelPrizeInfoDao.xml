@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.marketing.dao.MarketingWheelPrizeInfoDao">
+    
+	<sql id="marketingWheelPrizeInfoColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.label AS "label",
+		a.type AS "type",
+		a.value AS "value",
+		a.get_tips AS "getTips",
+		a.description AS "description",
+		a.logo AS "logo",
+		a.number AS "number",
+		a.rotate AS "rotate",
+		a.activity_id as "activityId",
+		a.is_default as "isDefault"
+	</sql>
+	
+	<sql id="marketingWheelPrizeInfoJoins">
+	</sql>
+    
+	<select id="get" resultType="MarketingWheelPrizeInfo">
+		SELECT 
+			<include refid="marketingWheelPrizeInfoColumns"/>
+		FROM marketing_wheel_prize_info a
+		<include refid="marketingWheelPrizeInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MarketingWheelPrizeInfo">
+		SELECT 
+			*
+		FROM marketing_wheel_prize_info
+		<where>
+			activity_id = #{activityId}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MarketingWheelPrizeInfo">
+		SELECT 
+			<include refid="marketingWheelPrizeInfoColumns"/>
+		FROM marketing_wheel_prize_info a
+		<include refid="marketingWheelPrizeInfoJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO marketing_wheel_prize_info(
+			name,
+			label,
+			type,
+			value,
+			get_tips,
+			description,
+			logo,
+			number,
+			rotate,
+			activity_id,
+			is_default
+		) VALUES (
+			#{name},
+			#{label},
+			#{type},
+			#{value},
+			#{getTips},
+			#{description},
+			#{logo},
+			#{number},
+			#{rotate},
+			#{activityId},
+			#{isDefault}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE marketing_wheel_prize_info SET 	
+			name = #{name},
+			label = #{label},
+			type = #{type},
+			value = #{value},
+			get_tips = #{getTips},
+			description = #{description},
+			logo = #{logo},
+			number = #{number},
+			rotate = #{rotate},
+			activity_id = #{activityId},
+			is_default = #{isDefault}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM marketing_wheel_prize_info
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getByTypeAndValue" resultType="MarketingWheelPrizeInfo">
+		select * from marketing_wheel_prize_info where type = #{type} and value = #{value} limit 1
+	</select>
+	
+	<select id="getByInstanceId" resultType="MarketingWheelPrizeInfo">
+		select a.* from marketing_wheel_prize_info a, marketing_wheel_prize_instance b where a.id = b.prize_id and b.id = #{instanceId}
+	</select>
+	
+	<select id="getDefaultPrize" resultType="MarketingWheelPrizeInfo">
+		select * from marketing_wheel_prize_info where activity_id = #{activityId} and is_default = '1' limit 1
+	</select>
+	
+	<select id="findListByActivityId" resultType="MarketingWheelPrizeInfo">
+		select * from marketing_wheel_prize_info where activity_id = #{activityId}
+	</select>
+	
+	<update id="updateIsDefaultByActivityId">
+		update marketing_wheel_prize_info set is_default = #{isDefault} where activity_id = #{activityId}
+	</update>
+	
+	<update id="updateIsDefault">
+		update marketing_wheel_prize_info set is_default = #{isDefault} where id = #{id}
+	</update>
+</mapper>

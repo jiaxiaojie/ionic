@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.thinkgem.jeesite.modules.project.dao.ProjectRepaymentPlanDao">
+
+	<sql id="projectRepaymentPlanColumns">
+		a.plan_id AS "planId",
+		a.project_id AS "projectId",
+		a.plan_date AS "planDate",
+		a.plan_money AS "planMoney",
+		a.principal AS
+		"principal",
+		a.interest AS "interest",
+		a.rate_ticket_interest AS "rateTicketInterest",
+		a.status AS "status",
+		a.remaining_principal AS "remainingPrincipal",
+		a.remaining_principal_interest AS "remainingPrincipalInterest"
+	</sql>
+
+	<sql id="projectRepaymentPlanJoins">
+	</sql>
+
+	<select id="get" resultType="ProjectRepaymentPlan">
+		SELECT
+		<include refid="projectRepaymentPlanColumns" />
+		FROM project_repayment_plan a
+		<include refid="projectRepaymentPlanJoins" />
+		WHERE a.project_id = #{id}
+	</select>
+
+	<select id="findList" resultType="ProjectRepaymentPlan">
+		SELECT
+		<include refid="projectRepaymentPlanColumns" />
+		FROM project_repayment_plan a
+		<include refid="projectRepaymentPlanJoins" />
+		<where>
+
+			<if test="projectId != null and projectId != ''">
+				AND a.project_id = #{projectId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findListGroupByProjectId" resultType="ProjectRepaymentPlan">
+		select a.plan_id AS "planId",
+		a.project_id AS "projectId",
+		a.plan_date AS "planDate",
+		a.plan_money AS "planMoney",
+		a.principal AS "principal",
+		a.interest AS "interest",
+		a.rate_ticket_interest AS "rateTicketInterest",
+		a.status AS "status",
+		a.remaining_principal AS "remainingPrincipal",
+		a.remaining_principal_interest AS "remainingPrincipalInterest"
+		from project_repayment_plan a, project_base b
+		where a.project_id = b.project_id
+		and a.remaining_principal_interest is null
+		and (b.repayment_mode = '2' or b.repayment_mode = '3')
+		group by a.project_id, a.plan_date
+		ORDER BY a.project_id, a.plan_date
+	</select>
+
+	
+	<select id="findListByProjectId" resultType="ProjectRepaymentPlan">
+		SELECT
+		<include refid="projectRepaymentPlanColumns" />
+		FROM project_repayment_plan a
+		<include refid="projectRepaymentPlanJoins" />
+		<where>
+
+			a.project_id = #{projectId} order by a.plan_date
+		</where>
+	</select>
+
+	<select id="findAllList" resultType="ProjectRepaymentPlan">
+		SELECT
+		<include refid="projectRepaymentPlanColumns" />
+		FROM project_repayment_plan a
+		<include refid="projectRepaymentPlanJoins" />
+		<where>
+
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<insert id="insert">
+		INSERT INTO project_repayment_plan(
+		project_id,
+		plan_date,
+		plan_money,
+		principal,
+		interest,
+		rate_ticket_interest,
+		status,
+		remaining_principal,
+		remaining_principal_interest
+		) VALUES (
+		#{projectId},
+		#{planDate},
+		#{planMoney},
+		#{principal},
+		#{interest},
+		#{rateTicketInterest},
+		#{status},
+		#{remainingPrincipal},
+		#{remainingPrincipalInterest}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE project_repayment_plan SET
+		project_id = #{projectId},
+		plan_date = #{planDate},
+		plan_money = #{planMoney},
+		principal = #{principal},
+		interest = #{interest},
+		rate_ticket_interest = #{rateTicketInterest},
+		status = #{status},
+		remaining_principal_interest = #{remainingPrincipalInterest},
+		remaining_principal= #{remainingPrincipal}
+		WHERE plan_id = #{planId}
+	</update>
+
+	<update id="delete">
+		DELETE FROM project_repayment_plan
+		WHERE plan_id =
+		#{planId}
+	</update>
+
+	<update id="deleteByProjectId">
+		DELETE FROM project_repayment_plan
+		WHERE project_id =
+		#{projectId}
+	</update>
+
+	<select id="getByProjectIdAndDay" resultType="ProjectRepaymentPlan">
+		select * from
+		project_repayment_plan where project_id=#{projectId} and
+		date_format(plan_date,'%Y-%m-%d')=#{theDay}
+	</select>
+
+	<update id="updateStatusForEarlyRepay">
+		update project_repayment_plan set status=#{status} where
+		project_id=#{projectId} and plan_date  <![CDATA[ >= #{theDay} ]]>
+	</update>
+	<update id="updateStatus">
+		update project_repayment_plan set status=#{status}
+		where plan_id=#{planId}
+	</update>
+	<select id="findNextPlan" resultType="ProjectRepaymentPlan">
+		select * from project_repayment_plan where project_id=#{projectId} and
+		plan_date <![CDATA[ >= #{theDay} ]]>
+		order by plan_date
+	</select>
+
+	<select id="getRemaining" resultType="java.lang.Integer">
+		select count(1) from project_repayment_plan where
+		project_id=#{projectId} and plan_date <![CDATA[ >= #{theDay} ]]>
+		order by plan_date
+	</select>
+
+	<select id="getRepayment30Will" resultType="java.lang.Double">
+		select plan_money
+		from project_repayment_plan where project_id = #{projectId} order by
+		plan_date limit 1
+	</select>
+
+	<select id="getSumPlanMoney" resultType="java.lang.Double">
+		select sum(plan_money)
+		from project_repayment_plan where project_id = #{projectId}
+	</select>
+
+	<update id="updateRemainingPrincipalInterest">
+		update project_repayment_plan a,(select IFNULL(sum(interest),0) AS sumInterest
+		  from project_repayment_plan
+		 where project_id = #{projectId}
+		   and plan_date > #{planDate}) b
+		set a.remaining_principal_interest = b.sumInterest + #{remainingPrincipal}
+		where a.plan_id = #{planId}
+	</update>
+</mapper>

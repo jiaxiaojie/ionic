@@ -1,0 +1,24 @@
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="351" measuredH="69" mockupW="291" mockupH="49">
+  <controls>
+    <control controlID="0" controlTypeID="__group__" x="60" y="20" w="291" h="49" measuredW="291" measuredH="49" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <controlName>login_link</controlName>
+      </controlProperties>
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::LinkBar" x="0" y="0" w="-1" h="-1" measuredW="236" measuredH="19" zOrder="0" locked="false" isInGroup="0">
+          <controlProperties>
+            <markup>true</markup>
+            <text>%u5E2E%u52A9%u4E2D%u5FC3%2C%u6700%u65B0%u6D3B%u52A8%2C%u767B%u9646%2C%7Bcolor%3Ared%7D%u514D%u8D39%u6CE8%u518C%7Bcolor%7D</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::LinkBar" x="0" y="30" w="-1" h="-1" measuredW="291" measuredH="19" zOrder="1" locked="false" isInGroup="0">
+          <controlProperties>
+            <markup>true</markup>
+            <selectedIndex>-1</selectedIndex>
+            <text>%u5E2E%u52A9%u4E2D%u5FC3%2C%u6700%u65B0%u6D3B%u52A8%2CHeran1038%2C%u6D88%u606F%2C%u9000%u51FA</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+  </controls>
+</mockup>

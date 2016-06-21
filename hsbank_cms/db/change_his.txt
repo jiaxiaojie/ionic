@@ -1,0 +1,42 @@
+DATE	AUTHOR	TABLE	REMARK
+
+2015-06-26	ydt	customer_account	重置密码方式:列reset_pwd_key(varchar(50))，改为reset_pwd_type(varchar(2))
+
+project_base  表的create_dt 字段类型出错，应该为datetime
+project_base  表 新添 审核备注 review_remark
+project_base  表新添项目期限 project_duration
+project_base 表 新添 是否重点推荐 is_recommend
+project_base 表 新添 月服务费 month_service_charge '每月手续费',
+              添加 起投金额 保障方式 提前还款费率 月还本息 相关文件五列
+2015-06-26 17:17	ydt customer_bank_card_his	主键his_id改为id
+
+project_transfer_info 表的reansferor 字段拼写出错 ，改为 transferor
+
+
+customer_base 删除 组织机构代码  营业执照编号 税务登记号 三列
+增加  组织会员扩展信息 customer_org_extend_info   企业会员财务年表 customer_org_finance_year_record
+
+customer_base_his 删除 组织机构代码  营业执照编号 税务登记号 三列
+
+customer_org_extend_info 删除 创建时间 修改时间 两列
+
+2015-07-03 11:04 customer_account account_pwd 长度由50改为100
+2015-07-03 13:21新增表 cms_carousel
+
+2015-07-07 16:22 ydt customer_base 删除列cert_type 新增列credit_card_bank、credit_card_no、credit_card_auth
+	customer_base_his 删除列cert_type 新增列credit_card_bank、credit_card_no、credit_card_auth
+	customer_work_unit 新增列position、work_address
+	customer_finance 新增列has_housing_loan、has_car_loan
+	customer_org_finance_year_record 新增列remark
+	customer_org_extend_info新增列net_worth
+	新增表customer_car
+	
+将 customer_base表中bool型改为varchar(2)
+customer_credit_auth 删除work_credit_auth_code、work_credit_auth_remark、work_score三列
+
+
+customer_balance 新增 待收收益	will_profit 、累计收益	sum_profit、待还借款	will_loan、累计融资	sun_loan、账户净资产	net_assets 五列
+customer_bank_card、customer_bank_card_his 新增列 auth_code 银行卡是否认证
+
+customer_account 新增uuid列
+新增表project_date_node

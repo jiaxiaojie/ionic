@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.message.dao.CustomMessageSendChannelDao">
+    
+	<sql id="customMessageSendChannelColumns">
+		a.id AS "id",
+		a.customer_message_id AS "customerMessageId",
+		a.message_channel AS "messageChannel"
+	</sql>
+	
+	<sql id="customMessageSendChannelJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomMessageSendChannel">
+		SELECT 
+			<include refid="customMessageSendChannelColumns"/>
+		FROM custom_message_send_channel a
+		<include refid="customMessageSendChannelJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	
+	<select id="findListById" resultType="CustomMessageSendChannel">
+		SELECT 
+			<include refid="customMessageSendChannelColumns"/>
+		FROM custom_message_send_channel a
+		<include refid="customMessageSendChannelJoins"/>
+		<where>
+			a.customer_message_id = #{customerMessageId} 
+		</where>
+	</select>
+	
+    
+    <insert id="insertBatch">
+        INSERT INTO custom_message_send_channel(customer_message_id,message_channel)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.customerMessageId},#{item.messageChannel})
+        </foreach>
+    </insert>
+    <update id="deleteById">
+		DELETE FROM custom_message_send_channel
+		WHERE customer_message_id = #{custom_message_send_channel}
+	</update>  
+    
+	<select id="findList" resultType="CustomMessageSendChannel">
+		SELECT 
+			<include refid="customMessageSendChannelColumns"/>
+		FROM custom_message_send_channel a
+		<include refid="customMessageSendChannelJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomMessageSendChannel">
+		SELECT 
+			<include refid="customMessageSendChannelColumns"/>
+		FROM custom_message_send_channel a
+		<include refid="customMessageSendChannelJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO custom_message_send_channel(
+			customer_message_id,
+			message_channel
+		) VALUES (
+			#{customerMessageId},
+			#{messageChannel}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE custom_message_send_channel SET 	
+			customer_message_id = #{customerMessageId},
+			message_channel = #{messageChannel}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM custom_message_send_channel
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

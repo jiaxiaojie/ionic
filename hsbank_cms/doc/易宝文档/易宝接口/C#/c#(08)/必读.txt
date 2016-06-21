@@ -1,0 +1,79 @@
+一.接口使用方法：
+
+ 1：将范例中的所有文件上传到有外网IP的服务器(通常是贵公司电子商务网站所在的发布目录下的相应位置。保证支付提交时的p6_Url是外网可访问的，以此确保商户能接收到交
+易结果)；
+
+ 2：找到business.cs中的doBeforPay(),doFailAfterPay(),doSuccessAfterPay()函数，分别代表“客户提交订单”，“支付成功”和“支付失败”后的业务处理，如更新数据库
+，校验金额，校验订单......
+
+ 3：找到web.config文件，换上您的正式商户编号和密钥，请求地址不变
+
+
+二.关于中文问题:
+
+ 中文转码的例子:System.Web.HttpUtility.UrlEncode(" ", System.Text.Encoding.GetEncoding("gb2312"));
+
+ 在页面间传值，提交信息，接受信息时需要注意中文转码
+
+
+三.关于日志文件问题：
+
+ 1. 找到log.cs文件中的createlog方法，配置日志所在路径，默认与文件在同一目录下；
+
+ 2. 日志文件记录了所有向易宝支付发起的请求数据，返回数据；且为了方便将来的错误排查，还记录了生成签名的所有数据。当接口出现问题时，请检查日志中的信息，在无法
+    自行解决时，将信息提供给易宝技术支持；
+
+
+四. 测试帐号/密钥
+
+
+ 1.测试商户编号
+
+  p1_MerId = "10001126856";
+
+ 2.测试用商户密钥
+
+  keyValue = "69cl522AV6q613Ii4W6u8K6XuW8vM1N6bFgyv769220IuYe9u37N4y7rI4Pl";
+
+
+五. 文件结构说明
+
+┣ index.html 首页包括各个功能页面的链接
+		
+┣ payInput.html 支付输入页
+
+┣ pay.aspx 支付请求页
+
+┣ payCallback.aspx 通知页（接收支付结果，并向易宝服务器回写success）
+
+┣ refundExtInput.html 退款输入页
+
+┣ refundExt.aspx 退款请求页
+
+┣ registMerchantInput.html 子商户注册输入页
+
+┣ registMerchant.aspx 子商户注册请求页
+
+┣ paymentConfirmInput.html 解冻输入页
+
+┣ paymentConfirm.aspx 解冻请求页
+
+┣ Distribute.cs 基类,核心处理类
+
+┣ Business.cs 商户业务处理类
+
+┣ log.cs 日志类
+
+┣ web.config 配置文件（在此文件内修改商户ID，密钥和请求地址等）
+
+
+六.在接收到支付结果通知后，判断是否进行过业务逻辑处理，不要重复进行业务逻辑处理
+
+
+
+
+
+
+
+
+

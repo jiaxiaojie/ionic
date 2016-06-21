@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerBalanceHisDao">
+    
+	<sql id="customerBalanceHisColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.change_val AS "changeVal",
+		a.change_type AS "changeType",
+		a.change_reason AS "changeReason",
+		a.rel_project AS "relProject",
+		a.op_dt AS "opDt",
+		a.op_term_type AS "opTermType",
+		a.balance AS "balance",
+		a.ext_1 AS "ext1"
+	</sql>
+	
+	<sql id="customerBalanceHisJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomerBalanceHis">
+		SELECT 
+			<include refid="customerBalanceHisColumns"/>
+		FROM customer_balance_his a
+		<include refid="customerBalanceHisJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerBalanceHis">
+		SELECT 
+			<include refid="customerBalanceHisColumns"/>
+		FROM customer_balance_his a
+		<include refid="customerBalanceHisJoins"/>
+		<where>
+			
+			<if test="beginChangeVal != null  and beginChangeVal != ''">
+				AND a.change_val >= #{beginChangeVal}
+			</if>
+			<if test="endChangeVal != null and endChangeVal != ''">
+				AND #{endChangeVal} >= a.change_val
+			</if>
+			<if test="beginOpDt != null  and beginOpDt != ''">
+				AND a.op_dt >= #{beginOpDt}
+			</if>
+			<if test="endOpDt != null and endOpDt != ''">
+				AND #{endOpDt} >= a.op_dt
+			</if>
+			<if test="changeType != null and changeType != ''">
+				AND a.change_type = #{changeType}
+			</if>
+			AND a.account_id = #{accountId}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerBalanceHis">
+		SELECT 
+			<include refid="customerBalanceHisColumns"/>
+		FROM customer_balance_his a
+		<include refid="customerBalanceHisJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_balance_his(
+			account_id,
+			change_val,
+			change_type,
+			change_reason,
+			rel_project,
+			op_dt,
+			op_term_type,
+			balance,
+			ext_1
+		) VALUES (
+			#{accountId},
+			#{changeVal},
+			#{changeType},
+			#{changeReason},
+			#{relProject},
+			#{opDt},
+			#{opTermType},
+			#{balance},
+			#{ext1}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_balance_his SET 	
+			change_val = #{changeVal},
+			change_type = #{changeType},
+			change_reason = #{changeReason},
+			rel_project = #{relProject},
+			op_dt = #{opDt},
+			balance=#{balance},
+			op_term_type = #{opTermType},
+			ext_1 = #{ext1}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_balance_his
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getCustomerLastRecordByPlatformUserNo" resultType="CustomerBalanceHis">
+		select a.* from customer_balance_his a left join customer_account b on b.account_id=a.account_id where b.platform_user_no = #{platformUserNo} order by a.id desc limit 1
+	</select>
+	
+	<select id="getCustomerLastRecordByAccountId" resultType="CustomerBalanceHis">
+		select * from customer_balance_his where account_id = #{accountId} order by id desc limit 1
+	</select>
+	
+	<select id="searchList" resultType="CustomerBalanceHis">
+		select * from customer_balance_his 
+			where account_id = #{accountId} and (op_dt between #{startDateTime} and #{endDateTime})
+			<if test="changeType != null and changeType != ''">
+				and change_type = #{changeType}
+			</if>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				order by id desc
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findPageList" resultType="CustomerBalanceHis">
+		select
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.change_val AS "changeVal",
+		a.change_type AS "changeType",
+		a.change_reason AS "changeReason",
+		a.rel_project AS "relProject",
+		a.op_dt AS "opDt",
+		a.op_term_type AS "opTermType",
+		a.balance AS "balance",
+		a.ext_1 AS "ext1"
+		from customer_balance_his a
+		where a.account_id = #{accountId}
+		<if test="startDateTime !=null and startDateTime !=''">
+			and date(a.op_dt) >= date(#{startDateTime})
+		</if>
+		<if test="endDateTime !=null and endDateTime !=''">
+			and date(#{endDateTime}) >= date(a.op_dt)
+		</if>
+		<if test="changeType != null and changeType != ''">
+			and a.change_type IN (${changeType})
+		</if>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				order by a.op_dt desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getTransactionRecordList" resultType="CustomerBalanceHis">
+		select 
+		<include refid="customerBalanceHisColumns"/> 
+		from customer_balance_his  a
+		<include refid="customerBalanceHisJoins"/>
+			where a.account_id = #{accountId}
+			order by op_dt desc  
+			limit #{startNumber},#{endNumber}
+	</select>
+	
+	<select id="getCustomerWithdrawCountDuringDateTime" resultType="java.lang.Integer">
+		select count(*) from customer_balance_his where account_id=#{accountId}
+			and (change_type='NORMAL' or change_type='URGENT')
+			and op_dt between #{startDateTime} and #{endDateTime}
+	</select>
+	
+	<select id="getListByAccountIdAndChangeValAndChangeReason" resultType="CustomerBalanceHis">
+		select * from customer_balance_his where change_reason = #{changeReason} and change_val = #{changeValue} and account_id = #{accountId}
+	</select>
+	
+	<select id="getActivityReward" resultType="java.lang.Double">
+	    SELECT SUM(change_val) AS totalChangeVal FROM customer_balance_his  
+			where account_id=#{accountId} 
+			AND change_type in (${changeType})
+			AND change_val > 0
+			<if test="changeReason != null and changeReason != ''">
+				AND change_reason != #{changeReason}
+			</if>
+	</select>
+</mapper>

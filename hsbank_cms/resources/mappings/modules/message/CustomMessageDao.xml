@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.message.dao.CustomMessageDao">
+    
+	<sql id="customMessageColumns">
+		a.id AS "id",
+		a.title AS "title",
+		a.content AS "content",
+		a.receiver_type AS "receiverType",
+		a.receiver_data AS "receiverData",
+		a.type AS "type",
+		a.label AS "label",
+		a.is_urgent AS "isUrgent",
+		a.target_type AS "targetType",
+		a.target AS "target",
+		a.is_click AS "isClick",
+		a.send_dt AS "sendDt",
+		a.status AS "status",
+		a.create_dt AS "createDt",
+		a.creator AS "creator",
+		a.review_dt AS "reviewDt",
+		a.review_remark AS "reviewRemark",
+		a.reviewer AS "reviewer"
+	</sql>
+	
+	<sql id="customMessageJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomMessage">
+		SELECT 
+			<include refid="customMessageColumns"/>
+		FROM custom_message a
+		<include refid="customMessageJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findStatusFromCustomMessageByAccountId" resultType="String">
+		SELECT 
+		a.status as status 
+		FROM custom_message a
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="selectCustomMessageList" resultType="CustomMessage">
+		select a.title as title,a.content as content,a.send_dt as sendDt,a.type as type,a.label as lible from custom_message a WHERE a.id = #{id}
+	</select>
+	<select id="findList" resultType="CustomMessage">
+		SELECT 
+			<include refid="customMessageColumns"/>
+		FROM custom_message a
+		<include refid="customMessageJoins"/>
+		<where>
+			
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+			<if test="content != null and content != ''">
+				AND a.content = #{content}
+			</if>
+			<if test="targetType != null and targetType != ''">
+				AND a.target_type = #{targetType}
+			</if>
+			<if test="isUrgent != null and isUrgent != ''">
+				AND a.is_urgent = #{isUrgent}
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	<select id="getCustomMessage" resultType="CustomMessage">
+		SELECT 
+			a.id
+		FROM custom_message a
+		WHERE 1=1 
+			<if test="title != null and title != ''">
+				AND a.title = #{title}
+			</if>
+			limit 1
+	</select>
+	
+	<select id="getByMessageId" resultType="CustomMessage">
+		SELECT 
+			<include refid="customMessageColumns"/>
+		FROM custom_message a
+		left JOIN message m ON a.id=m.from_id
+		WHERE m.id = #{messageId}
+			limit 1
+	</select>
+	
+	
+	<select id="findAllList" resultType="CustomMessage">
+		SELECT 
+			<include refid="customMessageColumns"/>
+		FROM custom_message a
+		<include refid="customMessageJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" >
+	<selectKey resultType="java.lang.String" order="AFTER" keyProperty="id">
+	SELECT LAST_INSERT_ID()
+	</selectKey>
+	
+		INSERT INTO custom_message(
+			title,
+			content,
+			receiver_type,
+			receiver_data,
+			type,
+			label,
+			is_urgent,
+			target_type, 
+			target,
+			is_click, 
+			send_dt,
+			status,
+			create_dt,
+			creator,
+			review_dt,
+			review_remark,
+			reviewer
+		) VALUES (
+			#{title},
+			#{content},
+			#{receiverType},
+			#{receiverData},
+			#{type},
+			#{label},
+			#{isUrgent},
+			#{targetType},
+			#{target},
+			#{isClick},
+			#{sendDt},
+			#{status},
+			#{createDt},
+			#{creator},
+			#{reviewDt},
+			#{reviewRemark},
+			#{reviewer}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE custom_message SET 	
+			title = #{title},
+			content = #{content},
+			receiver_type = #{receiverType},
+			receiver_data = #{receiverData},
+			type = #{type},
+			label = #{label},
+			is_urgent=#{isUrgent},
+			target_type=#{targetType},
+			target =#{target},
+			is_click =#{isClick},
+			send_dt = #{sendDt},
+			status = #{status},
+			create_dt = #{createDt},
+			creator = #{creator},
+			review_dt = #{reviewDt},
+			review_remark = #{reviewRemark},
+			reviewer = #{reviewer}
+		WHERE id =#{id}
+	</update>
+	<update id="changeStatus">
+	update custom_message set   is_urgent='0' where id= #{id}
+	</update>
+	
+	<update id="updateIsUrgent">
+	update custom_message set   is_urgent='0' where is_urgent='1'
+	</update>
+
+	<update id="delete">
+		DELETE FROM custom_message
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.marketing.dao.MarketingActivityAttachmentDao">
+    
+	<sql id="marketingActivityAttachmentColumns">
+		a.id AS "id",
+		a.activity_code AS "activityCode",
+		a.atta_name AS "attaName",
+		a.atta_size AS "attaSize",
+		a.atts_size AS "attsSize",
+		a.create_time AS "createTime"
+	</sql>
+	
+	<sql id="marketingActivityAttachmentJoins">
+	</sql>
+    
+	<select id="get" resultType="MarketingActivityAttachment">
+		SELECT 
+			<include refid="marketingActivityAttachmentColumns"/>
+		FROM marketing_activity_attachment a
+		<include refid="marketingActivityAttachmentJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MarketingActivityAttachment">
+		SELECT 
+			<include refid="marketingActivityAttachmentColumns"/>
+		FROM marketing_activity_attachment a
+		<include refid="marketingActivityAttachmentJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MarketingActivityAttachment">
+		SELECT 
+			<include refid="marketingActivityAttachmentColumns"/>
+		FROM marketing_activity_attachment a
+		<include refid="marketingActivityAttachmentJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO marketing_activity_attachment(
+			activity_code,
+			atta_name,
+			atta_size,
+			atts_size,
+			create_time
+		) VALUES (
+			#{activityCode},
+			#{attaName},
+			#{attaSize},
+			#{attsSize},
+			#{createTime}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE marketing_activity_attachment SET 	
+			activity_code = #{activityCode},
+			atta_name = #{attaName},
+			atta_size = #{attaSize},
+			atts_size = #{attsSize},
+			create_time = #{createTime}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM marketing_activity_attachment
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

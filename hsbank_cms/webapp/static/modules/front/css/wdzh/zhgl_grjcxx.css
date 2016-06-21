@@ -1,0 +1,61 @@
+#content_layout{ width: 747px; margin: 0 auto; padding: 30px 20px 30px 20px; border: 1px solid #bb9a75; border-top: none; border-bottom: none; background-color: #fff;}
+#content_layout .line_01{width:100%;height:40px;line-height:40px;}
+#content_layout .line_01 .span_text_1{ margin-left:0;float:left;font-size:20px;}
+#content_layout .bt_row{cursor:pointer;height:31px;line-height:31px;width:134px;text-align:center;margin:10px auto 10px auto;font-size:14px;color:white;background:url('../../images/util/bt_orange_134x31.png') no-repeat center 0}
+#content_layout input{float:left;margin-top:5px;width:120px;}
+#content_layout hr{border-top:1px solid #b38e64;border-bottom:0 none white;}
+#content_layout .hr_dashed{border-top:1px dashed #c7c7c7;border-bottom:0 none white;margin-left:10px;margin-right:10px;}
+#content_layout .bottom{margin-left:auto;margin-right:auto;margin-top:30px;height:44px;background:url('../../images/wdzh/right_bg_bottom.png') no-repeat center;}
+#content_center{overflow:hidden;width:747px;}
+#content_center .center .line_01{height:30px;line-height:30px;font-size:12px;margin-bottom:10px;margin-left:30px;}
+#content_center .center .line_01 .span_text_1{width:90px;font-size:12px;margin-left:10px;text-align:right;}
+#content_center .center .line_01 .span_text_2{font-size:12px;margin-left:10px;}
+#content_center .center .line_01 .span_text_2 span{font-size:12px;margin-left:10px;}
+#content_center .right{float:left;width:100px}
+
+.user_info{ border-bottom:1px solid #ddd; padding-bottom: 20px;}
+.user_info .left{ padding: 2px; margin-right:40px !important; float:left; width:114px !important; height:114px; border:1px solid #e0e0e0; overflow:hidden; border-radius:120px; -o-border-radius:120px; -ms-border-radius:120px; -moz-border-radius:120px; -webkit-border-radius:120px;}
+.user_info .left img{ width:114px; height:114px; border-radius:120px; -o-border-radius:120px; -ms-border-radius:120px; -moz-border-radius:120px; -webkit-border-radius:120px;}
+.user_info .left .avatar_area{ position:relative; width:114px; height:114px; overflow:hidden; border-radius:120px; -o-border-radius:120px; -ms-border-radius:120px; -moz-border-radius:120px; -webkit-border-radius:120px;}
+.user_info .left .modify_avatar{ visibility: hidden; position: absolute; left: 0px; bottom:14px; width: 114px; height: 24px; line-height: 24px; background:url(../../images/util/bg_transparent.png) repeat; text-align: center;
+ color: #fff; opacity:0;}
+.user_info .left:hover .modify_avatar{ visibility: visible; bottom: 14px; opacity:1;}
+.user_info .center{ float:left; width:480px; height:120px;}
+.user_info dl{ margin: 14px 0 10px 0;}
+.user_info dl dt{ float:left; width:80px; color:#000;}
+.user_info dl dd{ margin-right:20px; float:left;}
+
+.user_info dl dd.text_tip{ height:20px; padding-right: 27px; color:#999;}
+.user_info dl dd.text_tip a{ color:#B38E64;}
+.user_info dl dd.text_tip a:hover{ color:#D4A978;}
+.user_info dl dt .red-text{ margin-right:4px; font-size:14px; font-family: Geneva, sans-serif; font-weight:normal;}
+.user_info .right{ float:right !important; width:auto !important; height: 120px; line-height: 120px;}
+
+.user_info_list{}
+.user_info_list dl{ margin:0; padding:20px 0; border-bottom:1px solid #EFEFEF;}
+.user_info_list dl dt{ width: 143px;  padding-left: 27px;}
+.user_info_list dl dd.text_tip{ width:140px; height:auto; padding-right: 27px; color:#999; text-align:right;}
+.user_info_list dl dd{ width:360px; float:left;}
+.user_info_list dl dd select{ margin-bottom:0;}
+.user_info_list dl dd input{ margin-bottom:0; margin-top:0 !important; width:auto; float:none !important;}
+.user_info_list dl dd textarea{ margin-bottom:0;}
+.user_info_list dl dd input[type="radio"]{ width:15px !important; margin-left:10px; margin-bottom:0px;}
+.user_info_list dl dd label{ display:inline-block; margin-bottom:0px;}
+
+.user_info .icon_check_blue{ position:relative; top:5px; margin-right:5px; width:18px; height:18px; display:inline-block; background:url(../../images/util/icon_check_blue.png) repeat; background-size:18px;}
+.user_info .icon_check_gray{ position:relative; top:5px; margin-right:5px; width:18px; height:18px; display:inline-block; background:url(../../images/util/icon_check_gray.png) repeat; background-size:18px;}
+
+.user_info_list dl .hide_area{ float:none; display:block; width:auto; margin:0 auto; line-height:initial; margin-top:43px;}
+
+.hide_area .content{ padding:40px 20px; background-color:#f4f4f4;}
+.hide_area .item{ margin-left:167px; margin-bottom: 20px;}
+.hide_area .item label{ margin-right: 5px; cursor:default; width:100px;text-align: right;}
+.hide_area .item input{ width:230px !important; padding: 5px; height: 34px;}
+.hide_area .bt_orange_134x31{ margin:0px 0 0 277px;}
+.hide_area .tips{ padding: 10px; margin-bottom: 20px; text-align: center; background-color: #fcf6df; color: #f00;}
+
+
+
+
+
+

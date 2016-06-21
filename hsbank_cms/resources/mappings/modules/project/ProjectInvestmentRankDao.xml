@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.project.dao.ProjectInvestmentRankDao">
+    
+	<sql id="projectInvestmentRankColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.amount AS "amount",
+		a.rank AS "rank",
+		a.op_term AS "opTerm",
+		a.type AS "type",
+		a.create_dt AS "createDt",
+		a.data_dt AS "dataDt",
+		a.remark AS "remark",
+		b.customer_name AS "customerName",
+		b.mobile AS "mobile",
+		c.account_name AS "accountName"
+	</sql>
+	
+	<sql id="projectInvestmentRankJoins">
+	    LEFT JOIN customer_base b ON a.account_id=b.account_id
+	    LEFT JOIN customer_account c ON c.account_id=a.account_id
+	</sql>
+    
+	<select id="get" resultType="ProjectInvestmentRank">
+		SELECT 
+			<include refid="projectInvestmentRankColumns"/>
+		FROM project_investment_rank a
+		<include refid="projectInvestmentRankJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ProjectInvestmentRank">
+		SELECT 
+			<include refid="projectInvestmentRankColumns"/>
+		FROM project_investment_rank a
+		<include refid="projectInvestmentRankJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND b.customer_name = #{customerName}
+			</if>
+			<if test="beginAmount != null  and beginAmount != ''">				AND a.amount >= #{beginAmount}			</if>			<if test="endAmount != null and endAmount != ''">				AND #{endAmount} >= a.amount			</if>
+			<if test="opTerm != null and opTerm != ''">
+				AND a.op_term = #{opTerm}
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+			<if test="beginDataDt != null  and beginDataDt != ''">				AND a.data_dt >= #{beginDataDt}			</if>			<if test="endDataDt != null and endDataDt != ''">				AND #{endDataDt} >= a.data_dt			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			    ORDER BY a.type,a.rank
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ProjectInvestmentRank">
+		SELECT 
+			<include refid="projectInvestmentRankColumns"/>
+		FROM project_investment_rank a
+		<include refid="projectInvestmentRankJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO project_investment_rank(
+			account_id,
+			amount,
+			rank,
+			op_term,
+			type,
+			create_dt,
+			remark
+		) VALUES (
+			#{accountId},
+			#{amount},
+			#{rank},
+			#{opTerm},
+			#{type},
+			#{createDt},
+			#{remark}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE project_investment_rank SET 	
+			account_id = #{accountId},
+			amount = #{amount},
+			rank = #{rank},
+			op_term = #{opTerm},
+			type = #{type},
+			remark = #{remark}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM project_investment_rank
+		WHERE id = #{id}
+	</update>
+	
+	<update id="deleteByTheDateAndType">
+		DELETE FROM project_investment_rank
+		WHERE type= #{type}
+		and data_dt BETWEEN #{beginStatDt} and #{endStatDt}
+	</update>
+	
+	<update id="investmentStat">
+	    insert into project_investment_rank (account_id,amount,rank,op_term,type,data_dt,create_dt,remark)
+		(select d.account_id,d.amount,@rownum := @rownum + 1 AS rank,#{opTerm} as opTerm,#{type} as type,#{dataDt} as dataDt,#{createDt} as createDt,#{remark} as remark from 
+		(select t.investment_user_id as account_id,
+		       SUM(t.amount) as amount
+		  from project_investment_record t 
+		 where t.op_dt BETWEEN
+		       #{beginStatDt} and
+		       #{endStatDt}
+		   and (t.status='0' or t.status='3')
+		 GROUP BY t.investment_user_id
+		 order by SUM(t.amount) desc limit #{limit}) d,(SELECT @rownum := 0) r)
+	</update>
+	
+	<select id="findListWithStat" resultType="ProjectInvestmentRank">
+		SELECT 
+			<include refid="projectInvestmentRankColumns"/>
+		FROM project_investment_rank a
+		<include refid="projectInvestmentRankJoins"/>
+		<where>
+		    a.data_dt BETWEEN #{beginDataDt} AND #{endDataDt}
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+			AND a.rank &lt;= 10
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			    ORDER BY a.type,a.rank
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findInvestmentListByType" resultType="ProjectInvestmentRank">
+		SELECT 
+			<include refid="projectInvestmentRankColumns"/>
+		FROM project_investment_rank a
+		<include refid="projectInvestmentRankJoins"/>
+		<where>
+		    a.type = #{type}
+		</where>
+		ORDER BY a.rank
+	</select>
+	
+	<select id="getInvestmentRank" resultType="ProjectInvestmentRank">
+		SELECT 
+			<include refid="projectInvestmentRankColumns"/>
+		FROM project_investment_rank a
+		<include refid="projectInvestmentRankJoins"/>
+		WHERE  a.account_id = #{accountId}
+		    AND a.data_dt BETWEEN #{beginDataDt} AND #{endDataDt}
+		<if test="type != null and type != ''">
+			AND a.type = #{type}
+		</if>
+		    AND a.rank &lt;= 10
+	</select>
+	
+	<select id="getInvestmentRankByType" resultType="ProjectInvestmentRank">
+		SELECT 
+			<include refid="projectInvestmentRankColumns"/>
+		FROM project_investment_rank a
+		<include refid="projectInvestmentRankJoins"/>
+		WHERE  a.account_id = #{accountId} AND a.type = #{type}
+	</select>
+	
+	<delete id="deleteByType">
+		delete from project_investment_rank where type = #{type}
+	</delete>
+	
+	<insert id="insertJanuaryInvestmentRankData">
+		insert into project_investment_rank (account_id,amount,op_term,type,create_dt,rank)
+		(select d.account_id,d.amount,d.op_term,d.type,d.create_dt,@rownum := @rownum + 1 AS rank FROM 
+		(select a.investment_user_id as 'account_id',sum(a.amount * b.project_duration / 12) amount,a.op_term as 'op_term','4' as 'type',now() as 'create_dt'
+		 from project_investment_record a,project_base b
+		 where a.transfer_project_id = 0 and a.project_id = b.project_id
+		 and (a.`status` = '0' or a.`status` = '3')
+		 and a.op_dt &gt;= #{startDate} and a.op_dt &lt;= #{endDate}
+		 group by a.investment_user_id
+		 order by amount desc limit 10) d,(SELECT @rownum := 0) r)
+	</insert>
+	
+	<select id="findListByType" resultType="ProjectInvestmentRank">
+		select * from project_investment_rank where type = #{type}
+	</select>
+</mapper>

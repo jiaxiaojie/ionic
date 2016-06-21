@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerDoubleElevenActivityDao">
+    
+	<sql id="customerDoubleElevenActivityColumns">
+		a.id AS "id",
+		a.account_id AS "accountId",
+		a.customer_name AS "customerName",
+		a.amount AS "amount",
+		a.change_reason AS "changeReason",
+		a.status AS "status",
+		a.op_dt AS "opDt"
+	</sql>
+	
+	<sql id="customerDoubleElevenActivityJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomerDoubleElevenActivity">
+		SELECT 
+			<include refid="customerDoubleElevenActivityColumns"/>
+		FROM customer_double_eleven_activity a
+		<include refid="customerDoubleElevenActivityJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CustomerDoubleElevenActivity">
+		SELECT 
+			<include refid="customerDoubleElevenActivityColumns"/>
+		FROM customer_double_eleven_activity a
+		<include refid="customerDoubleElevenActivityJoins"/>
+		<where>
+			
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="customerName != null and customerName != ''">
+				AND a.customer_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{customerName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{customerName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{customerName},'%')</if>
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			    ORDER BY a.status
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerDoubleElevenActivity">
+		SELECT 
+			<include refid="customerDoubleElevenActivityColumns"/>
+		FROM customer_double_eleven_activity a
+		<include refid="customerDoubleElevenActivityJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_double_eleven_activity(
+			account_id,
+			customer_name,
+			amount,
+			change_reason,
+			status,
+			op_dt
+		) VALUES (
+			#{accountId},
+			#{customerName},
+			#{amount},
+			#{changeReason},
+			#{status},
+			#{opDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_double_eleven_activity SET 	
+			account_id = #{accountId},
+			customer_name = #{customerName},
+			amount = #{amount},
+			change_reason = #{changeReason},
+			status = #{status},
+			op_dt = #{opDt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateSelected">
+		UPDATE customer_double_eleven_activity SET 	
+			status = #{status},
+			op_dt = #{opDt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_double_eleven_activity
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

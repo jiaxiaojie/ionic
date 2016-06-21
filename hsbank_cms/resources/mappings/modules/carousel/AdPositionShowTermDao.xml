@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.carousel.dao.AdPositionShowTermDao">
+    
+	<sql id="adPositionShowTermColumns">
+		a.id AS "id",
+		a.ad_position_id AS "adPositionId",
+		a.term_code AS "termCode"
+	</sql>
+	
+	<sql id="adPositionShowTermJoins">
+	</sql>
+    
+	<select id="get" resultType="AdPositionShowTerm">
+		SELECT 
+			<include refid="adPositionShowTermColumns"/>
+		FROM ad_position_show_term a
+		<include refid="adPositionShowTermJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="getAdPositionShowTermTermCodeByTermCode" resultType="AdPositionShowTerm">
+select b.term_code from ad_position_info a, ad_position_show_term b where a.status='1' and a.id=b.ad_position_id and  a.code=#{code}
+	</select>
+	
+	<select id="findList" resultType="AdPositionShowTerm">
+		SELECT 
+			<include refid="adPositionShowTermColumns"/>
+		FROM ad_position_show_term a
+		<include refid="adPositionShowTermJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="findListByAdPositionId" resultType="AdPositionShowTerm">
+		SELECT
+		<include refid="adPositionShowTermColumns"/>
+		FROM ad_position_show_term a
+		<include refid="adPositionShowTermJoins"/>
+		where a.ad_position_id = #{id}
+	</select>
+	
+	<select id="findAllList" resultType="AdPositionShowTerm">
+		SELECT 
+			<include refid="adPositionShowTermColumns"/>
+		FROM ad_position_show_term a
+		<include refid="adPositionShowTermJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO ad_position_show_term(
+			ad_position_id,
+			term_code
+		) VALUES (
+			#{id},
+			#{termCode}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE ad_position_show_term SET 	
+			ad_position_id = #{adPositionId},
+			term_code = #{termCode}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM ad_position_show_term
+		WHERE id = #{id}
+	</update>
+
+
+	<insert id="insertBatch" parameterType="AdPositionShowTerm"  useGeneratedKeys="true"  keyProperty="id">
+		INSERT INTO ad_position_show_term(ad_position_id,term_code)
+		VALUES(
+		#{adPositionId} , #{termCode}
+		)
+	</insert>
+
+	<update id="deleteById">
+		DELETE FROM ad_position_show_term
+		WHERE ad_position_id = #{id}
+	</update>
+
+</mapper>

@@ -1,0 +1,17 @@
+#content_center{overflow:hidden;width:769px;padding:10px 10px 10px 10px;}
+#content_center .bottom{margin-left:auto;margin-right:auto;margin-top:30px;width:789px;height:44px;background:url('../../images/wdzh/right_bg_bottom.png') no-repeat center;}
+#record_list{overflow:hidden;}
+#record_list .line_01{height:40px;line-height:40px;margin-right:20px;}
+#record_list .line_01 .span_text_1{float:left;font-size:12px;}
+#record_list .line_01 .span_text_2{float:left;font-size:12px;margin-left:10px;}
+#record_list .line_01 .input{float:left;font-size:12px;width:68px;margin-top:6px;margin-left:10px;}
+#record_list .line_01 a{cursor:pointer;float:right;margin-left:10px;color:#68a7e4;text-decoration:underline;}
+#record_list hr{margin:5px 10px 5px 10px;border-top:1px solid #f2f2f2;border-bottom:0 none white;}
+
+#finished_list{overflow:hidden;}
+#finished_list .line_01{width:100%;height:40px;line-height:40px;}
+#finished_list .line_01 .span_text_1{float:left;font-size:12px;}
+#finished_list .line_01 .span_text_2{float:left;font-size:12px;margin-left:10px;}
+#finished_list .line_01 .input{float:left;font-size:12px;width:68px;margin-top:6px;margin-left:10px;}
+#finished_list .line_01 a{cursor:pointer;float:right;margin-left:10px;color:#68a7e4;text-decoration:underline;}
+#record_list hr{margin:5px 10px 5px 10px;border-top:1px solid #f2f2f2;border-bottom:0 none white;}

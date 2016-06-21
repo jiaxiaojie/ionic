@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.marketing.dao.MarketingShareRecordDao">
+    
+	<sql id="marketingShareRecordColumns">
+		a.id AS "id",
+		a.activity_id AS "activityId",
+		a.channel_id AS "channelId",
+		a.account_id AS "accountId",
+		a.share_dt AS "shareDt",
+		a.share_reason AS "shareReason",
+		a.acticity_code AS "acticityCode"
+	</sql>
+	
+	<sql id="marketingShareRecordJoins">
+	</sql>
+    
+	<select id="get" resultType="MarketingShareRecord">
+		SELECT 
+			<include refid="marketingShareRecordColumns"/>
+		FROM marketing_share_record a
+		<include refid="marketingShareRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="hasShared" resultType="boolean">
+		select case when count(1) &gt; 0 then 1 else 0 end from marketing_share_record
+			where account_id = #{accountId} and activity_id=#{activityId} and share_dt between #{startDate} and #{endDate}
+	</select>
+	
+	<select id="findList" resultType="MarketingShareRecord">
+		SELECT 
+			<include refid="marketingShareRecordColumns"/>
+		FROM marketing_share_record a
+		<include refid="marketingShareRecordJoins"/>
+		<where>
+			
+			<if test="activityId != null and activityId != ''">
+				AND a.activity_id = #{activityId}
+			</if>
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="beginShareDt != null and endShareDt != null and beginShareDt != '' and endShareDt != ''">
+				AND a.share_dt BETWEEN #{beginShareDt} AND #{endShareDt}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MarketingShareRecord">
+		SELECT 
+			<include refid="marketingShareRecordColumns"/>
+		FROM marketing_share_record a
+		<include refid="marketingShareRecordJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO marketing_share_record(
+			activity_id,
+			channel_id,
+			account_id,
+			share_dt,
+			share_reason,
+			acticity_code
+		) VALUES (
+			#{activityId},
+			#{channelId},
+			#{accountId},
+			#{shareDt},
+			#{shareReason},
+			#{acticityCode}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE marketing_share_record SET 	
+			activity_id = #{activityId},
+			channel_id = #{channelId},
+			account_id = #{accountId},
+			share_dt = #{shareDt},
+			share_reason = #{shareReason},
+			acticity_code = #{acticityCode}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM marketing_share_record
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.sys.dao.SysBizParaDao">
+    
+	<sql id="sysBizParaColumns">
+		a.id AS "id",
+		a.project_default_risk_article_id AS "projectDefaultRiskArticleId",
+		a.cms_zxgg_category_id AS "cmsZxggCategoryId",
+		a.cms_zxhd_category_id AS "cmsZxhdCategoryId",
+		a.cms_zxxw_category_id AS "cmsZxxwCategoryId",
+		a.project_early_repay_ratio AS "projectEarlyRepayRatio",
+		a.project_overdue_repay_ratio AS "projectOverdueRepayRatio",
+		a.project_person_credit_loan_year_rate AS "projectPersonCreditLoanYearRate",
+		a.project_personal_credit_loan_service_rate AS "projectPersonalCreditLoanServiceRate",
+		a.project_personal_credit_loan_max_value AS "projectPersonalCreditLoanMaxValue",
+		a.project_personal_credit_loan_max_terms AS "projectPersonalCreditLoanMaxTerms",
+		a.project_transfer_service_rate AS "projectTransferServiceRate",
+		a.project_max_overdue_day_count AS "projectMaxOverdueDayCount",
+		a.project_transfer_day_count_to_next_repay AS "projectTransferDayCountToNextRepay",
+		a.project_transfer_service_up_rate AS "projectTransferServiceUpRate",
+		a.project_trnasfer_service_down_rate AS "projectTrnasferServiceDownRate",
+		a.platform_amount_rate AS "platformAmountRate",
+		a.project_service_charge_rate AS "projectServiceChargeRate",
+		a.project_ticket_amount_rate AS "projectTicketAmountRate",
+		a.project_transfer_max_assignment_hours AS "projectTransferMaxAssignmentHours",
+		a.project_max_amount_default AS "projectMaxAmountDefault",
+		a.oneday_max_withdraw_count AS "onedayMaxWithdrawCount"
+	</sql>
+	
+	<sql id="sysBizParaJoins">
+	</sql>
+    
+	<select id="get" resultType="SysBizPara">
+		SELECT 
+			<include refid="sysBizParaColumns"/>
+		FROM sys_biz_para a
+		<include refid="sysBizParaJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="SysBizPara">
+		SELECT 
+			<include refid="sysBizParaColumns"/>
+		FROM sys_biz_para a
+		<include refid="sysBizParaJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SysBizPara">
+		SELECT 
+			<include refid="sysBizParaColumns"/>
+		FROM sys_biz_para a
+		<include refid="sysBizParaJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO sys_biz_para(
+			project_default_risk_article_id,
+			cms_zxgg_category_id,
+			cms_zxhd_category_id,
+			cms_zxxw_category_id,
+			project_early_repay_ratio,
+			project_overdue_repay_ratio,
+			project_person_credit_loan_year_rate,
+			project_personal_credit_loan_service_rate,
+			project_personal_credit_loan_max_value,
+			project_personal_credit_loan_max_terms,
+			project_transfer_service_rate,
+			project_max_overdue_day_count,
+			project_transfer_day_count_to_next_repay,
+			project_transfer_service_up_rate,
+			project_trnasfer_service_down_rate,
+			platform_amount_rate,
+			project_service_charge_rate,
+			project_ticket_amount_rate,
+			project_transfer_max_assignment_hours,
+			project_max_amount_default,
+			oneday_max_withdraw_count
+		) VALUES (
+			#{projectDefaultRiskArticleId},
+			#{cmsZxggCategoryId},
+			#{cmsZxhdCategoryId},
+			#{cmsZxxwCategoryId},
+			#{projectEarlyRepayRatio},
+			#{projectOverdueRepayRatio},
+			#{projectPersonCreditLoanYearRate},
+			#{projectPersonalCreditLoanServiceRate},
+			#{projectPersonalCreditLoanMaxValue},
+			#{projectPersonalCreditLoanMaxTerms},
+			#{projectTransferServiceRate},
+			#{projectMaxOverdueDayCount},
+			#{projectTransferDayCountToNextRepay},
+			#{projectTransferServiceUpRate},
+			#{projectTrnasferServiceDownRate},
+			#{platformAmountRate},
+			#{projectServiceChargeRate},
+			#{projectTicketAmountRate},
+			#{projectTransferMaxAssignmentHours},
+			#{projectMaxAmountDefault},
+			#{onedayMaxWithdrawCount}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_biz_para SET 	
+			project_default_risk_article_id = #{projectDefaultRiskArticleId},
+			cms_zxgg_category_id = #{cmsZxggCategoryId},
+			cms_zxhd_category_id = #{cmsZxhdCategoryId},
+			cms_zxxw_category_id = #{cmsZxxwCategoryId},
+			project_early_repay_ratio = #{projectEarlyRepayRatio},
+			project_overdue_repay_ratio = #{projectOverdueRepayRatio},
+			project_person_credit_loan_year_rate = #{projectPersonCreditLoanYearRate},
+			project_personal_credit_loan_service_rate = #{projectPersonalCreditLoanServiceRate},
+			project_personal_credit_loan_max_value = #{projectPersonalCreditLoanMaxValue},
+			project_personal_credit_loan_max_terms = #{projectPersonalCreditLoanMaxTerms},
+			project_transfer_service_rate = #{projectTransferServiceRate},
+			project_max_overdue_day_count = #{projectMaxOverdueDayCount},
+			project_transfer_day_count_to_next_repay = #{projectTransferDayCountToNextRepay},
+			project_transfer_service_up_rate = #{projectTransferServiceUpRate},
+			project_trnasfer_service_down_rate = #{projectTrnasferServiceDownRate},
+			platform_amount_rate = #{platformAmountRate},
+			project_service_charge_rate = #{projectServiceChargeRate},
+			project_ticket_amount_rate = #{projectTicketAmountRate},
+			project_transfer_max_assignment_hours = #{projectTransferMaxAssignmentHours},
+			project_max_amount_default = #{projectMaxAmountDefault},
+			oneday_max_withdraw_count = #{onedayMaxWithdrawCount}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM sys_biz_para
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

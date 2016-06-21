@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerPushSwitchDao">
+    
+	<sql id="customerPushSwitchColumns">
+		a.id AS "id",
+		a.push_channel AS "pushChannel",
+		a.account_id AS "accountId",
+		a.is_receive AS "isReceive"
+	</sql>
+	
+	<sql id="customerPushSwitchJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomerPushSwitch">
+		SELECT 
+			<include refid="customerPushSwitchColumns"/>
+		FROM customer_push_switch a
+		<include refid="customerPushSwitchJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getCustomerPushSwitch" resultType="CustomerPushSwitch">
+		SELECT 
+			<include refid="customerPushSwitchColumns"/>
+		FROM customer_push_switch a
+		<include refid="customerPushSwitchJoins"/>
+		WHERE a.account_id = #{accountId} AND a.push_channel = #{pushChannel}
+	</select>
+	
+	<select id="findList" resultType="CustomerPushSwitch">
+		SELECT 
+			<include refid="customerPushSwitchColumns"/>
+		FROM customer_push_switch a
+		<include refid="customerPushSwitchJoins"/>
+		<where>
+			
+			<if test="pushChannel != null and pushChannel != ''">
+				AND a.push_channel = #{pushChannel}
+			</if>
+			<if test="accountId != null and accountId != ''">
+				AND a.account_id = #{accountId}
+			</if>
+			<if test="isReceive != null and isReceive != ''">
+				AND a.is_receive = #{isReceive}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerPushSwitch">
+		SELECT 
+			<include refid="customerPushSwitchColumns"/>
+		FROM customer_push_switch a
+		<include refid="customerPushSwitchJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_push_switch(
+			push_channel,
+			account_id,
+			is_receive
+		) VALUES (
+			#{pushChannel},
+			#{accountId},
+			#{isReceive}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_push_switch SET 	
+			push_channel = #{pushChannel},
+			account_id = #{accountId},
+			is_receive = #{isReceive}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateIsReceive">
+		UPDATE customer_push_switch SET 	
+			is_receive = #{isReceive}
+		WHERE account_id = #{accountId} AND push_channel = #{pushChannel}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_push_switch
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

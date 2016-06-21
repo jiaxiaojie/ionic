@@ -1,0 +1,21 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>分账解冻</title>
+</head>
+<body>
+		<table>
+			<form action='paymentConfirm/paymentConfirm.asp' method='post'> 
+			<!--接口类型:解冻分账-->
+			<input type='hidden' name='p0_Cmd' value='PaymentConfirm'><!--(必填)固定值PaymentConfirm-->
+		  <tr>
+		  	<td align="left">&nbsp;&nbsp;交易流水号</td>
+		  	<td align="left">&nbsp;&nbsp;<input type='text' name='p2_TrxId' value=''>(必须)YeePay返回给商家的交易流水号。</td>
+      </tr>		
+		  <tr>
+		  	<td align="left">&nbsp;</td>
+		  	<td align="left">&nbsp;&nbsp;<input type="submit" value="马上提交" /></td>
+      </tr>
+    </form>
+      </table>
+</html>

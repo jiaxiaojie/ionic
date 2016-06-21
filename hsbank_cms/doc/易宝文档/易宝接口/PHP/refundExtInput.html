@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>分账退款接口</title>
+</head>
+<body>
+<form action='refundExt.php' method='post'> 
+<table> 
+
+<tr> 
+	<td>唯一请求号</td> 
+	<td><input type='text' name='p1_RequestId' value=''>必须唯一（不传由易宝生成）。避免用户的误操作可能会引起重复退款。</td> 
+</tr>
+<tr> 
+	<td>交易流水号</td> 
+	<td><input type='text' name='p2_TrxId' value=''>(必填)YeePay返回给商家的交易号</td> 
+</tr> 
+<tr> 
+	<td>退款描述</td> 
+	<td><input type='text' name='p3_Desc' value=''>(可选)退款说明，最大长度200</td> 
+</tr> 
+<tr> 
+	<td>退款明细:</td> 
+	<td><input type='text' name='p4_Details' value=''>(可选)通知YeePay需要给每个分账账户分别退多少。注:不传该参数表示退回全部分账明细
+</td> 
+</tr> 
+<tr> 
+	<td>订单退款金额:</td> 
+	<td><input type='text' name='p5_Amt' value=''>(必填)表示退给用户的金额，退款明细中的金额累加后不能超过总退款金额，总退款金额减去明细中的金额后,剩下的就是平台的退款金额
+</td> 
+</tr>
+
+
+<tr> 
+	<td><input type='submit' name='' value='提交'></td> 
+	<td></td> 
+</tr> 
+ 
+</table> 
+</form> 
+</body>
+</html>

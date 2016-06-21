@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.marketing.dao.MarketingWheelGetPrizeRecordDao">
+    
+	<sql id="marketingWheelGetPrizeRecordColumns">
+		a.id AS "id",
+		a.prize_instance_id AS "prizeInstanceId",
+		a.status AS "status",
+		a.token AS "token",
+		a.get_dt AS "getDt",
+		a.op_term AS "opTerm",
+		a.invalid_dt AS "invalidDt",
+		a.account_id AS "accountId",
+		a.give_dt AS "giveDt"
+	</sql>
+	
+	<sql id="marketingWheelGetPrizeRecordJoins">
+	</sql>
+
+	<select id="get" resultType="MarketingWheelGetPrizeRecord">
+		SELECT 
+			<include refid="marketingWheelGetPrizeRecordColumns"/>
+		FROM marketing_wheel_get_prize_record a
+		<include refid="marketingWheelGetPrizeRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="getAllInfo" resultType="MarketingWheelGetPrizeRecord">
+		select a.*,c.name as "prizeName",c.type as "prizeType",c.value as "prizeValue",d.mobile as "mobile",d.customer_name as "customerName"
+		from marketing_wheel_get_prize_record a, marketing_wheel_prize_instance b, marketing_wheel_prize_info c, customer_base d
+		where case when a.prize_instance_id = 0 then c.type = '1' and c.value = '1.88' else a.prize_instance_id = b.id and b.prize_id = c.id end
+			and a.account_id = d.account_id and a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MarketingWheelGetPrizeRecord">
+		select a.*,c.name as "prizeName",c.type as "prizeType",c.value as "prizeValue",d.mobile as "mobile",d.customer_name as "customerName"
+		from
+			marketing_wheel_get_prize_record a,
+			marketing_wheel_prize_instance b,
+			marketing_wheel_prize_info c,
+			customer_base d
+		<where>
+			a.prize_instance_id = b.id and b.prize_id = c.id
+			and a.account_id = d.account_id and c.activity_id = #{activityId}
+			<if test="mobile != null and mobile != ''">
+				AND d.mobile = #{mobile}
+			</if>
+			<if test="customerName != null and customerName != ''">
+				AND d.customer_name = #{customerName}
+			</if>
+			<if test="prizeName != null and prizeName != ''">
+				AND c.name = #{prizeName}
+			</if>
+			<if test="prizeType != null and prizeType != ''">
+				AND c.type = #{prizeType}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="beginGetDt != null  and beginGetDt != ''">
+				AND a.get_dt >= #{beginGetDt}
+			</if>
+			<if test="endGetDt != null and endGetDt != ''">
+				AND #{endGetDt} >= a.get_dt
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MarketingWheelGetPrizeRecord">
+		SELECT 
+			<include refid="marketingWheelGetPrizeRecordColumns"/>
+		FROM marketing_wheel_get_prize_record a
+		<include refid="marketingWheelGetPrizeRecordJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO marketing_wheel_get_prize_record(
+			prize_instance_id,
+			status,
+			token,
+			get_dt,
+			op_term,
+			invalid_dt,
+			account_id,
+			give_dt
+		) VALUES (
+			#{prizeInstanceId},
+			#{status},
+			#{token},
+			#{getDt},
+			#{opTerm},
+			#{invalidDt},
+			#{accountId},
+			#{giveDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE marketing_wheel_get_prize_record SET 	
+			prize_instance_id = #{prizeInstanceId},
+			status = #{status},
+			token = #{token},
+			get_dt = #{getDt},
+			op_term = #{opTerm},
+			invalid_dt = #{invalidDt},
+			account_id = #{accountId},
+			give_dt = #{giveDt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM marketing_wheel_get_prize_record
+		WHERE id = #{id}
+	</update>
+	
+	<update id="invalidateRecord">
+		update marketing_wheel_get_prize_record set status = '-1' where `status` = '0' and invalid_dt &lt; now()
+	</update>
+	
+	<update id="updateStatusGetToGivingByToken">
+		update marketing_wheel_get_prize_record set status = '1', account_id = #{accountId} where token = #{token} and status = '0' and invalid_dt &gt;= now()
+	</update>
+	
+	<select id="findListByStatus" resultType="MarketingWheelGetPrizeRecord">
+		select * from marketing_wheel_get_prize_record where status = #{status}
+	</select>
+	
+	<update id="updateStatusToGiven">
+		update marketing_wheel_get_prize_record set status = '2', give_dt = now() where id = #{id}
+	</update>
+	
+	<select id="findGotListByAccountIdAndActivityId" resultType="MarketingWheelGetPrizeRecord">
+		select a.prize_instance_id as "prizeInstanceId",d.mobile as "mobile",c.name as "prizeName",a.get_dt as "getDt" from marketing_wheel_get_prize_record a
+		left join marketing_wheel_prize_instance b on a.prize_instance_id = b.id
+		left join marketing_wheel_prize_info c on b.prize_id = c.id
+		left join customer_base d on a.account_id = d.account_id
+		where (a.status = '1' or a.status = '2') and c.activity_id = #{activityId} and a.account_id = #{accountId}
+		order by a.get_dt desc
+	</select>
+
+	<select id="findPrizeRecordPageList" resultType="MarketingWheelGetPrizeRecord">
+		select a.prize_instance_id as "prizeInstanceId",d.mobile as "mobile",c.name as "prizeName",a.get_dt as "getDt" from marketing_wheel_get_prize_record a
+		left join marketing_wheel_prize_instance b on a.prize_instance_id = b.id
+		left join marketing_wheel_prize_info c on b.prize_id = c.id
+		left join customer_base d on a.account_id = d.account_id
+		where  c.activity_id = #{activityId} and a.account_id = #{accountId} and a.status = #{status}
+		order by a.get_dt desc
+	</select>
+
+	<select id="getPrizeRecordByAccountIdAndActivityId" resultType="MarketingWheelGetPrizeRecord">
+		select a.id AS "id",
+		a.prize_instance_id AS "prizeInstanceId",
+		a.status AS "status",
+		a.get_dt AS "getDt",
+		a.op_term AS "opTerm",
+		a.invalid_dt AS "invalidDt",
+		c.name as "prizeName" from marketing_wheel_get_prize_record a
+		left join marketing_wheel_prize_instance b on a.prize_instance_id = b.id
+		left join marketing_wheel_prize_info c on b.prize_id = c.id
+		where c.activity_id = #{activityId} and a.account_id = #{accountId} and a.status = #{status} order by a.get_dt limit 1
+	</select>
+	
+	<select id="findGotListByActivityIdAndPrizeType" resultType="MarketingWheelGetPrizeRecord">
+		select d.mobile as "mobile",c.name as "prizeName" from marketing_wheel_get_prize_record a
+		left join marketing_wheel_prize_instance b on a.prize_instance_id = b.id
+		left join marketing_wheel_prize_info c on b.prize_id = c.id
+		left join customer_base d on a.account_id = d.account_id
+		where (a.status = '1' or a.status = '2') and c.activity_id = #{activityId} and c.type = #{prizeType}
+		order by a.get_dt desc
+		limit #{limit}
+	</select>
+</mapper>

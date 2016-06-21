@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.customer.dao.CustomerWorkDao">
+    
+	<sql id="customerWorkColumns">
+		a.id AS "id",
+		a.company_name AS "companyName",
+		a.company_type_code AS "companyTypeCode",
+		a.company_size_code AS "companySizeCode",
+		a.position AS "position",
+		a.position_file AS "positionFile",
+		a.income_code AS "incomeCode",
+		a.income_file AS "incomeFile",
+		a.work_years AS "workYears",
+		a.contacts AS "contacts",
+		a.company_phone AS "companyPhone",
+		a.company_address AS "companyAddress",
+		a.create_dt AS "createDt",
+		a.last_modify_dt AS "lastModifyDt",
+		b.customer_id AS "customerId",
+		b.account_id AS "accountId",
+		c.account_type AS "accountType"
+	</sql>
+	
+	<sql id="customerWorkJoins">
+		RIGHT JOIN customer_base b ON b.customer_id=a.customer_id
+		LEFT JOIN customer_account c ON c.account_id=b.account_id
+	</sql>
+    
+	<select id="get" resultType="CustomerWork">
+		SELECT 
+			<include refid="customerWorkColumns"/>
+		FROM customer_work a
+		<include refid="customerWorkJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getByCustomerId" resultType="CustomerWork">
+		SELECT 
+			<include refid="customerWorkColumns"/>
+		FROM customer_work a
+		<include refid="customerWorkJoins"/>
+		WHERE b.customer_id = #{customerId} limit 1
+	</select>
+	
+	<select id="findList" resultType="CustomerWork">
+		SELECT 
+			<include refid="customerWorkColumns"/>
+		FROM customer_work a
+		<include refid="customerWorkJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomerWork">
+		SELECT 
+			<include refid="customerWorkColumns"/>
+		FROM customer_work a
+		<include refid="customerWorkJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO customer_work(
+			customer_id,
+			company_name,
+			company_type_code,
+			company_size_code,
+			position,
+			position_file,
+			income_code,
+			income_file,
+			work_years,
+			contacts,
+			company_phone,
+			company_address,
+			create_dt
+		) VALUES (
+			#{customerId},
+			#{companyName},
+			#{companyTypeCode},
+			#{companySizeCode},
+			#{position},
+			#{positionFile},
+			#{incomeCode},
+			#{incomeFile},
+			#{workYears},
+			#{contacts},
+			#{companyPhone},
+			#{companyAddress},
+			#{createDt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE customer_work SET 	
+			company_name = #{companyName},
+			company_type_code = #{companyTypeCode},
+			company_size_code = #{companySizeCode},
+			position = #{position},
+			position_file = #{positionFile},
+			income_code = #{incomeCode},
+			income_file = #{incomeFile},
+			work_years = #{workYears},
+			contacts = #{contacts},
+			company_phone = #{companyPhone},
+			company_address = #{companyAddress},
+			last_modify_dt = #{lastModifyDt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM customer_work
+		WHERE id = #{id}
+	</update>
+	
+	<update id="customerChangeHisInfo">
+		update customer_work set company_type_code = #{companyTypeCode}, company_size_code = #{companySizeCode}, position = #{position}, income_code = #{incomeCode}
+			where customer_id = #{customerId}
+	</update>
+	
+	<select id="getCustomerWorkByCustomerId" resultType="CustomerWork">
+		select 
+			a.id AS "id",
+			a.customer_id AS "customerId",
+			a.company_name AS "companyName",
+			a.company_type_code AS "companyTypeCode",
+			a.company_size_code AS "companySizeCode",
+			a.position AS "position",
+			a.position_file AS "positionFile",
+			a.income_code AS "incomeCode",
+			a.income_file AS "incomeFile",
+			a.work_years AS "workYears",
+			a.contacts AS "contacts",
+			a.company_phone AS "companyPhone",
+			a.company_address AS "companyAddress",
+			a.create_dt AS "createDt",
+			a.last_modify_dt AS "lastModifyDt"
+		from customer_work a
+		where a.customer_id = #{customerId}
+	</select>
+</mapper>
